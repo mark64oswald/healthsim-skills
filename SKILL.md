@@ -183,10 +183,31 @@ Request explicit validation: "Validate this patient data"
 
 For code lookups and documentation:
 
-- [Data Models](references/data-models.md) - Entity schemas
-- [Code Systems](references/code-systems.md) - ICD-10, CPT, LOINC, NDC
-- [Validation Rules](references/validation-rules.md) - All validation rules
-- [Generation Patterns](references/generation-patterns.md) - Distributions, seeds
+| Reference | Description |
+|-----------|-------------|
+| [Code Systems](references/code-systems.md) | ICD-10, CPT, HCPCS, LOINC, NDC, RxNorm |
+| [Terminology](references/terminology.md) | Healthcare terminology and abbreviations |
+| [Clinical Rules](references/clinical-rules.md) | Clinical business rules and guidelines |
+| [Validation Rules](references/validation-rules.md) | All validation rules and constraints |
+
+## Format Transformations
+
+Transform generated data to healthcare standards:
+
+| Format | Skill | Use Case |
+|--------|-------|----------|
+| FHIR R4 | [formats/fhir-r4.md](formats/fhir-r4.md) | Modern interoperability, REST APIs |
+| HL7v2 ADT | [formats/hl7v2-adt.md](formats/hl7v2-adt.md) | Legacy EMR integration |
+| X12 837 | [formats/x12-837.md](formats/x12-837.md) | Claims submission (P/I) |
+| X12 835 | [formats/x12-835.md](formats/x12-835.md) | Remittance/ERA |
+| NCPDP D.0 | [formats/ncpdp-d0.md](formats/ncpdp-d0.md) | Pharmacy transactions |
+
+## Integration & Testing
+
+| Guide | Description |
+|-------|-------------|
+| [Integration Guide](docs/integration-guide.md) | Cross-skill data flows and consistency |
+| [Testing Patterns](docs/testing-patterns.md) | Validation and test patterns |
 
 ## Examples
 
