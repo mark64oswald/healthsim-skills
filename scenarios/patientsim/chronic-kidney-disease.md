@@ -1,0 +1,282 @@
+# Chronic Kidney Disease Scenario
+
+## Trigger Phrases
+
+- CKD
+- chronic kidney disease
+- kidney disease
+- renal failure
+- eGFR
+- creatinine elevated
+- dialysis
+- nephropathy
+- nephrologist
+- kidney function
+
+## Parameters
+
+| Parameter | Type | Default | Options |
+|-----------|------|---------|---------|
+| age_range | range | 50-80 | Any valid adult range |
+| ckd_stage | int | 3 | 1, 2, 3a, 3b, 4, 5 |
+| etiology | string | diabetic | diabetic, hypertensive, glomerular, polycystic, unknown |
+| dialysis_status | string | none | none, hemodialysis, peritoneal |
+| progression | string | stable | stable, progressing, acute_on_chronic |
+
+## CKD Staging
+
+### Stage Classification by eGFR
+
+| Stage | eGFR (mL/min/1.73m2) | ICD-10 | Description |
+|-------|----------------------|--------|-------------|
+| 1 | >= 90 | N18.1 | Normal or high GFR with kidney damage |
+| 2 | 60-89 | N18.2 | Mildly decreased GFR with kidney damage |
+| 3a | 45-59 | N18.3 | Mildly to moderately decreased |
+| 3b | 30-44 | N18.3 | Moderately to severely decreased |
+| 4 | 15-29 | N18.4 | Severely decreased |
+| 5 | < 15 | N18.5 | Kidney failure (ESKD) |
+| 5D | < 15 + dialysis | N18.6 | ESKD on dialysis |
+
+### Albuminuria Categories
+
+| Category | UACR (mg/g) | Description |
+|----------|-------------|-------------|
+| A1 | < 30 | Normal to mildly increased |
+| A2 | 30-300 | Moderately increased (microalbuminuria) |
+| A3 | > 300 | Severely increased (macroalbuminuria) |
+
+## Diagnosis Codes
+
+### Primary CKD Codes
+| Code | Description |
+|------|-------------|
+| N18.1 | CKD, stage 1 |
+| N18.2 | CKD, stage 2 |
+| N18.3 | CKD, stage 3 |
+| N18.4 | CKD, stage 4 |
+| N18.5 | CKD, stage 5 |
+| N18.6 | End stage renal disease |
+| N18.9 | CKD, unspecified |
+
+### Etiology Codes
+| Code | Description | Use With |
+|------|-------------|----------|
+| E11.22 | Type 2 DM with diabetic CKD | Diabetic nephropathy |
+| I12.9 | Hypertensive CKD | Hypertensive nephropathy |
+| N03.9 | Chronic nephritic syndrome | Glomerulonephritis |
+| Q61.3 | Polycystic kidney, autosomal dominant | PKD |
+
+### Common Comorbidities
+| Probability | Code | Description |
+|-------------|------|-------------|
+| 85% | I10/I12.9 | Hypertension |
+| 65% | E11.22 | Type 2 diabetes with CKD |
+| 50% | D63.1 | Anemia of CKD |
+| 45% | E21.1 | Secondary hyperparathyroidism |
+| 40% | I50.9 | Heart failure |
+| 35% | E83.51 | Hypocalcemia |
+| 30% | E87.5 | Hyperkalemia |
+| 25% | I25.10 | Coronary artery disease |
+
+## Lab Patterns by Stage
+
+### CKD Stage 3 (eGFR 30-59)
+```json
+{
+  "creatinine": { "min": 1.5, "max": 2.5, "unit": "mg/dL", "flag": "H" },
+  "egfr": { "min": 30, "max": 59, "unit": "mL/min/1.73m2", "flag": "L" },
+  "bun": { "min": 25, "max": 45, "unit": "mg/dL", "flag": "H" },
+  "potassium": { "min": 4.5, "max": 5.5, "unit": "mmol/L", "flag": null },
+  "phosphorus": { "min": 4.0, "max": 5.5, "unit": "mg/dL", "flag": "H" },
+  "calcium": { "min": 8.5, "max": 9.5, "unit": "mg/dL", "flag": null },
+  "hemoglobin": { "min": 10.5, "max": 12.5, "unit": "g/dL", "flag": "L" },
+  "pth": { "min": 70, "max": 150, "unit": "pg/mL", "flag": "H" },
+  "urine_microalbumin": { "min": 30, "max": 300, "unit": "mg/g", "flag": "H" }
+}
+```
+
+### CKD Stage 4 (eGFR 15-29)
+```json
+{
+  "creatinine": { "min": 2.5, "max": 5.0, "unit": "mg/dL", "flag": "H" },
+  "egfr": { "min": 15, "max": 29, "unit": "mL/min/1.73m2", "flag": "L" },
+  "bun": { "min": 45, "max": 80, "unit": "mg/dL", "flag": "H" },
+  "potassium": { "min": 5.0, "max": 6.0, "unit": "mmol/L", "flag": "H" },
+  "phosphorus": { "min": 5.0, "max": 7.0, "unit": "mg/dL", "flag": "H" },
+  "calcium": { "min": 8.0, "max": 9.0, "unit": "mg/dL", "flag": "L" },
+  "hemoglobin": { "min": 9.0, "max": 11.0, "unit": "g/dL", "flag": "L" },
+  "pth": { "min": 150, "max": 400, "unit": "pg/mL", "flag": "H" },
+  "bicarbonate": { "min": 18, "max": 22, "unit": "mmol/L", "flag": "L" }
+}
+```
+
+### CKD Stage 5/ESKD (eGFR < 15)
+```json
+{
+  "creatinine": { "min": 5.0, "max": 12.0, "unit": "mg/dL", "flag": "HH" },
+  "egfr": { "min": 5, "max": 15, "unit": "mL/min/1.73m2", "flag": "L" },
+  "bun": { "min": 80, "max": 150, "unit": "mg/dL", "flag": "HH" },
+  "potassium": { "min": 5.5, "max": 6.5, "unit": "mmol/L", "flag": "HH" },
+  "phosphorus": { "min": 6.0, "max": 10.0, "unit": "mg/dL", "flag": "HH" },
+  "calcium": { "min": 7.5, "max": 8.5, "unit": "mg/dL", "flag": "L" },
+  "hemoglobin": { "min": 7.5, "max": 10.0, "unit": "g/dL", "flag": "L" },
+  "pth": { "min": 400, "max": 1500, "unit": "pg/mL", "flag": "HH" },
+  "bicarbonate": { "min": 15, "max": 20, "unit": "mmol/L", "flag": "L" }
+}
+```
+
+## Medication Patterns
+
+### Blood Pressure Control
+```json
+{
+  "first_line": {
+    "name": "Lisinopril",
+    "code": "104376",
+    "dose": "20 mg",
+    "route": "PO",
+    "frequency": "QD",
+    "note": "ACEi/ARB for proteinuria reduction"
+  },
+  "second_line": {
+    "name": "Amlodipine",
+    "code": "17767",
+    "dose": "10 mg",
+    "route": "PO",
+    "frequency": "QD"
+  }
+}
+```
+
+### Anemia Management
+```json
+{
+  "epo_stimulating_agent": {
+    "name": "Epoetin alfa",
+    "code": "9374",
+    "dose": "10000 units",
+    "route": "SubQ",
+    "frequency": "Weekly",
+    "indication": "D63.1"
+  },
+  "iron_supplementation": {
+    "name": "Ferrous sulfate",
+    "code": "4167",
+    "dose": "325 mg",
+    "route": "PO",
+    "frequency": "TID"
+  }
+}
+```
+
+### Mineral Bone Disease
+```json
+{
+  "phosphate_binder": {
+    "name": "Sevelamer",
+    "code": "273279",
+    "dose": "800 mg",
+    "route": "PO",
+    "frequency": "TID with meals"
+  },
+  "vitamin_d": {
+    "name": "Calcitriol",
+    "code": "1534",
+    "dose": "0.25 mcg",
+    "route": "PO",
+    "frequency": "QD"
+  }
+}
+```
+
+### Potassium Management
+```json
+{
+  "potassium_binder": {
+    "name": "Patiromer",
+    "code": "1876449",
+    "dose": "8.4 g",
+    "route": "PO",
+    "frequency": "QD",
+    "indication": "E87.5"
+  }
+}
+```
+
+## Encounter Patterns
+
+### Nephrology Follow-Up
+- **Frequency by Stage**:
+  - Stage 3a: Every 6 months
+  - Stage 3b: Every 3-4 months
+  - Stage 4: Every 2-3 months
+  - Stage 5: Monthly
+- **CPT Code**: 99214 or 99215
+- **Labs**: CMP, CBC, PTH, phosphorus (at each visit)
+
+### Dialysis Access Evaluation (Stage 4-5)
+- **Timing**: When eGFR < 20
+- **Referral**: Vascular surgery for AV fistula
+- **CPT**: 99214 + referral
+
+### Dialysis Session (Stage 5D)
+- **Frequency**: 3x weekly (hemodialysis)
+- **CPT**: 90935 (hemodialysis procedure)
+- **Duration**: 3-4 hours per session
+
+## Example Output
+
+### CKD Stage 4 with Diabetic Nephropathy
+
+```json
+{
+  "patient": {
+    "mrn": "MRN00000003",
+    "name": { "given_name": "James", "family_name": "Thompson" },
+    "birth_date": "1955-07-22",
+    "gender": "M"
+  },
+  "diagnoses": [
+    { "code": "N18.4", "description": "Chronic kidney disease, stage 4", "diagnosed_date": "2024-03-15" },
+    { "code": "E11.22", "description": "Type 2 DM with diabetic chronic kidney disease", "diagnosed_date": "2015-06-10" },
+    { "code": "I12.9", "description": "Hypertensive chronic kidney disease", "diagnosed_date": "2018-09-20" },
+    { "code": "D63.1", "description": "Anemia in chronic kidney disease", "diagnosed_date": "2023-11-08" },
+    { "code": "E21.1", "description": "Secondary hyperparathyroidism", "diagnosed_date": "2024-01-15" },
+    { "code": "E78.5", "description": "Hyperlipidemia", "diagnosed_date": "2012-04-22" }
+  ],
+  "medications": [
+    { "name": "Lisinopril", "dose": "10 mg", "frequency": "QD", "status": "active" },
+    { "name": "Amlodipine", "dose": "10 mg", "frequency": "QD", "status": "active" },
+    { "name": "Insulin Glargine", "dose": "25 units", "frequency": "QHS", "status": "active" },
+    { "name": "Epoetin alfa", "dose": "10000 units", "frequency": "Weekly", "route": "SubQ", "status": "active" },
+    { "name": "Sevelamer", "dose": "800 mg", "frequency": "TID", "status": "active" },
+    { "name": "Calcitriol", "dose": "0.25 mcg", "frequency": "QD", "status": "active" },
+    { "name": "Sodium bicarbonate", "dose": "650 mg", "frequency": "TID", "status": "active" }
+  ],
+  "labs": [
+    { "test_name": "Creatinine", "loinc_code": "2160-0", "value": "3.8", "unit": "mg/dL", "flag": "H" },
+    { "test_name": "eGFR", "loinc_code": "48642-3", "value": "18", "unit": "mL/min/1.73m2", "flag": "L" },
+    { "test_name": "BUN", "loinc_code": "3094-0", "value": "62", "unit": "mg/dL", "flag": "H" },
+    { "test_name": "Potassium", "loinc_code": "2823-3", "value": "5.4", "unit": "mmol/L", "flag": "H" },
+    { "test_name": "Phosphorus", "loinc_code": "2777-1", "value": "5.8", "unit": "mg/dL", "flag": "H" },
+    { "test_name": "Calcium", "loinc_code": "17861-6", "value": "8.4", "unit": "mg/dL", "flag": "L" },
+    { "test_name": "Hemoglobin", "loinc_code": "718-7", "value": "9.8", "unit": "g/dL", "flag": "L" },
+    { "test_name": "PTH", "loinc_code": "2731-8", "value": "285", "unit": "pg/mL", "flag": "H" },
+    { "test_name": "Bicarbonate", "loinc_code": "1963-8", "value": "19", "unit": "mmol/L", "flag": "L" },
+    { "test_name": "HbA1c", "loinc_code": "4548-4", "value": "7.2", "unit": "%", "flag": "H" }
+  ],
+  "encounter": {
+    "class_code": "O",
+    "chief_complaint": "CKD follow-up, AV fistula planning discussion",
+    "admission_time": "2025-01-15T10:30:00"
+  }
+}
+```
+
+## Related Skills
+
+- [SKILL.md](SKILL.md) - PatientSim overview
+- [diabetes-management.md](diabetes-management.md) - Diabetic nephropathy
+- [heart-failure.md](heart-failure.md) - Cardiorenal syndrome
+- [../../references/data-models.md](../../references/data-models.md) - Entity schemas
+- [../../references/code-systems.md](../../references/code-systems.md) - ICD-10 codes
