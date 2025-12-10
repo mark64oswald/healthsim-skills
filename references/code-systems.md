@@ -12,6 +12,7 @@ Standard medical codes for generating realistic healthcare data.
 - [Place of Service Codes](#place-of-service-codes)
 - [Revenue Codes](#revenue-codes)
 - [Modifier Codes](#modifier-codes)
+- [Plan and Benefit Codes](#plan-and-benefit-codes)
 
 ---
 
@@ -493,3 +494,151 @@ Standard medical codes for generating realistic healthcare data.
 | PO | Services provided in off-campus provider-based department |
 | 95 | Synchronous telemedicine service |
 | GT | Interactive audio/video telecommunications |
+
+---
+
+## Plan and Benefit Codes
+
+### Plan Types
+
+| Code | Name | Description |
+|------|------|-------------|
+| HMO | Health Maintenance Organization | Managed care, PCP required, referrals needed, in-network only |
+| PPO | Preferred Provider Organization | Flexible network, no PCP required, OON covered at higher cost |
+| EPO | Exclusive Provider Organization | No PCP/referral required, in-network only |
+| POS | Point of Service | PCP required, referrals for in-network, OON available |
+| HDHP | High Deductible Health Plan | High deductible, HSA-eligible, IRS contribution limits |
+| INDEMNITY | Indemnity/Fee-for-Service | Traditional plan, any provider, reimbursement-based |
+
+### Metal Tiers (ACA Marketplace)
+
+| Tier | Actuarial Value | Member Cost Share | Typical Deductible |
+|------|-----------------|-------------------|-------------------|
+| bronze | 60% | 40% | $6,000+ |
+| silver | 70% | 30% | $3,000-4,000 |
+| gold | 80% | 20% | $1,000-1,500 |
+| platinum | 90% | 10% | $0-500 |
+
+### Network Requirement Codes
+
+| Code | Description |
+|------|-------------|
+| in_network_only | No OON coverage except emergency |
+| in_network_preferred | OON covered at higher cost sharing |
+
+### Network Tier Codes
+
+| Code | Description |
+|------|-------------|
+| in_network | Contracted provider, standard cost sharing |
+| out_of_network | Non-contracted provider, higher cost sharing |
+| tier_1 | Preferred providers, lowest cost |
+| tier_2 | Participating providers, moderate cost |
+| tier_3 | Out-of-network, highest cost |
+
+### Service Type Codes
+
+| Code | Description | Typical Cost Sharing |
+|------|-------------|---------------------|
+| pcp_visit | Primary care office visit | Copay $20-40 |
+| specialist_visit | Specialist office visit | Copay $40-75 |
+| urgent_care | Urgent care center visit | Copay $50-100 |
+| emergency_room | Emergency department | Copay $150-500 |
+| inpatient | Hospital inpatient stay | Coinsurance 20% or per-day copay |
+| outpatient_surgery | Ambulatory surgery | Copay $200-500 or coinsurance |
+| lab_work | Laboratory services | $0 or subject to deductible |
+| xray | X-ray imaging | Subject to deductible |
+| advanced_imaging | MRI, CT, PET scans | Subject to deductible + coinsurance |
+| mental_health_outpatient | Outpatient mental health | Copay $25-50 |
+| mental_health_inpatient | Inpatient psychiatric | Same as inpatient |
+| physical_therapy | Physical therapy visit | Copay $40-60 per visit |
+| preventive | Preventive care services | 100% covered, no cost sharing |
+| telehealth | Virtual/telemedicine visit | $0-25 copay |
+| ambulance | Ambulance transport | Copay $150-300 or coinsurance |
+| skilled_nursing | Skilled nursing facility | Coinsurance, day limit |
+| home_health | Home health services | Coinsurance |
+
+### Cost Sharing Type Codes
+
+| Code | Description | Example |
+|------|-------------|---------|
+| copay | Fixed dollar amount | $25 per visit |
+| coinsurance | Percentage of allowed amount | 20% after deductible |
+| covered_100 | No member cost sharing | Preventive care |
+
+### Pharmacy Tier Codes
+
+| Tier | Name | Description | Typical Copay |
+|------|------|-------------|---------------|
+| 1 | Preferred Generic | Lowest-cost generic drugs | $10-15 |
+| 2 | Non-Preferred Generic | Other generic drugs | $20-30 |
+| 3 | Preferred Brand | Formulary brand-name drugs | $40-60 |
+| 4 | Non-Preferred Brand | Non-formulary brand drugs | $75-100 |
+| 5 | Specialty | Biologics, specialty drugs | 20-30% coinsurance |
+
+### Accumulator Type Codes
+
+| Code | Description |
+|------|-------------|
+| deductible | Medical deductible accumulator |
+| oop_max | Medical out-of-pocket maximum |
+| rx_deductible | Pharmacy deductible (if separate) |
+| rx_oop_max | Pharmacy out-of-pocket maximum |
+
+### Coverage Tier Codes
+
+| Code | Description | X12 834 HD05 |
+|------|-------------|--------------|
+| EMP | Employee only | EMP |
+| ESP | Employee + spouse | ESP |
+| ECH | Employee + child(ren) | ECH |
+| FAM | Employee + family | FAM |
+| TWO | Employee + one dependent | TWO |
+
+### Relationship Codes (X12)
+
+| Code | Description |
+|------|-------------|
+| 18 | Self (subscriber) |
+| 01 | Spouse |
+| 19 | Child |
+| 20 | Employee |
+| 21 | Unknown |
+| 39 | Organ donor |
+| 40 | Cadaver donor |
+| 53 | Life partner |
+| G8 | Other relationship |
+
+### Enrollment Reason Codes
+
+| Code | Description | QLE |
+|------|-------------|-----|
+| new_hire | New employee enrollment | No |
+| open_enrollment | Annual open enrollment | No |
+| qle | Qualifying life event | Yes |
+| cobra | COBRA continuation | Yes |
+| special_enrollment | Special enrollment period | Yes |
+| reinstatement | Reinstatement of coverage | No |
+
+### Qualifying Life Events (QLE)
+
+| Code | Description | Enrollment Window |
+|------|-------------|-------------------|
+| marriage | Marriage | 30-60 days |
+| divorce | Divorce/legal separation | 30-60 days |
+| birth | Birth of child | 30 days |
+| adoption | Adoption/foster placement | 30 days |
+| death | Death of dependent | 30-60 days |
+| loss_of_coverage | Loss of other coverage | 60 days |
+| move | Relocation affecting network | 60 days |
+| employment_change | Change in employment status | 30 days |
+| dependent_age_out | Dependent aging off plan | 30 days |
+
+### IRS HDHP Limits (2025)
+
+| Parameter | Individual | Family |
+|-----------|------------|--------|
+| Minimum Deductible | $1,650 | $3,300 |
+| Maximum OOP | $8,300 | $16,600 |
+| HSA Contribution Limit | $4,300 | $8,550 |
+| Catch-up (55+) | +$1,000 | +$1,000 |

@@ -7,6 +7,14 @@ Canonical entity schemas for all HealthSim data types. Extracted from Domain Kno
 - [Core Person Model](#core-person-model)
 - [PatientSim Models](#patientsim-models)
 - [MemberSim Models](#membersim-models)
+  - [Member](#member-extends-person)
+  - [Claim](#claim)
+  - [ClaimLine](#claimline)
+  - [Plan](#plan)
+  - [PlanServiceBenefit](#planservicebenefit)
+  - [PharmacyBenefit](#pharmacybenefit)
+  - [Accumulator](#accumulator)
+  - [Group](#group)
 - [RxMemberSim Models](#rxmembersim-models)
 
 ---
@@ -434,26 +442,172 @@ The foundational person entity shared across all products:
     "plan_name": { "type": "string" },
     "plan_type": {
       "type": "string",
-      "enum": ["HMO", "PPO", "EPO", "POS", "HDHP"]
+      "enum": ["HMO", "PPO", "EPO", "POS", "HDHP", "INDEMNITY"]
+    },
+    "metal_tier": {
+      "type": "string",
+      "enum": ["bronze", "silver", "gold", "platinum"],
+      "description": "ACA metal tier based on actuarial value"
     },
     "coverage_type": {
       "type": "string",
       "enum": ["MEDICAL", "DENTAL", "VISION", "RX"],
       "default": "MEDICAL"
     },
-    "deductible_individual": { "type": "number", "default": 500 },
-    "deductible_family": { "type": "number", "default": 1500 },
-    "oop_max_individual": { "type": "number", "default": 3000 },
-    "oop_max_family": { "type": "number", "default": 6000 },
-    "copay_pcp": { "type": "number", "default": 25 },
-    "copay_specialist": { "type": "number", "default": 50 },
-    "copay_er": { "type": "number", "default": 250 },
-    "coinsurance": { "type": "number", "default": 0.20, "description": "0.20 = 20%" },
-    "requires_pcp": { "type": "boolean", "default": false },
-    "requires_referral": { "type": "boolean", "default": false }
+    "network_requirement": {
+      "type": "string",
+      "enum": ["in_network_only", "in_network_preferred"],
+      "description": "How network affects coverage"
+    },
+    "cost_sharing": {
+      "type": "object",
+      "properties": {
+        "in_network": { "$ref": "#/definitions/CostSharingTier" },
+        "out_of_network": { "$ref": "#/definitions/CostSharingTier" }
+      }
+    },
+    "copays": {
+      "type": "object",
+      "properties": {
+        "pcp_visit": { "type": "number" },
+        "specialist_visit": { "type": "number" },
+        "urgent_care": { "type": "number" },
+        "emergency_room": { "type": "number" },
+        "telehealth": { "type": "number" },
+        "mental_health_outpatient": { "type": "number" },
+        "physical_therapy": { "type": "number" }
+      }
+    },
+    "hospital": {
+      "type": "object",
+      "properties": {
+        "inpatient_copay_per_admission": { "type": "number" },
+        "inpatient_coinsurance": { "type": "integer" },
+        "outpatient_surgery_copay": { "type": "number" },
+        "ambulance_copay": { "type": "number" }
+      }
+    },
+    "pcp_required": { "type": "boolean", "default": false },
+    "referral_required": { "type": "boolean", "default": false },
+    "hsa_eligible": { "type": "boolean", "default": false },
+    "hsa": {
+      "type": "object",
+      "properties": {
+        "employer_contribution_individual": { "type": "number" },
+        "employer_contribution_family": { "type": "number" },
+        "individual_contribution_limit": { "type": "number" },
+        "family_contribution_limit": { "type": "number" },
+        "catch_up_contribution_55_plus": { "type": "number" }
+      }
+    },
+    "effective_date": { "type": "string", "format": "date" },
+    "termination_date": { "type": "string", "format": "date" }
   }
 }
 ```
+
+**CostSharingTier Definition:**
+
+```json
+{
+  "title": "CostSharingTier",
+  "type": "object",
+  "properties": {
+    "individual_deductible": { "type": "number" },
+    "family_deductible": { "type": "number" },
+    "individual_oop_max": { "type": "number" },
+    "family_oop_max": { "type": "number" },
+    "coinsurance_percent": { "type": "integer", "description": "20 = 20%" },
+    "deductible_applies_to_copays": { "type": "boolean", "default": false }
+  }
+}
+```
+
+**Plan Type Characteristics:**
+
+| Plan Type | PCP Required | Referral Required | OON Coverage | Deductible |
+|-----------|--------------|-------------------|--------------|------------|
+| HMO | Yes | Yes | Emergency only | Often $0 |
+| PPO | No | No | Yes (higher cost) | Moderate |
+| EPO | No | No | Emergency only | Moderate |
+| POS | Yes | Yes (in-network) | Yes (higher cost) | Moderate |
+| HDHP | No | No | Yes | High (IRS minimum) |
+
+### PlanServiceBenefit
+
+Service-level benefit configuration:
+
+```json
+{
+  "title": "PlanServiceBenefit",
+  "type": "object",
+  "required": ["plan_code", "service_type", "network_tier", "cost_sharing_type"],
+  "properties": {
+    "plan_code": { "type": "string" },
+    "service_type": {
+      "type": "string",
+      "enum": [
+        "pcp_visit", "specialist_visit", "urgent_care", "emergency_room",
+        "inpatient", "outpatient_surgery", "lab_work", "xray", "advanced_imaging",
+        "mental_health_outpatient", "mental_health_inpatient", "physical_therapy",
+        "preventive", "telehealth", "ambulance", "skilled_nursing", "home_health"
+      ]
+    },
+    "network_tier": {
+      "type": "string",
+      "enum": ["in_network", "out_of_network", "tier_1", "tier_2", "tier_3"]
+    },
+    "cost_sharing_type": {
+      "type": "string",
+      "enum": ["copay", "coinsurance", "covered_100"]
+    },
+    "cost_sharing_amount": {
+      "type": "number",
+      "description": "Dollar amount for copay, percentage for coinsurance"
+    },
+    "deductible_applies": { "type": "boolean", "default": true },
+    "annual_limit": { "type": "integer", "description": "Visit limit per year" },
+    "prior_auth_required": { "type": "boolean", "default": false }
+  }
+}
+```
+
+### PharmacyBenefit
+
+Pharmacy tier structure:
+
+```json
+{
+  "title": "PharmacyBenefit",
+  "type": "object",
+  "required": ["plan_code", "tier", "tier_name"],
+  "properties": {
+    "plan_code": { "type": "string" },
+    "tier": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "tier_name": { "type": "string" },
+    "tier_description": { "type": "string" },
+    "retail_30_copay": { "type": "number" },
+    "retail_90_copay": { "type": "number" },
+    "mail_90_copay": { "type": "number" },
+    "specialty_coinsurance": { "type": "integer", "description": "Percentage" },
+    "specialty_max": { "type": "number", "description": "Maximum copay for specialty" },
+    "deductible_applies": { "type": "boolean", "default": false },
+    "quantity_limit_days": { "type": "integer" },
+    "prior_auth_common": { "type": "boolean", "default": false },
+    "step_therapy_common": { "type": "boolean", "default": false }
+  }
+}
+```
+
+**Standard Pharmacy Tiers:**
+
+| Tier | Name | Typical Copay | Description |
+|------|------|---------------|-------------|
+| 1 | Preferred Generic | $10-15 | Low-cost generics |
+| 2 | Non-Preferred Generic | $20-30 | Other generics |
+| 3 | Preferred Brand | $40-60 | Formulary brand drugs |
+| 4 | Non-Preferred Brand | $75-100 | Non-formulary brands |
+| 5 | Specialty | 20-30% | Biologics, specialty injectables |
 
 ### Accumulator
 
@@ -461,15 +615,60 @@ The foundational person entity shared across all products:
 {
   "title": "Accumulator",
   "type": "object",
-  "required": ["member_id", "plan_year", "deductible_limit", "oop_limit"],
+  "required": ["member_id", "plan_code", "plan_year", "accumulator_type"],
   "properties": {
+    "accumulator_id": { "type": "string" },
     "member_id": { "type": "string" },
+    "plan_code": { "type": "string" },
     "plan_year": { "type": "integer" },
-    "deductible_applied": { "type": "number", "default": 0 },
-    "deductible_limit": { "type": "number" },
-    "oop_applied": { "type": "number", "default": 0 },
-    "oop_limit": { "type": "number" },
+    "accumulator_type": {
+      "type": "string",
+      "enum": ["deductible", "oop_max", "rx_deductible", "rx_oop_max"],
+      "description": "Type of accumulator being tracked"
+    },
+    "individual_applied": { "type": "number", "default": 0 },
+    "individual_limit": { "type": "number" },
+    "family_applied": { "type": "number", "default": 0 },
+    "family_limit": { "type": "number" },
+    "as_of_date": { "type": "string", "format": "date" },
     "last_updated": { "type": "string", "format": "date-time" }
+  }
+}
+```
+
+**Accumulator Types:**
+
+| Type | Description | Resets |
+|------|-------------|--------|
+| deductible | Medical deductible | Jan 1 |
+| oop_max | Medical out-of-pocket maximum | Jan 1 |
+| rx_deductible | Pharmacy deductible (if separate) | Jan 1 |
+| rx_oop_max | Pharmacy out-of-pocket maximum | Jan 1 |
+
+### Group
+
+Employer group configuration:
+
+```json
+{
+  "title": "Group",
+  "type": "object",
+  "required": ["group_id", "group_name", "effective_date"],
+  "properties": {
+    "group_id": { "type": "string" },
+    "group_name": { "type": "string" },
+    "tax_id": { "type": "string", "pattern": "^\\d{2}-\\d{7}$" },
+    "address": { "$ref": "#/definitions/Address" },
+    "effective_date": { "type": "string", "format": "date" },
+    "termination_date": { "type": "string", "format": "date" },
+    "contact_name": { "type": "string" },
+    "contact_email": { "type": "string", "format": "email" },
+    "contact_phone": { "type": "string" },
+    "offered_plans": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Plan codes offered to this group"
+    }
   }
 }
 ```
@@ -621,7 +820,12 @@ The foundational person entity shared across all products:
 | Diagnosis | code, description, patient_mrn, diagnosed_date |
 | Medication | name, dose, route, frequency, patient_mrn, start_date |
 | LabResult | test_name, value, patient_mrn, collected_time |
+| Group | group_id, group_name, effective_date |
+| Plan | plan_code, plan_name, plan_type |
+| PlanServiceBenefit | plan_code, service_type, network_tier, cost_sharing_type |
+| PharmacyBenefit | plan_code, tier, tier_name |
 | Member | Person fields + member_id, group_id, coverage_start, plan_code |
+| Accumulator | member_id, plan_code, plan_year, accumulator_type |
 | Claim | claim_id, claim_type, member_id, provider_npi, service_date, principal_diagnosis |
 | PharmacyClaim | claim_id, service_date, pharmacy_npi, member_id, ndc, quantity_dispensed |
 
@@ -634,6 +838,12 @@ The foundational person entity shared across all products:
 | Diagnosis.encounter_id | Encounter.encounter_id | No |
 | Medication.patient_mrn | Patient.mrn | Yes |
 | LabResult.patient_mrn | Patient.mrn | Yes |
-| Claim.member_id | Member.member_id | Yes |
+| Member.group_id | Group.group_id | Yes |
+| Member.plan_code | Plan.plan_code | Yes |
 | Member.subscriber_id | Member.member_id | No (dependents only) |
+| PlanServiceBenefit.plan_code | Plan.plan_code | Yes |
+| PharmacyBenefit.plan_code | Plan.plan_code | Yes |
+| Accumulator.member_id | Member.member_id | Yes |
+| Accumulator.plan_code | Plan.plan_code | Yes |
+| Claim.member_id | Member.member_id | Yes |
 | PharmacyClaim.member_id | Member.member_id | Yes |
