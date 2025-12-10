@@ -172,6 +172,140 @@ claim_id,member_id,prescription_number,fill_date,ndc,drug_name,quantity_dispense
 RX20250115001,MEM001234,SPX001234,2025-01-15,00093505601,Lisinopril 10mg Tab,30,30,1122334455,Main Street Pharmacy,1234567890,Dr. Robert Johnson,8.50,2.00,10.00,0.50,10.00,0.00,1,0,B1
 ```
 
+### members.csv
+
+```csv
+member_id,subscriber_id,relationship_code,given_name,family_name,birth_date,gender,ssn,street_address,city,state,postal_code,email,phone,group_id,plan_code,coverage_start,coverage_end,pcp_npi,pcp_name,coverage_tier
+MEM001234567,MEM001234567,18,Michael,Johnson,1985-03-15,M,123-45-6789,456 Oak Avenue,Springfield,IL,62702,michael.johnson@email.com,555-234-5678,GRP001234,PPO-GOLD,2025-02-01,,1234567890,Dr. Sarah Williams,FAM
+MEM001234568,MEM001234567,01,Sarah,Johnson,1987-07-22,F,987-65-4321,456 Oak Avenue,Springfield,IL,62702,,,GRP001234,PPO-GOLD,2025-02-01,,,FAM
+MEM001234569,MEM001234567,19,Emma,Johnson,2015-11-10,F,456-78-9012,456 Oak Avenue,Springfield,IL,62702,,,GRP001234,PPO-GOLD,2025-02-01,,,FAM
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| member_id | string | Unique member identifier |
+| subscriber_id | string | Subscriber's member ID (self for subscriber) |
+| relationship_code | string | 18=Self, 01=Spouse, 19=Child |
+| given_name | string | First name |
+| family_name | string | Last name |
+| birth_date | date | YYYY-MM-DD |
+| gender | string | M, F, O, U |
+| ssn | string | Social Security Number |
+| street_address | string | Street address |
+| city | string | City |
+| state | string | State code (2 letters) |
+| postal_code | string | ZIP code |
+| email | string | Email address |
+| phone | string | Phone number |
+| group_id | string | Employer group identifier |
+| plan_code | string | Benefit plan code |
+| coverage_start | date | Coverage effective date |
+| coverage_end | date | Coverage termination date |
+| pcp_npi | string | Primary care provider NPI |
+| pcp_name | string | PCP name |
+| coverage_tier | string | EMP, ESP, ECH, FAM |
+
+### enrollments.csv
+
+```csv
+enrollment_id,member_id,transaction_type,transaction_date,effective_date,enrollment_reason,plan_code,coverage_tier,premium_amount,employer_contribution,employee_contribution,status
+ENR20250115001,MEM001234567,add,2025-01-15,2025-02-01,new_hire,PPO-GOLD,FAM,850.00,650.00,200.00,active
+ENR20250115002,MEM001234568,add,2025-01-15,2025-02-01,new_hire,PPO-GOLD,FAM,0.00,0.00,0.00,active
+ENR20250115003,MEM001234569,add,2025-01-15,2025-02-01,new_hire,PPO-GOLD,FAM,0.00,0.00,0.00,active
+ENR20250120001,MEM001234570,add,2025-01-20,2025-01-20,qle,PPO-GOLD,FAM,0.00,0.00,0.00,active
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| enrollment_id | string | Unique enrollment transaction ID |
+| member_id | string | Member identifier |
+| transaction_type | string | add, change, termination, reinstatement |
+| transaction_date | date | Date transaction submitted |
+| effective_date | date | Date change takes effect |
+| enrollment_reason | string | new_hire, open_enrollment, qle, cobra |
+| plan_code | string | Benefit plan code |
+| coverage_tier | string | EMP, ESP, ECH, FAM |
+| premium_amount | decimal | Total premium |
+| employer_contribution | decimal | Employer portion |
+| employee_contribution | decimal | Employee portion |
+| status | string | active, pending, terminated |
+
+### groups.csv
+
+```csv
+group_id,group_name,tax_id,street_address,city,state,postal_code,effective_date,termination_date,contact_name,contact_email,contact_phone
+GRP001234,Acme Corporation,12-3456789,100 Corporate Drive,Springfield,IL,62701,2020-01-01,,Jane Smith,jane.smith@acme.com,555-100-2000
+GRP001235,Widget Industries,98-7654321,200 Industrial Blvd,Springfield,IL,62702,2021-07-01,,Bob Wilson,bob.wilson@widget.com,555-200-3000
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| group_id | string | Unique group identifier |
+| group_name | string | Employer/group name |
+| tax_id | string | Federal Tax ID/EIN |
+| street_address | string | Street address |
+| city | string | City |
+| state | string | State code |
+| postal_code | string | ZIP code |
+| effective_date | date | Group effective date |
+| termination_date | date | Group termination date |
+| contact_name | string | Primary contact name |
+| contact_email | string | Contact email |
+| contact_phone | string | Contact phone |
+
+### plans.csv
+
+```csv
+plan_code,plan_name,plan_type,network_requirement,individual_deductible,family_deductible,individual_oop_max,family_oop_max,pcp_copay,specialist_copay,er_copay,coinsurance,pcp_required,referral_required
+PPO-GOLD,PPO Gold Plan,PPO,in_network_preferred,500.00,1000.00,4000.00,8000.00,25.00,50.00,150.00,20,N,N
+HMO-STD,HMO Standard,HMO,in_network_only,0.00,0.00,3000.00,6000.00,20.00,40.00,150.00,0,Y,Y
+HDHP-HSA,HDHP with HSA,HDHP,in_network_preferred,1600.00,3200.00,7000.00,14000.00,0.00,0.00,0.00,20,N,N
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| plan_code | string | Unique plan identifier |
+| plan_name | string | Plan display name |
+| plan_type | string | HMO, PPO, EPO, POS, HDHP |
+| network_requirement | string | in_network_only, in_network_preferred |
+| individual_deductible | decimal | Individual deductible amount |
+| family_deductible | decimal | Family deductible amount |
+| individual_oop_max | decimal | Individual out-of-pocket max |
+| family_oop_max | decimal | Family out-of-pocket max |
+| pcp_copay | decimal | Primary care copay |
+| specialist_copay | decimal | Specialist copay |
+| er_copay | decimal | Emergency room copay |
+| coinsurance | integer | Coinsurance percentage |
+| pcp_required | string | Y/N - PCP assignment required |
+| referral_required | string | Y/N - Referral required for specialists |
+
+### eligibility_inquiries.csv
+
+```csv
+trace_number,inquiry_date,member_id,member_name,birth_date,provider_npi,provider_name,service_type,service_date,response_status,eligibility_status,plan_code,coverage_start,coverage_end,deductible_remaining,oop_remaining
+TRN20250115001,2025-01-15,MEM001234567,Michael Johnson,1985-03-15,1234567890,Springfield General Hospital,48,2025-01-20,success,active,PPO-GOLD,2025-02-01,,175.00,3675.00
+TRN20250115002,2025-01-15,MEM999999999,John Doe,1970-05-15,1234567890,Springfield General Hospital,48,2025-01-20,error,not_found,,,,,,
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| trace_number | string | Unique inquiry trace number |
+| inquiry_date | date | Date of inquiry |
+| member_id | string | Member identifier |
+| member_name | string | Member full name |
+| birth_date | date | Member date of birth |
+| provider_npi | string | Requesting provider NPI |
+| provider_name | string | Provider name |
+| service_type | string | Service type code (30, 47, 48, etc.) |
+| service_date | date | Proposed date of service |
+| response_status | string | success, error |
+| eligibility_status | string | active, inactive, not_found |
+| plan_code | string | Benefit plan code |
+| coverage_start | date | Coverage effective date |
+| coverage_end | date | Coverage termination date |
+| deductible_remaining | decimal | Remaining deductible |
+| oop_remaining | decimal | Remaining out-of-pocket |
+
 ## Multi-File Export
 
 When exporting a complete patient record, generate related CSV files:
@@ -189,6 +323,17 @@ export/
 ├── claims.csv
 ├── claim_lines.csv
 └── pharmacy_claims.csv
+```
+
+When exporting enrollment and eligibility data:
+
+```
+export/
+├── groups.csv
+├── plans.csv
+├── members.csv
+├── enrollments.csv
+└── eligibility_inquiries.csv
 ```
 
 ## Example Transformations

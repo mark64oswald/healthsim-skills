@@ -56,6 +56,7 @@ Load the appropriate scenario based on user request:
 
 | Scenario | Trigger Phrases | File |
 |----------|-----------------|------|
+| **Enrollment & Eligibility** | enrollment, eligibility, 834, 270, 271, coverage | [enrollment-eligibility.md](enrollment-eligibility.md) |
 | **Professional Claims** | office visit, 837P, physician claim, E&M | [professional-claims.md](professional-claims.md) |
 | **Facility Claims** | hospital, inpatient, 837I, DRG, UB-04 | [facility-claims.md](facility-claims.md) |
 | **Prior Authorization** | prior auth, pre-cert, authorization, PA | [prior-authorization.md](prior-authorization.md) |
@@ -149,10 +150,14 @@ See [../../references/data-models.md](../../references/data-models.md) for compl
 | Format | Request | Use Case |
 |--------|---------|----------|
 | JSON | default | API testing |
+| X12 834 | "as 834", "X12 enrollment" | Enrollment file |
+| X12 270 | "as 270", "eligibility inquiry" | Eligibility request |
+| X12 271 | "as 271", "eligibility response" | Eligibility response |
 | X12 837P | "as 837P", "X12 professional" | Claims submission |
 | X12 837I | "as 837I", "X12 institutional" | Facility claims |
 | X12 835 | "as 835", "remittance" | Payment posting |
 | CSV | "as CSV" | Analytics |
+| SQL | "as SQL" | Database loading |
 
 See [../../formats/](../../formats/) for transformation skills.
 
@@ -269,10 +274,15 @@ See [../../formats/](../../formats/) for transformation skills.
 
 ## Related Skills
 
+- [enrollment-eligibility.md](enrollment-eligibility.md) - Enrollment and eligibility
 - [professional-claims.md](professional-claims.md) - Professional claim details
 - [facility-claims.md](facility-claims.md) - Institutional claim details
 - [prior-authorization.md](prior-authorization.md) - PA workflows
 - [accumulator-tracking.md](accumulator-tracking.md) - Cost sharing tracking
+- [../../formats/x12-834.md](../../formats/x12-834.md) - X12 enrollment format
+- [../../formats/x12-270-271.md](../../formats/x12-270-271.md) - X12 eligibility format
 - [../../formats/x12-837.md](../../formats/x12-837.md) - X12 claim format
 - [../../formats/x12-835.md](../../formats/x12-835.md) - Remittance format
+- [../../formats/csv.md](../../formats/csv.md) - CSV export
+- [../../formats/sql.md](../../formats/sql.md) - SQL export
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas

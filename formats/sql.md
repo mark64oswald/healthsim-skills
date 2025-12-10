@@ -250,6 +250,134 @@ CREATE TABLE claim_lines (
 );
 ```
 
+### groups
+
+```sql
+CREATE TABLE groups (
+    group_id VARCHAR(20) PRIMARY KEY,
+    group_name VARCHAR(100) NOT NULL,
+    tax_id VARCHAR(12),
+    street_address VARCHAR(100),
+    city VARCHAR(50),
+    state CHAR(2),
+    postal_code VARCHAR(10),
+    effective_date DATE NOT NULL,
+    termination_date DATE,
+    contact_name VARCHAR(100),
+    contact_email VARCHAR(100),
+    contact_phone VARCHAR(20),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### plans
+
+```sql
+CREATE TABLE plans (
+    plan_code VARCHAR(20) PRIMARY KEY,
+    plan_name VARCHAR(100) NOT NULL,
+    plan_type VARCHAR(10) NOT NULL,
+    network_requirement VARCHAR(30),
+    individual_deductible DECIMAL(10,2),
+    family_deductible DECIMAL(10,2),
+    individual_oop_max DECIMAL(10,2),
+    family_oop_max DECIMAL(10,2),
+    pcp_copay DECIMAL(10,2),
+    specialist_copay DECIMAL(10,2),
+    er_copay DECIMAL(10,2),
+    inpatient_copay DECIMAL(10,2),
+    coinsurance INT,
+    pcp_required BOOLEAN DEFAULT FALSE,
+    referral_required BOOLEAN DEFAULT FALSE,
+    hsa_eligible BOOLEAN DEFAULT FALSE,
+    effective_date DATE,
+    termination_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### members
+
+```sql
+CREATE TABLE members (
+    member_id VARCHAR(20) PRIMARY KEY,
+    subscriber_id VARCHAR(20) NOT NULL,
+    relationship_code CHAR(2) NOT NULL,
+    group_id VARCHAR(20) REFERENCES groups(group_id),
+    plan_code VARCHAR(20) REFERENCES plans(plan_code),
+    given_name VARCHAR(50) NOT NULL,
+    family_name VARCHAR(50) NOT NULL,
+    middle_name VARCHAR(50),
+    birth_date DATE NOT NULL,
+    gender CHAR(1) NOT NULL,
+    ssn VARCHAR(11),
+    street_address VARCHAR(100),
+    city VARCHAR(50),
+    state CHAR(2),
+    postal_code VARCHAR(10),
+    email VARCHAR(100),
+    phone VARCHAR(20),
+    coverage_start DATE NOT NULL,
+    coverage_end DATE,
+    coverage_tier VARCHAR(5),
+    pcp_npi VARCHAR(10),
+    pcp_name VARCHAR(100),
+    status VARCHAR(20) DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### enrollments
+
+```sql
+CREATE TABLE enrollments (
+    enrollment_id VARCHAR(20) PRIMARY KEY,
+    member_id VARCHAR(20) NOT NULL REFERENCES members(member_id),
+    transaction_type VARCHAR(20) NOT NULL,
+    transaction_date DATE NOT NULL,
+    effective_date DATE NOT NULL,
+    enrollment_reason VARCHAR(30),
+    plan_code VARCHAR(20) REFERENCES plans(plan_code),
+    coverage_tier VARCHAR(5),
+    premium_amount DECIMAL(10,2),
+    employer_contribution DECIMAL(10,2),
+    employee_contribution DECIMAL(10,2),
+    status VARCHAR(20) DEFAULT 'pending',
+    processed_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### eligibility_inquiries
+
+```sql
+CREATE TABLE eligibility_inquiries (
+    trace_number VARCHAR(30) PRIMARY KEY,
+    inquiry_date DATE NOT NULL,
+    member_id VARCHAR(20),
+    member_name VARCHAR(100),
+    birth_date DATE,
+    provider_npi VARCHAR(10),
+    provider_name VARCHAR(100),
+    service_type VARCHAR(5),
+    service_date DATE,
+    request_timestamp TIMESTAMP,
+    response_timestamp TIMESTAMP,
+    response_status VARCHAR(20),
+    eligibility_status VARCHAR(20),
+    plan_code VARCHAR(20),
+    coverage_start DATE,
+    coverage_end DATE,
+    deductible_remaining DECIMAL(10,2),
+    oop_remaining DECIMAL(10,2),
+    error_code VARCHAR(10),
+    error_message VARCHAR(200),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
 ## Example INSERT Statements
 
 ### Single Patient Insert
@@ -334,6 +462,57 @@ INSERT INTO claim_lines (
 ) VALUES (
     'CLM20250115001', 1, '99214', 'Office visit established', '2025-01-15',
     1, 175.00, 150.00, 125.00, 0.00, 25.00, 0.00, '1', '11'
+);
+```
+
+### Enrollment Insert
+
+```sql
+BEGIN;
+
+-- Insert group
+INSERT INTO groups (group_id, group_name, tax_id, street_address, city, state, postal_code, effective_date, contact_name, contact_email)
+VALUES ('GRP001234', 'Acme Corporation', '12-3456789', '100 Corporate Drive', 'Springfield', 'IL', '62701', '2020-01-01', 'Jane Smith', 'jane.smith@acme.com');
+
+-- Insert plan
+INSERT INTO plans (plan_code, plan_name, plan_type, network_requirement, individual_deductible, family_deductible, individual_oop_max, family_oop_max, pcp_copay, specialist_copay, coinsurance, pcp_required, referral_required)
+VALUES ('PPO-GOLD', 'PPO Gold Plan', 'PPO', 'in_network_preferred', 500.00, 1000.00, 4000.00, 8000.00, 25.00, 50.00, 20, FALSE, FALSE);
+
+-- Insert subscriber
+INSERT INTO members (member_id, subscriber_id, relationship_code, group_id, plan_code, given_name, family_name, birth_date, gender, ssn, street_address, city, state, postal_code, email, phone, coverage_start, coverage_tier, status)
+VALUES ('MEM001234567', 'MEM001234567', '18', 'GRP001234', 'PPO-GOLD', 'Michael', 'Johnson', '1985-03-15', 'M', '123-45-6789', '456 Oak Avenue', 'Springfield', 'IL', '62702', 'michael.johnson@email.com', '555-234-5678', '2025-02-01', 'FAM', 'active');
+
+-- Insert spouse
+INSERT INTO members (member_id, subscriber_id, relationship_code, group_id, plan_code, given_name, family_name, birth_date, gender, ssn, street_address, city, state, postal_code, coverage_start, coverage_tier, status)
+VALUES ('MEM001234568', 'MEM001234567', '01', 'GRP001234', 'PPO-GOLD', 'Sarah', 'Johnson', '1987-07-22', 'F', '987-65-4321', '456 Oak Avenue', 'Springfield', 'IL', '62702', '2025-02-01', 'FAM', 'active');
+
+-- Insert child
+INSERT INTO members (member_id, subscriber_id, relationship_code, group_id, plan_code, given_name, family_name, birth_date, gender, ssn, street_address, city, state, postal_code, coverage_start, coverage_tier, status)
+VALUES ('MEM001234569', 'MEM001234567', '19', 'GRP001234', 'PPO-GOLD', 'Emma', 'Johnson', '2015-11-10', 'F', '456-78-9012', '456 Oak Avenue', 'Springfield', 'IL', '62702', '2025-02-01', 'FAM', 'active');
+
+-- Insert enrollment transactions
+INSERT INTO enrollments (enrollment_id, member_id, transaction_type, transaction_date, effective_date, enrollment_reason, plan_code, coverage_tier, premium_amount, employer_contribution, employee_contribution, status)
+VALUES
+    ('ENR20250115001', 'MEM001234567', 'add', '2025-01-15', '2025-02-01', 'new_hire', 'PPO-GOLD', 'FAM', 850.00, 650.00, 200.00, 'active'),
+    ('ENR20250115002', 'MEM001234568', 'add', '2025-01-15', '2025-02-01', 'new_hire', 'PPO-GOLD', 'FAM', 0.00, 0.00, 0.00, 'active'),
+    ('ENR20250115003', 'MEM001234569', 'add', '2025-01-15', '2025-02-01', 'new_hire', 'PPO-GOLD', 'FAM', 0.00, 0.00, 0.00, 'active');
+
+COMMIT;
+```
+
+### Eligibility Inquiry Insert
+
+```sql
+INSERT INTO eligibility_inquiries (
+    trace_number, inquiry_date, member_id, member_name, birth_date,
+    provider_npi, provider_name, service_type, service_date,
+    request_timestamp, response_timestamp, response_status, eligibility_status,
+    plan_code, coverage_start, deductible_remaining, oop_remaining
+) VALUES (
+    'TRN20250115001', '2025-01-15', 'MEM001234567', 'Michael Johnson', '1985-03-15',
+    '1234567890', 'Springfield General Hospital', '48', '2025-01-20',
+    '2025-01-15 10:00:00', '2025-01-15 10:00:01', 'success', 'active',
+    'PPO-GOLD', '2025-02-01', 175.00, 3675.00
 );
 ```
 

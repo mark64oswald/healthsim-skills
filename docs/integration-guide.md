@@ -23,6 +23,8 @@ SKILL.md (Root Router)
     ├── hl7v2-adt.md      (ADT messages)
     ├── hl7v2-orm.md      (Order messages)
     ├── hl7v2-oru.md      (Result messages)
+    ├── x12-834.md        (Enrollment)
+    ├── x12-270-271.md    (Eligibility)
     ├── x12-837.md        (Claims)
     ├── x12-835.md        (Remittance)
     ├── ncpdp-d0.md       (Pharmacy)
@@ -149,7 +151,73 @@ MemberSim Claim → MemberSim Adjudication → X12 835 Format
 }
 ```
 
-### Pattern 4: Orders to Results
+### Pattern 4: Enrollment to Claims
+
+Member enrollment enables claims processing:
+
+```
+MemberSim Enrollment → X12 834 → Eligibility → Claim Processing
+```
+
+**Example Flow:**
+```json
+{
+  "step_1_enrollment": {
+    "trigger": "Generate new employee enrollment with family coverage",
+    "output": {
+      "enrollment": {
+        "transaction_type": "add",
+        "enrollment_reason": "new_hire",
+        "subscriber": {
+          "member_id": "MEM001234567",
+          "name": "Michael Johnson"
+        },
+        "dependents": [
+          { "relationship": "01", "name": "Sarah Johnson" },
+          { "relationship": "19", "name": "Emma Johnson" }
+        ],
+        "coverage": {
+          "plan_code": "PPO-GOLD",
+          "coverage_tier": "FAM",
+          "effective_date": "2025-02-01"
+        }
+      }
+    }
+  },
+  "step_2_format": {
+    "input": "enrollment from step 1",
+    "output": "X12 834 enrollment transaction"
+  },
+  "step_3_eligibility_check": {
+    "trigger": "Provider checks eligibility before service",
+    "input": {
+      "member_id": "MEM001234567",
+      "service_date": "2025-02-15",
+      "service_type": "48"
+    },
+    "output": {
+      "270_inquiry": "X12 270 eligibility request",
+      "271_response": {
+        "status": "active",
+        "deductible_remaining": 500.00,
+        "oop_remaining": 4000.00
+      }
+    }
+  },
+  "step_4_claim": {
+    "input": "verified eligibility",
+    "output": {
+      "claim": {
+        "member_id": "MEM001234567",
+        "claim_id": "CLM20250215001",
+        "status": "paid"
+      }
+    }
+  }
+}
+```
+
+### Pattern 5: Orders to Results
 
 Clinical orders generate lab/radiology results:
 
@@ -193,11 +261,15 @@ PatientSim Order → HL7v2 ORM → Lab/Radiology → HL7v2 ORU
 }
 ```
 
-### Pattern 5: Full Patient Journey
+### Pattern 6: Full Patient Journey
 
 Complete patient lifecycle across all domains:
 
 ```
+MemberSim (Enrollment) → X12 834
+    ↓
+MemberSim (Eligibility Check) → X12 270/271
+    ↓
 PatientSim (Registration)
     ↓
 PatientSim (Encounter) → HL7v2 ADT A01

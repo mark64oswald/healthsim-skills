@@ -73,6 +73,7 @@ Load these for claims and payer data:
 
 | Scenario | Use When | Key Elements |
 |----------|----------|--------------|
+| **Enrollment & Eligibility** | enrollment, eligibility, 834, 270/271 | Member add/term, coverage verification, QLE |
 | **Professional Claims** | office visit, 837P, physician claim | E&M coding, place of service, adjudication |
 | **Facility Claims** | hospital, inpatient, 837I, DRG | Revenue codes, DRG assignment, LOS |
 | **Prior Authorization** | prior auth, pre-cert, authorization | Request/response workflow, approval criteria |
@@ -110,6 +111,8 @@ Request specific formats:
 |--------|-----------------|----------|
 | **FHIR R4** | "as FHIR", "FHIR bundle", "FHIR resources" | Interoperability, modern APIs |
 | **HL7v2** | "as HL7", "ADT message", "HL7v2" | Legacy EMR integration |
+| **X12 834** | "as 834", "X12 enrollment", "enrollment file" | Benefit enrollment |
+| **X12 270/271** | "as 270", "eligibility inquiry", "eligibility check" | Eligibility verification |
 | **X12 837** | "as 837", "X12 claim", "EDI format" | Claims submission |
 | **X12 835** | "as 835", "remittance", "ERA" | Payment posting |
 | **NCPDP D.0** | "as NCPDP", "pharmacy claim format" | Pharmacy transactions |
