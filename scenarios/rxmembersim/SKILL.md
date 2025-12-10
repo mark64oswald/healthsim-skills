@@ -57,6 +57,7 @@ Load the appropriate scenario based on user request:
 | **Rx Enrollment** | rx enrollment, pharmacy member, BIN PCN, rx coverage | [rx-enrollment.md](rx-enrollment.md) |
 | **Rx Prior Auth** | rx prior auth, pharmacy PA, step therapy, formulary exception | [rx-prior-auth.md](rx-prior-auth.md) |
 | **Rx Accumulators** | rx accumulator, pharmacy deductible, rx OOP, TrOOP, Part D phase | [rx-accumulator.md](rx-accumulator.md) |
+| **Manufacturer Programs** | copay card, PAP, patient assistance, copay assistance, hub program | [manufacturer-programs.md](manufacturer-programs.md) |
 
 ## Generation Parameters
 
@@ -357,6 +358,7 @@ See [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) for transformation.
 - [rx-enrollment.md](rx-enrollment.md) - Pharmacy enrollment and eligibility
 - [rx-prior-auth.md](rx-prior-auth.md) - Pharmacy prior authorization
 - [rx-accumulator.md](rx-accumulator.md) - Pharmacy accumulator tracking
+- [manufacturer-programs.md](manufacturer-programs.md) - Copay cards, PAPs, hub programs
 - [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) - NCPDP format
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
 - [../../references/code-systems.md](../../references/code-systems.md) - NDC, GPI, NCPDP codes

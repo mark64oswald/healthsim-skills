@@ -1,3 +1,8 @@
+---
+name: healthsim-membersim
+description: "MemberSim generates realistic synthetic claims and payer data for testing claims processing systems, payment integrity, and benefits administration."
+---
+
 # MemberSim - Claims and Payer Data Generation
 
 ## Overview
@@ -62,6 +67,7 @@ Load the appropriate scenario based on user request:
 | **Facility Claims** | hospital, inpatient, 837I, DRG, UB-04 | [facility-claims.md](facility-claims.md) |
 | **Prior Authorization** | prior auth, pre-cert, authorization, PA | [prior-authorization.md](prior-authorization.md) |
 | **Accumulator Tracking** | deductible, OOP, accumulator, cost sharing | [accumulator-tracking.md](accumulator-tracking.md) |
+| **Value-Based Care** | quality measures, VBC, HEDIS, risk adjustment, HCC, care gaps | [value-based-care.md](value-based-care.md) |
 
 ## Generation Parameters
 
@@ -281,6 +287,7 @@ See [../../formats/](../../formats/) for transformation skills.
 - [facility-claims.md](facility-claims.md) - Institutional claim details
 - [prior-authorization.md](prior-authorization.md) - PA workflows
 - [accumulator-tracking.md](accumulator-tracking.md) - Cost sharing tracking
+- [value-based-care.md](value-based-care.md) - VBC, HEDIS, risk adjustment
 - [../../formats/x12-834.md](../../formats/x12-834.md) - X12 enrollment format
 - [../../formats/x12-270-271.md](../../formats/x12-270-271.md) - X12 eligibility format
 - [../../formats/x12-837.md](../../formats/x12-837.md) - X12 claim format

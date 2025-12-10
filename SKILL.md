@@ -93,8 +93,10 @@ Load these for pharmacy and PBM data:
 | **Specialty Pharmacy** | specialty drug, biologics, hub | Limited distribution, PA, patient support |
 | **DUR Alerts** | drug interaction, DUR, therapeutic dup | Alert types, severity, override |
 | **Formulary Management** | formulary, tier, coverage | Tier structure, PA requirements, alternatives |
-| **Prior Authorization** | pharmacy PA, step therapy | Clinical criteria, approval workflow |
-| **Manufacturer Programs** | copay card, patient assistance | Copay assistance, rebates |
+| **Rx Enrollment** | rx enrollment, pharmacy member, BIN PCN | Pharmacy benefit eligibility, plan assignment |
+| **Rx Prior Auth** | pharmacy PA, step therapy | Clinical criteria, approval workflow |
+| **Rx Accumulators** | rx deductible, rx OOP, Part D phases | Pharmacy cost sharing tracking, TrOOP |
+| **Manufacturer Programs** | copay card, patient assistance | Copay cards, PAPs, hub services |
 
 See: [scenarios/rxmembersim/](scenarios/rxmembersim/) for detailed skills
 
