@@ -73,6 +73,7 @@ Load these for claims and payer data:
 
 | Scenario | Use When | Key Elements |
 |----------|----------|--------------|
+| **Plan & Benefits** | plan, benefit plan, HMO, PPO, HDHP | Plan types, cost sharing, pharmacy tiers |
 | **Enrollment & Eligibility** | enrollment, eligibility, 834, 270/271 | Member add/term, coverage verification, QLE |
 | **Professional Claims** | office visit, 837P, physician claim | E&M coding, place of service, adjudication |
 | **Facility Claims** | hospital, inpatient, 837I, DRG | Revenue codes, DRG assignment, LOS |

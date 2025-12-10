@@ -56,6 +56,7 @@ Load the appropriate scenario based on user request:
 
 | Scenario | Trigger Phrases | File |
 |----------|-----------------|------|
+| **Plan & Benefits** | plan, benefit plan, HMO, PPO, HDHP, copay, deductible structure | [plan-benefits.md](plan-benefits.md) |
 | **Enrollment & Eligibility** | enrollment, eligibility, 834, 270, 271, coverage | [enrollment-eligibility.md](enrollment-eligibility.md) |
 | **Professional Claims** | office visit, 837P, physician claim, E&M | [professional-claims.md](professional-claims.md) |
 | **Facility Claims** | hospital, inpatient, 837I, DRG, UB-04 | [facility-claims.md](facility-claims.md) |
@@ -274,6 +275,7 @@ See [../../formats/](../../formats/) for transformation skills.
 
 ## Related Skills
 
+- [plan-benefits.md](plan-benefits.md) - Plan configuration and benefit structure
 - [enrollment-eligibility.md](enrollment-eligibility.md) - Enrollment and eligibility
 - [professional-claims.md](professional-claims.md) - Professional claim details
 - [facility-claims.md](facility-claims.md) - Institutional claim details

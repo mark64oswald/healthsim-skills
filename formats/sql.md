@@ -297,6 +297,79 @@ CREATE TABLE plans (
 );
 ```
 
+### plan_service_benefits
+
+Detailed benefit structure by service type:
+
+```sql
+CREATE TABLE plan_service_benefits (
+    plan_code VARCHAR(20) NOT NULL REFERENCES plans(plan_code),
+    service_type VARCHAR(30) NOT NULL,
+    network_tier VARCHAR(20) NOT NULL,
+    cost_sharing_type VARCHAR(20) NOT NULL,
+    cost_sharing_amount DECIMAL(10,2),
+    deductible_applies BOOLEAN DEFAULT TRUE,
+    annual_limit INT,
+    prior_auth_required BOOLEAN DEFAULT FALSE,
+    notes VARCHAR(200),
+    PRIMARY KEY (plan_code, service_type, network_tier)
+);
+
+-- Service types: pcp_visit, specialist_visit, urgent_care, emergency_room,
+--                inpatient, outpatient_surgery, lab_work, xray, advanced_imaging,
+--                mental_health_outpatient, mental_health_inpatient, physical_therapy,
+--                preventive, telehealth, ambulance, skilled_nursing, home_health
+-- Cost sharing types: copay, coinsurance, covered_100
+-- Network tiers: in_network, out_of_network, tier_1, tier_2, tier_3
+```
+
+### pharmacy_benefits
+
+Pharmacy tier structure for each plan:
+
+```sql
+CREATE TABLE pharmacy_benefits (
+    plan_code VARCHAR(20) NOT NULL REFERENCES plans(plan_code),
+    tier INT NOT NULL,
+    tier_name VARCHAR(50) NOT NULL,
+    tier_description VARCHAR(200),
+    retail_30_copay DECIMAL(10,2),
+    retail_90_copay DECIMAL(10,2),
+    mail_90_copay DECIMAL(10,2),
+    specialty_coinsurance INT,
+    specialty_max DECIMAL(10,2),
+    deductible_applies BOOLEAN DEFAULT FALSE,
+    quantity_limit_days INT,
+    prior_auth_common BOOLEAN DEFAULT FALSE,
+    step_therapy_common BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (plan_code, tier)
+);
+```
+
+### plan_accumulators
+
+Member-level accumulator tracking:
+
+```sql
+CREATE TABLE plan_accumulators (
+    accumulator_id VARCHAR(20) PRIMARY KEY,
+    member_id VARCHAR(20) NOT NULL REFERENCES members(member_id),
+    plan_code VARCHAR(20) NOT NULL REFERENCES plans(plan_code),
+    plan_year INT NOT NULL,
+    accumulator_type VARCHAR(20) NOT NULL,
+    individual_applied DECIMAL(10,2) DEFAULT 0,
+    individual_limit DECIMAL(10,2),
+    family_applied DECIMAL(10,2) DEFAULT 0,
+    family_limit DECIMAL(10,2),
+    as_of_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (member_id, plan_code, plan_year, accumulator_type)
+);
+
+-- Accumulator types: deductible, oop_max, rx_deductible, rx_oop_max
+```
+
 ### members
 
 ```sql
@@ -496,6 +569,45 @@ VALUES
     ('ENR20250115001', 'MEM001234567', 'add', '2025-01-15', '2025-02-01', 'new_hire', 'PPO-GOLD', 'FAM', 850.00, 650.00, 200.00, 'active'),
     ('ENR20250115002', 'MEM001234568', 'add', '2025-01-15', '2025-02-01', 'new_hire', 'PPO-GOLD', 'FAM', 0.00, 0.00, 0.00, 'active'),
     ('ENR20250115003', 'MEM001234569', 'add', '2025-01-15', '2025-02-01', 'new_hire', 'PPO-GOLD', 'FAM', 0.00, 0.00, 0.00, 'active');
+
+COMMIT;
+```
+
+### Plan Benefits Insert
+
+```sql
+BEGIN;
+
+-- Insert plan service benefits for PPO-GOLD
+INSERT INTO plan_service_benefits (plan_code, service_type, network_tier, cost_sharing_type, cost_sharing_amount, deductible_applies, prior_auth_required)
+VALUES
+    ('PPO-GOLD', 'pcp_visit', 'in_network', 'copay', 25.00, FALSE, FALSE),
+    ('PPO-GOLD', 'pcp_visit', 'out_of_network', 'coinsurance', 40, TRUE, FALSE),
+    ('PPO-GOLD', 'specialist_visit', 'in_network', 'copay', 50.00, FALSE, FALSE),
+    ('PPO-GOLD', 'specialist_visit', 'out_of_network', 'coinsurance', 40, TRUE, FALSE),
+    ('PPO-GOLD', 'urgent_care', 'in_network', 'copay', 75.00, FALSE, FALSE),
+    ('PPO-GOLD', 'emergency_room', 'in_network', 'copay', 150.00, FALSE, FALSE),
+    ('PPO-GOLD', 'inpatient', 'in_network', 'coinsurance', 20, TRUE, TRUE),
+    ('PPO-GOLD', 'inpatient', 'out_of_network', 'coinsurance', 40, TRUE, TRUE),
+    ('PPO-GOLD', 'outpatient_surgery', 'in_network', 'copay', 200.00, TRUE, TRUE),
+    ('PPO-GOLD', 'advanced_imaging', 'in_network', 'coinsurance', 20, TRUE, TRUE),
+    ('PPO-GOLD', 'lab_work', 'in_network', 'copay', 0.00, FALSE, FALSE),
+    ('PPO-GOLD', 'preventive', 'in_network', 'covered_100', 0.00, FALSE, FALSE);
+
+-- Insert pharmacy benefits for PPO-GOLD
+INSERT INTO pharmacy_benefits (plan_code, tier, tier_name, retail_30_copay, retail_90_copay, mail_90_copay, specialty_coinsurance, specialty_max, deductible_applies)
+VALUES
+    ('PPO-GOLD', 1, 'Preferred Generic', 10.00, 25.00, 25.00, NULL, NULL, FALSE),
+    ('PPO-GOLD', 2, 'Non-Preferred Generic', 25.00, 62.50, 62.50, NULL, NULL, FALSE),
+    ('PPO-GOLD', 3, 'Preferred Brand', 50.00, 125.00, 125.00, NULL, NULL, FALSE),
+    ('PPO-GOLD', 4, 'Non-Preferred Brand', 80.00, 200.00, 200.00, NULL, NULL, FALSE),
+    ('PPO-GOLD', 5, 'Specialty', NULL, NULL, NULL, 25, 250.00, FALSE);
+
+-- Insert plan accumulators for a member
+INSERT INTO plan_accumulators (accumulator_id, member_id, plan_code, plan_year, accumulator_type, individual_applied, individual_limit, family_applied, family_limit, as_of_date)
+VALUES
+    ('ACC20250120001', 'MEM001234567', 'PPO-GOLD', 2025, 'deductible', 325.00, 500.00, 325.00, 1000.00, '2025-01-20'),
+    ('ACC20250120002', 'MEM001234567', 'PPO-GOLD', 2025, 'oop_max', 350.00, 4000.00, 350.00, 8000.00, '2025-01-20');
 
 COMMIT;
 ```

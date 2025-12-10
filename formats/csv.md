@@ -279,6 +279,99 @@ HDHP-HSA,HDHP with HSA,HDHP,in_network_preferred,1600.00,3200.00,7000.00,14000.0
 | pcp_required | string | Y/N - PCP assignment required |
 | referral_required | string | Y/N - Referral required for specialists |
 
+### plan_service_benefits.csv
+
+Detailed benefit structure by service type for each plan:
+
+```csv
+plan_code,service_type,network_tier,cost_sharing_type,cost_sharing_amount,deductible_applies,annual_limit,prior_auth_required
+PPO-GOLD,pcp_visit,in_network,copay,25.00,N,,N
+PPO-GOLD,pcp_visit,out_of_network,coinsurance,40,,N
+PPO-GOLD,specialist_visit,in_network,copay,50.00,N,,N
+PPO-GOLD,specialist_visit,out_of_network,coinsurance,40,,N
+PPO-GOLD,urgent_care,in_network,copay,75.00,N,,N
+PPO-GOLD,emergency_room,in_network,copay,150.00,N,,N
+PPO-GOLD,inpatient,in_network,coinsurance,20,Y,,Y
+PPO-GOLD,inpatient,out_of_network,coinsurance,40,Y,,Y
+PPO-GOLD,outpatient_surgery,in_network,copay,200.00,Y,,Y
+PPO-GOLD,advanced_imaging,in_network,coinsurance,20,Y,,Y
+PPO-GOLD,lab_work,in_network,copay,0.00,N,,N
+PPO-GOLD,preventive,in_network,covered_100,0.00,N,,N
+HMO-STD,pcp_visit,in_network,copay,20.00,N,,N
+HMO-STD,specialist_visit,in_network,copay,40.00,N,,Y
+HDHP-HSA,pcp_visit,in_network,coinsurance,20,Y,,N
+HDHP-HSA,preventive,in_network,covered_100,0.00,N,,N
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| plan_code | string | Plan identifier |
+| service_type | string | Service type (pcp_visit, specialist_visit, etc.) |
+| network_tier | string | in_network, out_of_network, tier_1, tier_2 |
+| cost_sharing_type | string | copay, coinsurance, covered_100 |
+| cost_sharing_amount | decimal | Copay amount or coinsurance percentage |
+| deductible_applies | string | Y/N - Does deductible apply |
+| annual_limit | integer | Visit limit per year (if applicable) |
+| prior_auth_required | string | Y/N - Prior auth needed |
+
+### pharmacy_benefits.csv
+
+Pharmacy benefit tiers for each plan:
+
+```csv
+plan_code,tier,tier_name,retail_30_copay,retail_90_copay,mail_90_copay,specialty_coinsurance,specialty_max,deductible_applies
+PPO-GOLD,1,Preferred Generic,10.00,25.00,25.00,,,N
+PPO-GOLD,2,Non-Preferred Generic,25.00,62.50,62.50,,,N
+PPO-GOLD,3,Preferred Brand,50.00,125.00,125.00,,,N
+PPO-GOLD,4,Non-Preferred Brand,80.00,200.00,200.00,,,N
+PPO-GOLD,5,Specialty,,,,,25,250.00,N
+HDHP-HSA,1,Preferred Generic,10.00,25.00,25.00,,,Y
+HDHP-HSA,2,Non-Preferred Generic,25.00,62.50,62.50,,,Y
+HDHP-HSA,3,Preferred Brand,50.00,125.00,125.00,,,Y
+HDHP-HSA,4,Non-Preferred Brand,80.00,200.00,200.00,,,Y
+HDHP-HSA,5,Specialty,,,,,25,250.00,Y
+HMO-STD,1,Generic,15.00,37.50,37.50,,,N
+HMO-STD,2,Preferred Brand,40.00,100.00,100.00,,,N
+HMO-STD,3,Non-Preferred Brand,75.00,187.50,187.50,,,N
+HMO-STD,4,Specialty,,,,,30,200.00,N
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| plan_code | string | Plan identifier |
+| tier | integer | Formulary tier (1-5) |
+| tier_name | string | Tier description |
+| retail_30_copay | decimal | 30-day retail copay |
+| retail_90_copay | decimal | 90-day retail copay |
+| mail_90_copay | decimal | 90-day mail order copay |
+| specialty_coinsurance | integer | Coinsurance % for specialty |
+| specialty_max | decimal | Maximum copay for specialty |
+| deductible_applies | string | Y/N - Does Rx deductible apply |
+
+### plan_accumulators.csv
+
+Member-level accumulator tracking:
+
+```csv
+member_id,plan_code,plan_year,accumulator_type,individual_applied,individual_limit,family_applied,family_limit,as_of_date
+MEM001234567,PPO-GOLD,2025,deductible,325.00,500.00,325.00,1000.00,2025-01-20
+MEM001234567,PPO-GOLD,2025,oop_max,350.00,4000.00,350.00,8000.00,2025-01-20
+MEM001234568,PPO-GOLD,2025,deductible,0.00,500.00,325.00,1000.00,2025-01-20
+MEM001234568,PPO-GOLD,2025,oop_max,0.00,4000.00,350.00,8000.00,2025-01-20
+```
+
+| Column | Type | Description |
+|--------|------|-------------|
+| member_id | string | Member identifier |
+| plan_code | string | Plan identifier |
+| plan_year | integer | Benefit year |
+| accumulator_type | string | deductible, oop_max, rx_deductible |
+| individual_applied | decimal | Amount applied to individual |
+| individual_limit | decimal | Individual limit |
+| family_applied | decimal | Amount applied to family |
+| family_limit | decimal | Family limit |
+| as_of_date | date | Date of accumulator snapshot |
+
 ### eligibility_inquiries.csv
 
 ```csv
@@ -331,8 +424,11 @@ When exporting enrollment and eligibility data:
 export/
 ├── groups.csv
 ├── plans.csv
+├── plan_service_benefits.csv
+├── pharmacy_benefits.csv
 ├── members.csv
 ├── enrollments.csv
+├── plan_accumulators.csv
 └── eligibility_inquiries.csv
 ```
 
