@@ -55,6 +55,11 @@ Load the appropriate scenario based on user request:
 | **Chronic Kidney Disease** | CKD, eGFR, dialysis, nephropathy | [chronic-kidney-disease.md](chronic-kidney-disease.md) |
 | **Sepsis/Acute Care** | sepsis, infection, ICU, critical care | [sepsis-acute-care.md](sepsis-acute-care.md) |
 | **Orders & Results** | lab order, radiology, ORM, ORU, results | [orders-results.md](orders-results.md) |
+| **Oncology** | | |
+| ↳ Breast Cancer | breast cancer, mastectomy, ER positive, HER2, tamoxifen | [oncology/breast-cancer.md](oncology/breast-cancer.md) |
+| ↳ Lung Cancer | lung cancer, NSCLC, EGFR, ALK, immunotherapy | [oncology/lung-cancer.md](oncology/lung-cancer.md) |
+| ↳ Colorectal Cancer | colon cancer, rectal cancer, FOLFOX, colonoscopy | [oncology/colorectal-cancer.md](oncology/colorectal-cancer.md) |
+| ↳ Oncology Domain | oncology, cancer staging, chemotherapy, tumor markers | [oncology/oncology-domain.md](oncology/oncology-domain.md) |
 
 ## Generation Parameters
 
@@ -176,13 +181,27 @@ Claude combines patterns from multiple scenario skills to generate a coherent pa
 
 ## Related Skills
 
-- [adt-workflow.md](adt-workflow.md) - ADT workflow scenarios
+### Chronic Disease
 - [diabetes-management.md](diabetes-management.md) - Diabetes scenarios
 - [heart-failure.md](heart-failure.md) - Heart failure scenarios
 - [chronic-kidney-disease.md](chronic-kidney-disease.md) - CKD scenarios
+
+### Acute Care
+- [adt-workflow.md](adt-workflow.md) - ADT workflow scenarios
 - [sepsis-acute-care.md](sepsis-acute-care.md) - Acute care scenarios
 - [orders-results.md](orders-results.md) - Orders and results
+
+### Oncology
+- [oncology/oncology-domain.md](oncology/oncology-domain.md) - Foundational oncology knowledge
+- [oncology/breast-cancer.md](oncology/breast-cancer.md) - Breast cancer scenarios
+- [oncology/lung-cancer.md](oncology/lung-cancer.md) - Lung cancer scenarios (NSCLC/SCLC)
+- [oncology/colorectal-cancer.md](oncology/colorectal-cancer.md) - Colorectal cancer scenarios
+
+### Output Formats
 - [../../formats/fhir-r4.md](../../formats/fhir-r4.md) - FHIR transformation
 - [../../formats/hl7v2-adt.md](../../formats/hl7v2-adt.md) - HL7v2 ADT messages
 - [../../formats/hl7v2-orm.md](../../formats/hl7v2-orm.md) - HL7v2 Order messages
 - [../../formats/hl7v2-oru.md](../../formats/hl7v2-oru.md) - HL7v2 Results messages
+
+### Reference Data
+- [../../references/oncology/](../../references/oncology/) - Oncology codes, medications, regimens

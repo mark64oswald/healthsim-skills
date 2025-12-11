@@ -279,19 +279,102 @@ See [../../formats/](../../formats/) for transformation skills.
 }
 ```
 
+### Example 4: Oncology Infusion Claim
+
+**Request:** "Generate a facility claim for chemotherapy infusion"
+
+```json
+{
+  "claim": {
+    "claim_id": "CLM20250115000004",
+    "claim_type": "INSTITUTIONAL",
+    "member_id": "MEM005678",
+    "provider_npi": "1234567890",
+    "facility_type": "outpatient_hospital",
+    "service_date": "2025-01-15",
+    "principal_diagnosis": "C50.911",
+    "diagnosis_description": "Malignant neoplasm of right female breast",
+    "claim_lines": [
+      {
+        "line_number": 1,
+        "revenue_code": "0335",
+        "procedure_code": "96413",
+        "hcpcs_code": "J9267",
+        "description": "Paclitaxel injection, 1mg",
+        "units": 175,
+        "charge_amount": 3500.00
+      },
+      {
+        "line_number": 2,
+        "revenue_code": "0335",
+        "procedure_code": "96415",
+        "description": "Chemotherapy infusion, additional hour",
+        "units": 2,
+        "charge_amount": 400.00
+      },
+      {
+        "line_number": 3,
+        "revenue_code": "0250",
+        "procedure_code": "96360",
+        "hcpcs_code": "J2405",
+        "description": "Ondansetron injection (antiemetic)",
+        "units": 8,
+        "charge_amount": 120.00
+      }
+    ]
+  },
+  "prior_auth": {
+    "auth_number": "PA20250101-12345",
+    "status": "approved",
+    "approved_units": 6,
+    "approved_through": "2025-06-30"
+  },
+  "adjudication": {
+    "status": "paid",
+    "allowed_amount": 3200.00,
+    "deductible": 0.00,
+    "coinsurance": 640.00,
+    "paid_amount": 2560.00,
+    "patient_responsibility": 640.00
+  }
+}
+```
+
+Key oncology claim elements:
+- J-codes for injectable drugs (J9267 = paclitaxel)
+- Revenue code 0335 (chemotherapy)
+- Prior authorization reference
+- Multi-line claim (drug + administration + supportive care)
+
 ## Related Skills
 
+### MemberSim Scenarios
 - [plan-benefits.md](plan-benefits.md) - Plan configuration and benefit structure
 - [enrollment-eligibility.md](enrollment-eligibility.md) - Enrollment and eligibility
 - [professional-claims.md](professional-claims.md) - Professional claim details
 - [facility-claims.md](facility-claims.md) - Institutional claim details
-- [prior-authorization.md](prior-authorization.md) - PA workflows
+- [prior-authorization.md](prior-authorization.md) - PA workflows (includes oncology PAs)
 - [accumulator-tracking.md](accumulator-tracking.md) - Cost sharing tracking
 - [value-based-care.md](value-based-care.md) - VBC, HEDIS, risk adjustment
+
+### Cross-Product: PatientSim Oncology
+- [../patientsim/oncology/](../patientsim/oncology/) - Clinical oncology patient generation
+- [../patientsim/oncology/breast-cancer.md](../patientsim/oncology/breast-cancer.md) - Breast cancer clinical data
+- [../patientsim/oncology/lung-cancer.md](../patientsim/oncology/lung-cancer.md) - Lung cancer clinical data
+- [../patientsim/oncology/colorectal-cancer.md](../patientsim/oncology/colorectal-cancer.md) - Colorectal cancer clinical data
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - Oral oncolytic claims
+- [../rxmembersim/rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) - Pharmacy PA for oncology drugs
+
+### Output Formats
 - [../../formats/x12-834.md](../../formats/x12-834.md) - X12 enrollment format
 - [../../formats/x12-270-271.md](../../formats/x12-270-271.md) - X12 eligibility format
 - [../../formats/x12-837.md](../../formats/x12-837.md) - X12 claim format
 - [../../formats/x12-835.md](../../formats/x12-835.md) - Remittance format
 - [../../formats/csv.md](../../formats/csv.md) - CSV export
 - [../../formats/sql.md](../../formats/sql.md) - SQL export
+
+### Reference Data
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
+- [../../references/oncology/](../../references/oncology/) - Oncology codes, medications, regimens
