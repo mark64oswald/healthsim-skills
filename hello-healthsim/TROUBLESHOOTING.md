@@ -297,7 +297,7 @@ source ~/.zshrc
 
 ### Where to Get Help
 
-- **GitHub Issues:** [Report bugs or request features](https://github.com/YOUR_ORG/healthsim-skills/issues)
+- **GitHub Issues:** [Report bugs or request features](https://github.com/mark64oswald/healthsim-skills/issues)
 - **Documentation:** Check [SKILL.md](../SKILL.md) for complete reference
 
 ### What to Include in Bug Reports

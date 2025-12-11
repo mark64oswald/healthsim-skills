@@ -283,8 +283,23 @@
 
 ## Related Skills
 
+### PatientSim Scenarios
+
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [diabetes-management.md](diabetes-management.md) - Common comorbidity
 - [chronic-kidney-disease.md](chronic-kidney-disease.md) - Cardiorenal syndrome
+
+### Cross-Product: MemberSim
+
+- [../membersim/professional-claims.md](../membersim/professional-claims.md) - Cardiology office visit claims
+- [../membersim/facility-claims.md](../membersim/facility-claims.md) - Heart failure admission claims
+
+### Cross-Product: RxMemberSim
+
+- [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - GDMT medication fills (carvedilol, lisinopril, furosemide)
+- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - Sacubitril/valsartan (Entresto), SGLT2 inhibitors
+
+### References
+
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
 - [../../references/code-systems.md](../../references/code-systems.md) - ICD-10 codes

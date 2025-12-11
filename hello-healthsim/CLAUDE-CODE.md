@@ -41,7 +41,7 @@ source ~/.zshrc
 ### Step 3: Clone HealthSim
 
 ```bash
-git clone https://github.com/YOUR_ORG/healthsim-skills.git
+git clone https://github.com/mark64oswald/healthsim-skills.git
 cd healthsim-skills
 ```
 
@@ -224,7 +224,7 @@ jobs:
         run: npm install -g @anthropic-ai/claude-code
 
       - name: Clone HealthSim
-        run: git clone https://github.com/YOUR_ORG/healthsim-skills.git
+        run: git clone https://github.com/mark64oswald/healthsim-skills.git
 
       - name: Generate Test Data
         env:

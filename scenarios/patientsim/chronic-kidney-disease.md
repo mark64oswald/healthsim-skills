@@ -275,8 +275,23 @@
 
 ## Related Skills
 
+### PatientSim Scenarios
+
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [diabetes-management.md](diabetes-management.md) - Diabetic nephropathy
 - [heart-failure.md](heart-failure.md) - Cardiorenal syndrome
+
+### Cross-Product: MemberSim
+
+- [../membersim/professional-claims.md](../membersim/professional-claims.md) - Nephrology office visit claims
+- [../membersim/facility-claims.md](../membersim/facility-claims.md) - Dialysis facility claims, AV fistula procedures
+
+### Cross-Product: RxMemberSim
+
+- [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Renal medication fills (sevelamer, calcitriol, sodium bicarbonate)
+- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - ESAs (epoetin alfa, darbepoetin), calcimimetics
+
+### References
+
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
 - [../../references/code-systems.md](../../references/code-systems.md) - ICD-10 codes

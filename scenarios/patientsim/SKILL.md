@@ -55,11 +55,11 @@ Load the appropriate scenario based on user request:
 | **Chronic Kidney Disease** | CKD, eGFR, dialysis, nephropathy | [chronic-kidney-disease.md](chronic-kidney-disease.md) |
 | **Sepsis/Acute Care** | sepsis, infection, ICU, critical care | [sepsis-acute-care.md](sepsis-acute-care.md) |
 | **Orders & Results** | lab order, radiology, ORM, ORU, results | [orders-results.md](orders-results.md) |
+| **Maternal Health** | pregnancy, prenatal, obstetric, labor, delivery, postpartum, GDM, preeclampsia | [maternal-health.md](maternal-health.md) |
 | **Oncology** | | |
 | ↳ Breast Cancer | breast cancer, mastectomy, ER positive, HER2, tamoxifen | [oncology/breast-cancer.md](oncology/breast-cancer.md) |
 | ↳ Lung Cancer | lung cancer, NSCLC, EGFR, ALK, immunotherapy | [oncology/lung-cancer.md](oncology/lung-cancer.md) |
 | ↳ Colorectal Cancer | colon cancer, rectal cancer, FOLFOX, colonoscopy | [oncology/colorectal-cancer.md](oncology/colorectal-cancer.md) |
-| ↳ Oncology Domain | oncology, cancer staging, chemotherapy, tumor markers | [oncology/oncology-domain.md](oncology/oncology-domain.md) |
 
 ## Generation Parameters
 

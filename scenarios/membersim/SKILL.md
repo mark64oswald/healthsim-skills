@@ -68,6 +68,7 @@ Load the appropriate scenario based on user request:
 | **Prior Authorization** | prior auth, pre-cert, authorization, PA | [prior-authorization.md](prior-authorization.md) |
 | **Accumulator Tracking** | deductible, OOP, accumulator, cost sharing | [accumulator-tracking.md](accumulator-tracking.md) |
 | **Value-Based Care** | quality measures, VBC, HEDIS, risk adjustment, HCC, care gaps | [value-based-care.md](value-based-care.md) |
+| **Behavioral Health** | mental health, psychiatry, psychotherapy, substance abuse, SUD | [behavioral-health.md](behavioral-health.md) |
 
 ## Generation Parameters
 

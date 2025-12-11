@@ -50,7 +50,7 @@ brew install claude-code
 
 ```bash
 # Clone HealthSim skills
-git clone https://github.com/YOUR_ORG/healthsim-skills.git
+git clone https://github.com/mark64oswald/healthsim-skills.git
 
 # Navigate to the project
 cd healthsim-skills
@@ -236,7 +236,7 @@ Once you're comfortable with basic generation:
 
 ### Get Help
 - [Troubleshooting](TROUBLESHOOTING.md) - Common issues and solutions
-- [GitHub Issues](https://github.com/YOUR_ORG/healthsim-skills/issues) - Report bugs or request features
+- [GitHub Issues](https://github.com/mark64oswald/healthsim-skills/issues) - Report bugs or request features
 
 ---
 
