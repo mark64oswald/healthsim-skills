@@ -2,14 +2,14 @@
 
 _Foundational oncology knowledge for generating realistic cancer patient data across the disease spectrum._
 
----
-type: domain-knowledge
-domain: oncology
-version: 1.0
-author: Claude (AI-generated, requires clinical validation)
-tags: oncology, cancer, chemotherapy, radiation, immunotherapy, staging
-dependencies: []
----
+## Metadata
+
+- **Type**: Domain Knowledge
+- **Domain**: Oncology
+- **Version**: 1.0
+- **Author**: Claude (AI-generated, requires clinical validation)
+- **Tags**: oncology, cancer, chemotherapy, radiation, immunotherapy, staging
+- **Dependencies**: None (foundational skill)
 
 ## For Claude
 

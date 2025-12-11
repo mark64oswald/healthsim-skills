@@ -446,9 +446,144 @@ Generate a diabetic patient with quality measure compliance status and care gaps
 
 ---
 
+## Example 5: Oncology Patient Journey
+
+### Prompt
+```
+Generate a breast cancer patient with clinical data, facility infusion claim, and oral chemotherapy pharmacy claim
+```
+
+### Expected Output
+```json
+{
+  "patient": {
+    "mrn": "MRN00000005",
+    "member_id": "MEM005678",
+    "name": { "given_name": "Jennifer", "family_name": "Thompson" },
+    "birth_date": "1968-04-12",
+    "gender": "F"
+  },
+  "clinical_data": {
+    "cancer_diagnosis": {
+      "code": "C50.911",
+      "description": "Malignant neoplasm of unspecified site of right female breast",
+      "diagnosed_date": "2024-10-15"
+    },
+    "staging": {
+      "tnm": { "t": "T2", "n": "N1", "m": "M0" },
+      "ajcc_stage": "IIB",
+      "stage_date": "2024-10-20"
+    },
+    "biomarkers": {
+      "er_status": "positive",
+      "er_percent": 85,
+      "pr_status": "positive",
+      "pr_percent": 60,
+      "her2_status": "negative",
+      "her2_score": "1+",
+      "ki67_percent": 18
+    },
+    "treatment_plan": {
+      "surgery": { "type": "Lumpectomy", "date": "2024-11-01" },
+      "chemotherapy": "TC (Docetaxel + Cyclophosphamide)",
+      "radiation": "Whole breast radiation planned",
+      "hormonal_therapy": "Anastrozole planned post-chemo"
+    }
+  },
+  "facility_claim": {
+    "claim_id": "CLM20250115000005",
+    "claim_type": "INSTITUTIONAL",
+    "facility_type": "outpatient_hospital",
+    "member_id": "MEM005678",
+    "service_date": "2025-01-15",
+    "principal_diagnosis": "C50.911",
+    "claim_lines": [
+      {
+        "line_number": 1,
+        "revenue_code": "0335",
+        "procedure_code": "96413",
+        "hcpcs_code": "J9171",
+        "description": "Docetaxel injection, 1mg",
+        "units": 120,
+        "charge_amount": 4800.00
+      },
+      {
+        "line_number": 2,
+        "revenue_code": "0335",
+        "procedure_code": "96415",
+        "description": "Chemotherapy infusion, additional hour",
+        "units": 1,
+        "charge_amount": 250.00
+      },
+      {
+        "line_number": 3,
+        "revenue_code": "0250",
+        "hcpcs_code": "J2405",
+        "description": "Ondansetron injection (antiemetic)",
+        "units": 8,
+        "charge_amount": 120.00
+      }
+    ],
+    "prior_auth": {
+      "auth_number": "PA20241101-54321",
+      "status": "approved"
+    },
+    "adjudication": {
+      "status": "paid",
+      "allowed_amount": 4200.00,
+      "deductible": 0.00,
+      "coinsurance": 840.00,
+      "paid_amount": 3360.00
+    }
+  },
+  "pharmacy_claim": {
+    "claim_id": "RX20250115000005",
+    "member_id": "MEM005678",
+    "service_date": "2025-01-15",
+    "ndc": "00310075090",
+    "drug_name": "Anastrozole 1mg Tablet",
+    "quantity": 30,
+    "days_supply": 30,
+    "prescriber_npi": "1234567890",
+    "pharmacy_type": "retail",
+    "response": {
+      "status": "paid",
+      "tier": 2,
+      "patient_pay": 15.00,
+      "plan_paid": 42.00,
+      "note": "Hormonal therapy for ER+ breast cancer"
+    }
+  },
+  "care_coordination": {
+    "oncologist": "Dr. Michael Rodriguez",
+    "treatment_center": "Regional Cancer Center",
+    "next_infusion": "2025-02-05",
+    "labs_due": "2025-01-29"
+  },
+  "consistency_check": {
+    "diagnosis_code_match": true,
+    "treatment_matches_biomarkers": true,
+    "prior_auth_on_file": true,
+    "hormonal_therapy_appropriate": true
+  }
+}
+```
+
+### Key Points
+
+- Clinical staging (T2 N1 M0 = Stage IIB) matches treatment intensity
+- Biomarkers (ER+, PR+, HER2-) justify hormonal therapy selection
+- Docetaxel J-code (J9171) with revenue code 0335 (chemotherapy)
+- Anastrozole (hormonal therapy) matches ER-positive status
+- Prior authorization required for infusion chemotherapy
+- Cross-product consistency: clinical → facility claim → pharmacy claim
+
+---
+
 ## More Examples
 
 These cross-domain examples show how HealthSim maintains consistency across products. Use them as templates for your own complex scenarios.
 
 See also:
 - [Format Examples](format-examples.md) - Transform cross-domain data to standards
+- [Oncology Examples](oncology-examples.md) - Detailed oncology patient scenarios
