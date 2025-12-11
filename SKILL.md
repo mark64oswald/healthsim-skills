@@ -64,6 +64,10 @@ Load these for clinical data generation:
 | **Chronic Kidney Disease** | CKD, eGFR, dialysis, nephrology | CKD staging, progression, comorbidities |
 | **Sepsis/Acute Care** | sepsis, infection, ICU, critical | Sepsis criteria, antibiotic protocols, ICU stay |
 | **Orders & Results** | lab order, radiology, ORM, ORU, results | Orders, specimens, lab panels, radiology reports |
+| **ED Chest Pain** | chest pain, emergency, ACS, troponin | Risk stratification, HEART score, workup |
+| **Elective Joint** | hip replacement, knee replacement, arthroplasty | Pre-op, surgery, recovery, PT |
+| **Maternal Health** | pregnancy, prenatal, L&D, postpartum | Prenatal visits, GDM, preeclampsia, delivery |
+| **Oncology** | cancer, tumor, chemotherapy, breast/lung/colorectal | Staging, treatment protocols, tumor markers |
 
 See: [scenarios/patientsim/](scenarios/patientsim/) for detailed skills
 
@@ -80,6 +84,7 @@ Load these for claims and payer data:
 | **Prior Authorization** | prior auth, pre-cert, authorization | Request/response workflow, approval criteria |
 | **Accumulator Tracking** | deductible, OOP, accumulator | Year-to-date tracking, family vs individual |
 | **Value-Based Care** | quality measures, VBC, HEDIS | Attribution, measure compliance, incentives |
+| **Behavioral Health** | mental health, psychiatry, SUD, therapy | Psychotherapy, medication management, PHP/IOP |
 
 See: [scenarios/membersim/](scenarios/membersim/) for detailed skills
 
@@ -113,6 +118,7 @@ Request specific formats:
 | Format | Request Phrases | Use Case |
 |--------|-----------------|----------|
 | **FHIR R4** | "as FHIR", "FHIR bundle", "FHIR resources" | Interoperability, modern APIs |
+| **C-CDA** | "as C-CDA", "as CCD", "discharge summary", "referral note" | Clinical documents, HIE |
 | **HL7v2** | "as HL7", "ADT message", "HL7v2" | Legacy EMR integration |
 | **X12 834** | "as 834", "X12 enrollment", "enrollment file" | Benefit enrollment |
 | **X12 270/271** | "as 270", "eligibility inquiry", "eligibility check" | Eligibility verification |
@@ -208,6 +214,7 @@ Transform generated data to healthcare standards:
 | Format | Skill | Use Case |
 |--------|-------|----------|
 | FHIR R4 | [formats/fhir-r4.md](formats/fhir-r4.md) | Modern interoperability, REST APIs |
+| C-CDA | [formats/ccda-format.md](formats/ccda-format.md) | CCD, Discharge Summary, clinical documents |
 | HL7v2 ADT | [formats/hl7v2-adt.md](formats/hl7v2-adt.md) | Admit/Discharge/Transfer messages |
 | HL7v2 ORM | [formats/hl7v2-orm.md](formats/hl7v2-orm.md) | Order messages (lab, rad, meds) |
 | HL7v2 ORU | [formats/hl7v2-oru.md](formats/hl7v2-oru.md) | Results/observation messages |
