@@ -55,34 +55,39 @@ healthsim-skills/
 │   └── examples/              # Detailed examples
 │
 ├── scenarios/                  # Domain-specific generation
-│   ├── patientsim/            # Clinical data (6 scenarios)
+│   ├── patientsim/            # Clinical data (9 scenarios + 3 oncology)
 │   │   ├── SKILL.md
 │   │   ├── diabetes-management.md
 │   │   ├── heart-failure.md
+│   │   ├── maternal-health.md
+│   │   ├── oncology/          # Cancer-specific scenarios
 │   │   └── ...
-│   ├── membersim/             # Claims data (7 scenarios)
+│   ├── membersim/             # Claims data (8 scenarios)
 │   │   ├── SKILL.md
 │   │   ├── professional-claims.md
-│   │   ├── value-based-care.md
+│   │   ├── behavioral-health.md
 │   │   └── ...
 │   └── rxmembersim/           # Pharmacy data (8 scenarios)
 │       ├── SKILL.md
 │       ├── retail-pharmacy.md
-│       ├── manufacturer-programs.md
+│       ├── specialty-pharmacy.md
 │       └── ...
 │
-├── formats/                    # Output transformations (11 files)
+├── formats/                    # Output transformations (12 files)
 │   ├── fhir-r4.md
+│   ├── ccda-format.md
 │   ├── hl7v2-adt.md
 │   ├── x12-837.md
 │   └── ...
 │
-├── references/                 # Shared knowledge (5 files)
+├── references/                 # Shared knowledge (11 files + subdirs)
 │   ├── data-models.md         # Entity schemas
 │   ├── code-systems.md        # ICD-10, CPT, LOINC, NDC
 │   ├── clinical-rules.md      # Clinical business rules
-│   ├── validation-rules.md    # Data validation
-│   └── terminology.md         # Abbreviations reference
+│   ├── pediatric-dosing.md    # Pediatric medication dosing
+│   ├── mental-health-reference.md  # Behavioral health codes
+│   ├── oncology/              # Oncology reference data
+│   └── ccda/                   # C-CDA template references
 │
 └── docs/                       # Additional documentation
     ├── integration-guide.md

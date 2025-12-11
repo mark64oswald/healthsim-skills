@@ -192,7 +192,7 @@ Claude combines patterns from multiple scenario skills to generate a coherent pa
 - [orders-results.md](orders-results.md) - Orders and results
 
 ### Oncology
-- [oncology/oncology-domain.md](oncology/oncology-domain.md) - Foundational oncology knowledge
+- [oncology-domain.md](../../references/oncology-domain.md) - Foundational oncology knowledge
 - [oncology/breast-cancer.md](oncology/breast-cancer.md) - Breast cancer scenarios
 - [oncology/lung-cancer.md](oncology/lung-cancer.md) - Lung cancer scenarios (NSCLC/SCLC)
 - [oncology/colorectal-cancer.md](oncology/colorectal-cancer.md) - Colorectal cancer scenarios

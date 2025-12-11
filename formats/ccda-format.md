@@ -755,7 +755,7 @@ When generating C-CDA documents for oncology patients:
 - [diabetes-management.md](../scenarios/patientsim/diabetes-management.md) - Diabetes clinical patterns
 - [heart-failure.md](../scenarios/patientsim/heart-failure.md) - Heart failure clinical patterns
 - [chronic-kidney-disease.md](../scenarios/patientsim/chronic-kidney-disease.md) - CKD clinical patterns
-- [oncology-domain.md](../scenarios/patientsim/oncology/oncology-domain.md) - Oncology clinical patterns
+- [oncology-domain.md](../references/oncology-domain.md) - Oncology clinical patterns
 
 ## Reference Data
 
