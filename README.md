@@ -26,16 +26,34 @@ The getting started guide includes:
 | **MemberSim** | Claims/payer data | "Generate a denied MRI claim requiring prior auth" |
 | **RxMemberSim** | Pharmacy/PBM data | "Generate a drug interaction alert for warfarin" |
 
+### Clinical Domains
+
+| Domain | Scenario | Example Use Cases |
+|--------|----------|-------------------|
+| **Diabetes** | diabetes-management.md | Type 1/2, A1C monitoring, insulin therapy, complications |
+| **Heart Failure** | heart-failure.md | HFrEF/HFpEF, NYHA staging, GDMT, decompensation |
+| **Chronic Kidney Disease** | chronic-kidney-disease.md | CKD stages 1-5, dialysis, transplant, comorbidities |
+| **Oncology** | oncology/*.md | Breast, lung, colorectal cancer; staging, chemo, biomarkers |
+| **Maternal Health** | maternal-health.md | Prenatal care, GDM, preeclampsia, L&D, postpartum |
+| **Behavioral Health** | behavioral-health.md | Depression, anxiety, SUD, psychotherapy, PHP/IOP |
+| **Acute Care** | sepsis-acute-care.md | Sepsis, ICU, antibiotics, critical care |
+| **Emergency** | ed-chest-pain.md | Chest pain, ACS workup, HEART score, troponin |
+| **Surgical** | elective-joint.md | Hip/knee replacement, pre-op, post-op, PT |
+| **ADT Workflows** | adt-workflow.md | Admission, transfer, discharge, bed management |
+
 ### Output Formats
 
-| Format | Request With |
-|--------|--------------|
-| JSON | (default) |
-| FHIR R4 | "as FHIR", "as FHIR Bundle" |
-| HL7v2 | "as HL7", "as ADT message" |
-| X12 837/835 | "as 837", "as X12 claim" |
-| NCPDP D.0 | "as NCPDP" |
-| CSV | "as CSV" |
+| Format | Request With | Use Case |
+|--------|--------------|----------|
+| JSON | (default) | API testing, general use |
+| FHIR R4 | "as FHIR", "as FHIR Bundle" | Modern interoperability |
+| C-CDA | "as C-CDA", "as CCD" | Clinical documents, HIE |
+| HL7v2 | "as HL7", "as ADT message" | Legacy EMR integration |
+| X12 837/835 | "as 837", "as X12 claim" | Claims submission |
+| X12 834 | "as 834", "enrollment file" | Benefit enrollment |
+| NCPDP D.0 | "as NCPDP" | Pharmacy transactions |
+| CSV | "as CSV" | Analytics, spreadsheets |
+| SQL | "as SQL" | Database loading |
 
 ---
 
@@ -98,51 +116,54 @@ healthsim-skills/
 
 ## Example Usage
 
-### Simple Patient Generation
+### Basic Examples (Start Here)
 
 ```
-Generate a patient with Type 2 diabetes
+Generate a patient
+Generate a professional claim for an office visit
+Generate a pharmacy claim for metformin
 ```
 
-```json
-{
-  "patient": {
-    "mrn": "MRN00000001",
-    "name": { "given_name": "Maria", "family_name": "Garcia" },
-    "birth_date": "1965-08-22",
-    "gender": "F"
-  },
-  "diagnoses": [
-    { "code": "E11.9", "description": "Type 2 diabetes mellitus without complications" }
-  ],
-  "medications": [
-    { "name": "Metformin", "dose": "1000 mg", "frequency": "BID" }
-  ],
-  "labs": [
-    { "test": "HbA1c", "value": "7.2", "unit": "%" }
-  ]
-}
+### Clinical Domain Examples
+
+| Domain | Example Prompt |
+|--------|----------------|
+| **Diabetes** | "Generate a 62-year-old with poorly controlled Type 2 diabetes and A1C of 9.5" |
+| **Heart Failure** | "Generate a patient with HFrEF, NYHA Class III, on GDMT therapy" |
+| **CKD** | "Generate a patient with Stage 4 CKD and diabetes" |
+| **Oncology** | "Generate a Stage IIB ER-positive breast cancer patient with treatment plan" |
+| **Maternal** | "Generate a 32-week pregnant patient with gestational diabetes" |
+| **Behavioral** | "Generate a telehealth psychotherapy claim for depression" |
+| **Emergency** | "Generate an ED chest pain patient with HEART score workup" |
+
+### Claims & Pharmacy Examples
+
+| Type | Example Prompt |
+|------|----------------|
+| **Paid Claim** | "Generate a paid professional claim for an office visit" |
+| **Denied Claim** | "Generate a denied MRI claim requiring prior authorization" |
+| **Facility Claim** | "Generate an inpatient heart failure admission with DRG" |
+| **DUR Alert** | "Generate a pharmacy claim with drug-drug interaction alert" |
+| **Prior Auth** | "Generate a PA approval workflow for specialty drug" |
+
+### Output Format Examples
+
+| Format | Example Prompt |
+|--------|----------------|
+| **FHIR** | "Generate a diabetic patient as a FHIR Bundle" |
+| **C-CDA** | "Generate a discharge summary as C-CDA" |
+| **HL7v2** | "Generate an admission as an ADT A01 message" |
+| **X12 837** | "Generate a professional claim as X12 837P" |
+
+### Cross-Domain Scenarios
+
+```
+Generate a diabetic patient with their office visit claim and metformin pharmacy claim
+Generate a breast cancer patient with infusion facility claim and oral chemo pharmacy claim
+Generate a heart failure patient with hospital admission, follow-up visit, and discharge medications
 ```
 
-### Claims with Adjudication
-
-```
-Generate a paid professional claim for an office visit with deductible applied
-```
-
-### Pharmacy with DUR Alert
-
-```
-Generate a pharmacy claim that triggers a drug-drug interaction alert
-```
-
-### Cross-Domain Scenario
-
-```
-Generate a heart failure patient with their hospital admission claim and discharge medications
-```
-
-See [hello-healthsim/examples/](hello-healthsim/examples/) for many more examples.
+See [hello-healthsim/examples/](hello-healthsim/examples/) for detailed examples with expected outputs.
 
 ---
 
