@@ -133,17 +133,151 @@ See [examples/](examples/) for more detailed examples with expected outputs.
 
 ---
 
+## Hello, Diabetes!
+
+Let's explore a common chronic disease scenario with output format variations.
+
+### Basic Diabetic Patient
+
+```
+Generate a 58-year-old female with Type 2 diabetes
+```
+
+This generates a patient with:
+
+- Diagnosis (E11.9 Type 2 diabetes)
+- Common comorbidities (hypertension, hyperlipidemia)
+- Appropriate medications (metformin, lisinopril, atorvastatin)
+- Relevant labs (A1C, glucose, creatinine)
+
+### With Complications
+
+```
+Generate a diabetic patient with nephropathy and retinopathy
+```
+
+This adds diabetic complications with appropriate staging and specialist referrals.
+
+### As FHIR Bundle
+
+```
+Generate a diabetic patient as a FHIR Bundle
+```
+
+Same clinical content, but formatted as FHIR R4 resources - perfect for testing FHIR APIs.
+
+### As CSV for Analytics
+
+```
+Generate 10 diabetic patients as CSV
+```
+
+Generates tabular data suitable for spreadsheets and analytics tools.
+
+---
+
+## Hello, Claims!
+
+Now let's generate claims data with different payment scenarios.
+
+### Paid Claim (Basic)
+
+```
+Generate a paid professional claim for a primary care office visit
+```
+
+This generates:
+
+- Member information
+- Claim with CPT 99213/99214 (E&M code)
+- Adjudication with copay applied
+- CARC/RARC adjustment codes
+
+### Denied Claim
+
+```
+Generate a denied professional claim for an MRI requiring prior authorization
+```
+
+This generates a claim with denial reason CO-15 (prior auth required) and appeal information.
+
+### Facility Claim with DRG
+
+```
+Generate an inpatient admission claim for heart failure with DRG
+```
+
+This generates an 837I institutional claim with DRG assignment and length-of-stay based payment.
+
+### As X12 837P Format
+
+```
+Generate a professional claim as X12 837P
+```
+
+Same claim data, but in EDI X12 format - perfect for testing claims processing systems.
+
+---
+
+## Hello, Pharmacy!
+
+Generate pharmacy claims with clinical interventions.
+
+### Simple Prescription Fill
+
+```
+Generate a pharmacy claim for atorvastatin 20mg
+```
+
+This generates:
+
+- Prescription details (NDC, quantity, days supply)
+- Pharmacy claim (BIN, PCN, cardholder ID)
+- Pricing (ingredient cost, dispensing fee, copay)
+- Tier information (generic = Tier 1)
+
+### Drug Interaction Alert
+
+```
+Generate a pharmacy claim for warfarin that triggers a drug interaction alert with aspirin
+```
+
+This generates a DUR (Drug Utilization Review) alert with:
+
+- Interaction severity (DD - Drug-Drug)
+- Clinical significance
+- Pharmacist recommendation
+
+### Prior Authorization Required
+
+```
+Generate a specialty pharmacy claim for Humira requiring prior authorization
+```
+
+This generates the PA workflow for high-cost biologics with clinical criteria.
+
+### As NCPDP Format
+
+```
+Generate a pharmacy claim as NCPDP D.0
+```
+
+Same pharmacy data in NCPDP telecommunications standard format.
+
+---
+
 ## Hello, Oncology!
 
 PatientSim includes comprehensive oncology scenario skills for generating realistic cancer patient journeys with accurate staging, biomarkers, and treatment protocols.
 
-### Example 6: Breast Cancer Patient
+### Breast Cancer Patient
 
 ```
 Generate a 55-year-old female with Stage IIA ER-positive, HER2-negative breast cancer
 ```
 
 This generates a complete breast cancer patient with:
+
 - TNM staging (T2 N0 M0)
 - Biomarkers (ER 95%, PR 80%, HER2 1+, Ki-67 15%)
 - Molecular subtype (Luminal A)
@@ -151,37 +285,40 @@ This generates a complete breast cancer patient with:
 - Surgical details (lumpectomy, sentinel node biopsy)
 - Treatment plan (surgery → radiation → hormonal therapy)
 
-### Example 7: Lung Cancer with Targeted Therapy
+### Lung Cancer with Targeted Therapy
 
 ```
 Generate a 68-year-old male with Stage IV NSCLC, EGFR exon 19 deletion positive, with brain metastases
 ```
 
 This generates biomarker-driven lung cancer treatment:
+
 - Comprehensive molecular testing (EGFR, ALK, ROS1, PD-L1)
 - Brain metastases management (SRS)
 - Targeted therapy selection (osimertinib for EGFR mutation)
 - Surveillance imaging schedule
 
-### Example 8: Colorectal Cancer with Biomarkers
+### Colorectal Cancer with Biomarkers
 
 ```
 Generate a 58-year-old with Stage III colon cancer, MSI-high status
 ```
 
 This generates colorectal cancer with genomic context:
+
 - MSI/MMR testing results
 - RAS/BRAF mutation status
 - Genetic counseling referral (Lynch syndrome evaluation)
 - Adjuvant chemotherapy (CAPOX) with duration
 
-### Example 9: Cancer Patient with Comorbidities
+### Cancer Patient with Comorbidities
 
 ```
 Generate a 70-year-old with Stage IIIB colon cancer who has CKD Stage 3b and Type 2 diabetes requiring chemotherapy dose adjustments
 ```
 
 This generates multi-morbid oncology patients:
+
 - Chemotherapy dose modifications for renal function
 - Multi-specialty care coordination
 - Enhanced monitoring protocols
