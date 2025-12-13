@@ -365,3 +365,23 @@ Transform generated data to healthcare standards:
 3. **Use seeds**: For reproducible test data across sessions
 4. **Batch large requests**: "Generate 100 in batches of 20"
 5. **Validate sensitive data**: Request validation for production-like scenarios
+
+## Disclaimer
+
+HealthSim generates **synthetic test data only**. It is not a clinical decision support system and does not provide medical advice, diagnosis recommendations, or treatment guidance.
+
+**Intended uses:**
+
+- Software development and testing
+- System integration validation
+- Training and educational demonstrations
+- Performance and load testing
+
+**Not intended for:**
+
+- Clinical decision support
+- Medical advice or treatment recommendations
+- Actual patient care
+- Processing real PHI
+
+The clinical patterns, medication regimens, and lab values reflect general healthcare conventions suitable for test data. They do not account for individual patient circumstances or the full complexity of clinical practice.
