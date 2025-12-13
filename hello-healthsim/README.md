@@ -327,6 +327,71 @@ See [examples/oncology-examples.md](examples/oncology-examples.md) for detailed 
 
 ---
 
+## Hello, Analytics!
+
+HealthSim data can be loaded directly into analytics databases. You have flexibility in how you structure the data - from simple flat tables to full star schemas.
+
+### Local Analytics with DuckDB
+
+Perfect for local development, testing, and demos. No authentication required.
+
+**Simple tables:**
+
+```
+Generate 10 diabetic patients and load them into DuckDB
+```
+
+**Star schema for BI dashboards:**
+
+```
+Generate 10 patients in dimensional format for DuckDB with fact and dimension tables
+```
+
+This creates properly normalized analytics tables with:
+
+- Dimension tables (dim_patient, dim_diagnosis, dim_medication, dim_date)
+- Fact tables (fact_encounters, fact_lab_results)
+- Pre-calculated metrics (age bands, LOS, readmission flags)
+
+### Enterprise Analytics with Databricks
+
+For production analytics, team collaboration, and large-scale testing.
+
+**Prerequisites:** Authenticate via Databricks CLI first:
+
+```bash
+databricks auth profiles  # Verify authentication
+```
+
+**Load to Databricks:**
+
+```
+Generate 10 patients in dimensional format for Databricks, catalog 'dev_catalog', schema 'gold'
+```
+
+Claude will:
+
+1. Generate the dimensional data
+2. Create tables (if needed)
+3. Load via SQL Statements API
+4. Report success with row counts
+
+### Claims Analytics
+
+Same flexibility works for claims and pharmacy data:
+
+```
+Generate 20 members with claims in star schema format for DuckDB
+```
+
+```
+Generate pharmacy data with prescription fills as a fact table, load to Databricks
+```
+
+See [../formats/dimensional-analytics.md](../formats/dimensional-analytics.md) for complete star schema definitions and sample queries.
+
+---
+
 ## What's Included
 
 ```
@@ -349,6 +414,7 @@ healthsim-skills/
 │   ├── fhir-r4.md
 │   ├── hl7v2-adt.md
 │   ├── x12-837.md
+│   ├── dimensional-analytics.md  # DuckDB/Databricks star schemas
 │   └── ...
 ├── references/                 # Code systems and rules
 │   ├── data-models.md
@@ -420,6 +486,9 @@ Once you're comfortable with basic generation:
 | "as HL7" | HL7v2 message |
 | "as 837" | X12 837 EDI |
 | "as CSV" | CSV file format |
+| "for DuckDB" | SQL for local analytics |
+| "for Databricks" | SQL loaded to Databricks |
+| "in star schema" | Dimensional fact/dimension tables |
 
 ---
 
