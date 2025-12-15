@@ -129,9 +129,10 @@ healthsim-workspace/
 ├── formats/
 │   ├── fhir-r4.md                     # FHIR R4 transformation
 │   ├── hl7v2-adt.md                   # HL7v2 ADT messages
-│   ├── x12-claims.md                  # X12 837/835 formats
-│   ├── ncpdp-pharmacy.md              # NCPDP D.0 format
-│   └── tabular-export.md              # CSV/JSON/Parquet
+│   ├── x12-837.md                     # X12 837 claims
+│   ├── x12-835.md                     # X12 835 remittance
+│   ├── ncpdp-d0.md                    # NCPDP D.0 format
+│   └── csv.md                         # CSV export
 │
 └── scripts/
     ├── validate_output.py             # Output validation
@@ -324,8 +325,9 @@ Based on user request, load the appropriate scenario skill:
 For format-specific output, load:
 - [FHIR R4](formats/fhir-r4.md) - For FHIR bundles and resources
 - [HL7v2 ADT](formats/hl7v2-adt.md) - For ADT messages
-- [X12 Claims](formats/x12-claims.md) - For 837/835 transactions
-- [NCPDP](formats/ncpdp-pharmacy.md) - For pharmacy claims
+- [X12 837](formats/x12-837.md) - For professional/institutional claims
+- [X12 835](formats/x12-835.md) - For remittance advice
+- [NCPDP D.0](formats/ncpdp-d0.md) - For pharmacy claims
 
 ## Reference Data
 

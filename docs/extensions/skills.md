@@ -331,7 +331,7 @@ Skills can reference other skills to avoid duplication:
 
 ### Cardiac Medications
 
-For detailed cardiac medication information, see the [Cardiology Domain Skill](../healthcare/cardiology-domain.md#medications).
+For detailed clinical rules, see the [Clinical Rules](../../references/clinical-rules.md#medications).
 
 **Quick reference for this scenario:**
 - Aspirin 325mg loading, then 81mg daily
@@ -346,9 +346,9 @@ For detailed cardiac medication information, see the [Cardiology Domain Skill](.
 
 This domain knowledge supports several scenario skills:
 
-- **[Acute MI](../scenarios/acute-mi.md)** - Myocardial infarction management
-- **[Heart Failure](../scenarios/heart-failure.md)** - Acute decompensated HF
-- **[Arrhythmias](../scenarios/arrhythmias.md)** - Atrial fibrillation, VTach, etc.
+- **[Heart Failure](../../scenarios/patientsim/heart-failure.md)** - HFrEF/HFpEF management
+- **[Diabetes Management](../../scenarios/patientsim/diabetes-management.md)** - Type 1/2 diabetes
+- **[ED Chest Pain](../../scenarios/patientsim/ed-chest-pain.md)** - ACS workup and management
 
 Refer to those skills for specific generation patterns.
 ```
