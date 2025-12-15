@@ -60,7 +60,7 @@ The getting started guide includes:
 ## Repository Structure
 
 ```
-healthsim-skills/
+healthsim-workspace/
 ├── SKILL.md                    # Master skill file (start here)
 ├── README.md                   # This file
 │
@@ -230,7 +230,7 @@ Add SKILL.md to a Claude Project, or configure as MCP server:
   "mcpServers": {
     "healthsim": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/healthsim-skills"]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/healthsim-workspace"]
     }
   }
 }
@@ -238,10 +238,10 @@ Add SKILL.md to a Claude Project, or configure as MCP server:
 
 ### Claude Code
 
-Run from the healthsim-skills directory:
+Run from the healthsim-workspace directory:
 
 ```bash
-cd healthsim-skills
+cd healthsim-workspace
 claude
 ```
 

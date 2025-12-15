@@ -332,7 +332,7 @@ class HbA1cGlucoseValidator(ValidationStrategy):
 
 ### Adding New Clinical Scenario
 
-1. Create skill file in healthsim-skills/scenarios/
+1. Create skill file in healthsim-workspace/scenarios/
 2. Define clinical logic and parameters
 3. Add example patients
 4. Test with Claude

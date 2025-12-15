@@ -90,7 +90,7 @@ For documentation specific to each product, see the respective repositories:
 
 ### What's Shared vs. Product-Specific?
 
-| Shared (in healthsim-skills/docs/) | Product-Specific (in product repos) |
+| Shared (in healthsim-workspace/docs/) | Product-Specific (in product repos) |
 |------------------------------------|-------------------------------------|
 | MCP integration | User guides (generating entities) |
 | State management | API reference |

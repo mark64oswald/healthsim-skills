@@ -323,7 +323,7 @@ def test_cross_product_integration(test: SmokeTest):
 def main():
     # Determine base path
     script_dir = Path(__file__).parent
-    base_path = script_dir.parent  # healthsim-skills root
+    base_path = script_dir.parent  # healthsim-workspace root
 
     print(f"\n{BOLD}HealthSim Smoke Test{RESET}")
     print(f"Base path: {base_path}")

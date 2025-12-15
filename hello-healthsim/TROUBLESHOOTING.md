@@ -22,7 +22,7 @@ Common issues and solutions when using HealthSim.
      - macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
      - Windows: `%APPDATA%\Claude\claude_desktop_config.json`
    - Verify JSON is valid (use jsonlint.com)
-   - Check healthsim-skills path is correct
+   - Check healthsim-workspace path is correct
    - Restart Claude Desktop after changes
 
 ### Claude Code: API Key Issues
@@ -57,7 +57,7 @@ source ~/.zshrc
 
 2. **Test MCP server manually:**
    ```bash
-   npx -y @modelcontextprotocol/server-filesystem /path/to/healthsim-skills
+   npx -y @modelcontextprotocol/server-filesystem /path/to/healthsim-workspace
    # Should start without errors
    ```
 
@@ -70,7 +70,7 @@ source ~/.zshrc
          "args": [
            "-y",
            "@modelcontextprotocol/server-filesystem",
-           "/absolute/path/to/healthsim-skills"
+           "/absolute/path/to/healthsim-workspace"
          ]
        }
      }
@@ -92,7 +92,7 @@ source ~/.zshrc
 
 1. **Add data-models.md to context:**
    - Projects: Add `references/data-models.md`
-   - Claude Code: Ensure you're in healthsim-skills directory
+   - Claude Code: Ensure you're in healthsim-workspace directory
 
 2. **Be explicit in request:**
    ```
@@ -297,7 +297,7 @@ source ~/.zshrc
 
 ### Where to Get Help
 
-- **GitHub Issues:** [Report bugs or request features](https://github.com/mark64oswald/healthsim-skills/issues)
+- **GitHub Issues:** [Report bugs or request features](https://github.com/mark64oswald/healthsim-workspace/issues)
 - **Documentation:** Check [SKILL.md](../SKILL.md) for complete reference
 
 ### What to Include in Bug Reports

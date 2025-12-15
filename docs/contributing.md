@@ -1,6 +1,6 @@
 # Contributing to HealthSim Products
 
-Thank you for contributing to HealthSim! This guide applies to all HealthSim products (PatientSim, MemberSim, RxMemberSim) and the shared healthsim-skills repository.
+Thank you for contributing to HealthSim! This guide applies to all HealthSim products (PatientSim, MemberSim, RxMemberSim) and the shared healthsim-workspace repository.
 
 ## Development Setup
 
@@ -383,9 +383,9 @@ How was this tested?
 
 ## Repository-Specific Guidelines
 
-### healthsim-skills Repository
+### healthsim-workspace Repository
 
-When contributing to healthsim-skills:
+When contributing to healthsim-workspace:
 
 - **Scenarios**: Add to `scenarios/[product]/`
 - **Formats**: Add to `formats/`
