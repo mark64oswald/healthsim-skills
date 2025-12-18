@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+
 - [TrialSim] Initial folder structure and product setup
 - [TrialSim] Product SKILL.md with routing and overview
 - [TrialSim] Domain skill: clinical-trials-domain.md
@@ -21,17 +22,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.2.0] - 2024-12-14
 
 ### Changed
+
 - Renamed repository from healthsim-skills to healthsim-workspace
 - Updated all internal references to new repository name
 - Updated README title to "HealthSim Workspace"
 
 ### Fixed
+
 - Broken documentation links in architecture docs
 - Example code in skills.md now references actual files
 
 ## [1.1.0] - 2024-12-13
 
 ### Added
+
 - Oncology scenarios (breast, lung, colorectal cancer)
 - Oncology reference data (ICD-10 codes, medications, regimens)
 - Pediatric scenarios (otitis media, childhood asthma)
@@ -39,12 +43,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Dimensional analytics format documentation
 
 ### Changed
+
 - Enhanced FHIR R4 format documentation
 - Improved cross-domain examples
 
 ## [1.0.0] - 2024-12-09
 
 ### Added
+
 - Initial release
 - Master SKILL.md file
 - PatientSim scenarios (diabetes, heart failure, CKD, maternal health, behavioral health, ED, sepsis, elective joint, ADT)
