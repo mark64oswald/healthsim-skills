@@ -369,14 +369,14 @@ Parameters for natural language customization:
 
 Complementary skills:
 
-- [SKILL.md](SKILL.md) - Core HealthSim routing and overview
-- [patientsim/SKILL.md](patientsim/SKILL.md) - PatientSim clinical scenarios
-- [membersim/SKILL.md](membersim/SKILL.md) - MemberSim claims scenarios
+- [SKILL.md](../../SKILL.md) - Core HealthSim routing and overview
+- [patientsim/SKILL.md](../patientsim/SKILL.md) - PatientSim clinical scenarios
+- [membersim/SKILL.md](../membersim/SKILL.md) - MemberSim claims scenarios
 
 ## Related Documentation
 
-- [State Management Specification](../docs/state-management/specification.md)
-- [State Management User Guide](../docs/state-management/user-guide.md)
+- [State Management Specification](../../docs/state-management/specification.md)
+- [State Management User Guide](../../docs/state-management/user-guide.md)
 
 ## Metadata
 
