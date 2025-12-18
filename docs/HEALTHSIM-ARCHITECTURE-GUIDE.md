@@ -169,11 +169,22 @@ healthsim-common/
 ├── SKILL.md                           # Master entry point (triggers routing)
 ├── README.md                          # Repository overview
 ├── CHANGELOG.md                       # Version history
+├── pyproject.toml                     # Python package configuration
+│
+├── src/                               # Python source code
+│   └── healthsim/                     # Core library package
+│       ├── __init__.py                # Package exports
+│       ├── benefits/                  # Accumulator infrastructure
+│       ├── dimensional/               # Star schema transformers
+│       ├── state/                     # Workspace & provenance tracking
+│       ├── validation/                # Validation framework
+│       └── ...                        # Additional modules
+│
+├── tests/                             # Python unit tests
 │
 ├── docs/                              # Documentation
 │   ├── README.md                      # Documentation index
 │   ├── HEALTHSIM-ARCHITECTURE-GUIDE.md    # This document
-│   ├── HEALTHSIM-DEVELOPMENT-PROCESS.md   # Development workflow
 │   ├── architecture/                  # Architecture deep-dives
 │   ├── extensions/                    # Extension guides
 │   ├── mcp/                          # MCP server documentation
@@ -185,7 +196,15 @@ healthsim-common/
 │   ├── terminology.md                # Healthcare terminology
 │   ├── clinical-rules.md             # Clinical business rules
 │   ├── validation-rules.md           # All validation rules
-│   └── hl7v2-segments.md             # HL7v2 segment definitions
+│   ├── hl7v2-segments.md             # HL7v2 segment definitions
+│   ├── data-models.md                # Entity schemas
+│   ├── clinical-domain.md            # Clinical domain knowledge
+│   ├── generation-patterns.md        # Data generation patterns
+│   ├── mental-health-reference.md    # Mental health codes/rules
+│   ├── oncology-domain.md            # Oncology domain knowledge
+│   ├── pediatric-dosing.md           # Pediatric medication dosing
+│   └── oncology/                     # Oncology reference data
+│       └── README.md
 │
 ├── formats/                           # Output format transformations
 │   ├── fhir-r4.md                    # FHIR R4 bundles/resources
@@ -202,7 +221,10 @@ healthsim-common/
 │   ├── sql.md                        # SQL INSERT statements
 │   └── dimensional-analytics.md      # Star schema for analytics
 │
-├── skills/                         # Domain-specific scenario skills
+├── skills/                            # Domain-specific scenario skills
+│   ├── common/                        # Shared skills
+│   │   └── state-management.md
+│   │
 │   ├── patientsim/
 │   │   ├── SKILL.md                  # PatientSim overview
 │   │   ├── diabetes-management.md
@@ -212,8 +234,18 @@ healthsim-common/
 │   │   ├── ed-chest-pain.md
 │   │   ├── elective-joint.md
 │   │   ├── maternal-health.md
-│   │   ├── oncology.md
-│   │   └── orders-results.md
+│   │   ├── behavioral-health.md
+│   │   ├── adt-workflow.md
+│   │   ├── orders-results.md
+│   │   ├── oncology/                 # Oncology scenarios
+│   │   │   ├── README.md
+│   │   │   ├── breast-cancer.md
+│   │   │   ├── lung-cancer.md
+│   │   │   └── colorectal-cancer.md
+│   │   └── pediatrics/               # Pediatric scenarios
+│   │       ├── README.md
+│   │       ├── acute-otitis-media.md
+│   │       └── childhood-asthma.md
 │   │
 │   ├── membersim/
 │   │   ├── SKILL.md                  # MemberSim overview
@@ -232,20 +264,24 @@ healthsim-common/
 │   │   ├── specialty-pharmacy.md
 │   │   ├── dur-alerts.md
 │   │   ├── formulary-management.md
-│   │   ├── rx-prior-authorization.md
-│   │   ├── rx-accumulators.md
+│   │   ├── rx-prior-auth.md
+│   │   ├── rx-accumulator.md
+│   │   ├── rx-enrollment.md
 │   │   └── manufacturer-programs.md
 │   │
-│   ├── common/                        # Shared skills
-│   │   └── state-management.md
+│   ├── trialsim/                      # (Planned) Clinical trials
+│   │   ├── SKILL.md
+│   │   ├── study-design.md
+│   │   ├── subject-enrollment.md
+│   │   └── cdisc-output.md
 │   │
-│   ├── populationsim/                 # (Planned)
+│   ├── populationsim/                 # (Planned) Population generation
 │   │   ├── SKILL.md
 │   │   ├── census-demographics.md
 │   │   ├── sdoh-factors.md
 │   │   └── geographic-patterns.md
 │   │
-│   └── networksim/                    # (Planned)
+│   └── networksim/                    # (Planned) Provider networks
 │       ├── SKILL.md
 │       ├── provider-networks.md
 │       ├── payer-networks.md
@@ -258,13 +294,16 @@ healthsim-common/
 │   ├── EXTENDING.md                  # Extension tutorial
 │   ├── TROUBLESHOOTING.md            # Common issues
 │   └── examples/                     # Example outputs
-│       ├── patientsim/
-│       ├── membersim/
-│       └── rxmembersim/
+│       ├── README.md
+│       ├── patientsim-examples.md
+│       ├── membersim-examples.md
+│       ├── rxmembersim-examples.md
+│       ├── oncology-examples.md
+│       ├── format-examples.md
+│       └── cross-domain-examples.md
 │
-└── scripts/                           # Helper scripts (minimal Python)
-    ├── validate_output.py            # Output validation
-    └── format_converter.py           # Format transformation helpers
+└── scripts/                           # Helper scripts
+    └── smoke_test.py                 # Integration smoke tests
 ```
 
 ### 4.2 VS Code Workspace Organization
@@ -278,9 +317,11 @@ The `healthsim.code-workspace` file organizes folders for development:
     { "name": "patientsim", "path": "./healthsim-common/skills/patientsim" },
     { "name": "membersim", "path": "./healthsim-common/skills/membersim" },
     { "name": "rxmembersim", "path": "./healthsim-common/skills/rxmembersim" },
-    { "name": "common", "path": "./healthsim-common/skills/common" },
-    { "name": "populationsim", "path": "./healthsim-common/skills/populationsim" },
-    { "name": "networksim", "path": "./healthsim-common/skills/networksim" }
+    { "name": "common", "path": "./healthsim-common/skills/common" }
+    // Planned products (uncomment when implemented):
+    // { "name": "trialsim", "path": "./healthsim-common/skills/trialsim" },
+    // { "name": "populationsim", "path": "./healthsim-common/skills/populationsim" },
+    // { "name": "networksim", "path": "./healthsim-common/skills/networksim" }
   ]
 }
 ```
