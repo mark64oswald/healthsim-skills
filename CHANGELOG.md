@@ -8,6 +8,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- [TrialSim] Initial folder structure and product setup
+- [TrialSim] Product SKILL.md with routing and overview
+- [TrialSim] Domain skill: clinical-trials-domain.md
+- [TrialSim] Domain skill placeholder: recruitment-enrollment.md
+- [TrialSim] Scenario skill: phase3-pivotal.md
+- [TrialSim] Quick start example: trialsim-quickstart.md
+- [TrialSim] Added to master SKILL.md product routing table
 - Comprehensive documentation hub (docs/README.md)
 - Link audit and fixes across all documentation
 

@@ -16,6 +16,7 @@ HealthSim generates realistic synthetic healthcare data through natural conversa
 | **PatientSim** | Clinical/EMR | Patients, encounters, diagnoses, procedures, labs, vitals, medications |
 | **MemberSim** | Payer/Claims | Members, professional claims, facility claims, payments, accumulators |
 | **RxMemberSim** | Pharmacy/PBM | Prescriptions, pharmacy claims, formularies, DUR alerts, prior auths |
+| **TrialSim** | Clinical Trials | Studies, sites, subjects, visits, adverse events, efficacy, CDISC formats |
 
 ## Quick Start
 
@@ -104,6 +105,19 @@ Load these for pharmacy and PBM data:
 | **Manufacturer Programs** | copay card, patient assistance | Copay cards, PAPs, hub services |
 
 See: [scenarios/rxmembersim/](scenarios/rxmembersim/) for detailed skills
+
+### TrialSim Scenarios
+
+Load these for clinical trial data:
+
+| Scenario | Use When | Key Elements |
+|----------|----------|--------------|
+| **Phase III Pivotal** | Phase 3, pivotal, registration, NDA, BLA | Multi-site enrollment, randomization, efficacy endpoints |
+| **Phase I Dose Escalation** | Phase 1, dose escalation, first-in-human | MTD, DLT, PK sampling (planned) |
+| **Phase II PoC** | Phase 2, proof of concept, dose finding | Efficacy signal, dose selection (planned) |
+| **Adaptive Design** | adaptive, platform, basket, umbrella | Dynamic allocation, interim analyses (planned) |
+
+See: [scenarios/trialsim/](scenarios/trialsim/) for detailed skills
 
 ## Output Formats
 
