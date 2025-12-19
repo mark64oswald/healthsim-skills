@@ -50,3 +50,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Saved scenarios (may contain synthetic patient data)
+scenarios/
