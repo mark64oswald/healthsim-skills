@@ -11,11 +11,14 @@ HealthSim generates realistic synthetic healthcare data through natural conversa
 
 **Products:**
 
-| Product | Domain | What It Generates |
-|---------|--------|-------------------|
-| **PatientSim** | Clinical/EMR | Patients, encounters, diagnoses, procedures, labs, vitals, medications |
-| **MemberSim** | Payer/Claims | Members, professional claims, facility claims, payments, accumulators |
-| **RxMemberSim** | Pharmacy/PBM | Prescriptions, pharmacy claims, formularies, DUR alerts, prior auths |
+| Product | Domain | What It Generates | Status |
+|---------|--------|-------------------|--------|
+| **PatientSim** | Clinical/EMR | Patients, encounters, diagnoses, procedures, labs, vitals, medications | Active |
+| **MemberSim** | Payer/Claims | Members, professional claims, facility claims, payments, accumulators | Active |
+| **RxMemberSim** | Pharmacy/PBM | Prescriptions, pharmacy claims, formularies, DUR alerts, prior auths | Active |
+| **TrialSim** | Clinical Trials | Studies, sites, subjects, visits, adverse events, efficacy, CDISC output | In Development |
+| **PopulationSim** | Demographics/SDOH | Population cohorts, demographic distributions, SDOH factors | Planned |
+| **NetworkSim** | Provider Networks | Providers, facilities, networks, coverage patterns, contracts | Planned |
 
 ## Quick Start
 
@@ -105,6 +108,26 @@ Load these for pharmacy and PBM data:
 
 See: [skills/rxmembersim/](skills/rxmembersim/) for detailed skills
 
+### TrialSim Scenarios (In Development)
+
+Load these for clinical trial data generation:
+
+| Scenario | Use When | Key Elements |
+|----------|----------|--------------|
+| **Clinical Trials Domain** | trial concepts, phases, CDISC | Phase definitions, regulatory, standards |
+| **Recruitment & Enrollment** | screening, enrollment, consent | Screening funnel, I/E criteria, randomization |
+| **Phase 3 Pivotal** | Phase 3, pivotal, registration trial | Multi-site, endpoints, safety monitoring |
+| **Oncology Trials** | oncology trial, tumor endpoints | RECIST, survival endpoints, biomarkers |
+
+See: [skills/trialsim/](skills/trialsim/) for detailed skills
+
+### PopulationSim & NetworkSim (Planned)
+
+These products are in planning:
+
+- **PopulationSim**: Census-based demographics, SDOH factors - [skills/populationsim/](skills/populationsim/)
+- **NetworkSim**: Provider networks, facilities, contracts - [skills/networksim/](skills/networksim/)
+
 ## Output Formats
 
 ### Default: JSON
@@ -125,6 +148,8 @@ Request specific formats:
 | **X12 837** | "as 837", "X12 claim", "EDI format" | Claims submission |
 | **X12 835** | "as 835", "remittance", "ERA" | Payment posting |
 | **NCPDP D.0** | "as NCPDP", "pharmacy claim format" | Pharmacy transactions |
+| **CDISC SDTM** | "as SDTM", "SDTM domains" | Clinical trial regulatory submission |
+| **CDISC ADaM** | "as ADaM", "analysis datasets" | Clinical trial statistical analysis |
 
 See: [formats/](formats/) for transformation skills
 

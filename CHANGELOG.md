@@ -9,10 +9,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[Workspace]** Consolidated to single unified repository (healthsim-workspace)
+- **[Workspace]** Product Python packages merged into packages/ folder
+  - packages/patientsim/ - PatientSim MCP server and utilities
+  - packages/membersim/ - MemberSim MCP server and utilities
+  - packages/rxmembersim/ - RxMemberSim MCP server and utilities
+- **[TrialSim]** Folder structure for clinical trials (skills/trialsim/)
+- **[TrialSim]** CDISC format files (formats/cdisc-sdtm.md, formats/cdisc-adam.md)
+- **[PopulationSim]** Placeholder structure (skills/populationsim/)
+- **[NetworkSim]** Placeholder structure (skills/networksim/)
+- **[Docs]** HEALTHSIM-PROJECT-INSTRUCTIONS.md - condensed Claude project instructions
 - Comprehensive documentation hub (docs/README.md)
 - Link audit and fixes across all documentation
 - Skills common/ directory for shared skills
 - State management skill moved to skills/common/
+
+### Changed
+
+- **[Workspace]** Repository renamed from healthsim-common to healthsim-workspace
+- **[Workspace]** VS Code workspace updated with all product packages
+- **[Workspace]** GitHub remote updated to healthsim-workspace
 
 ### Fixed
 
@@ -64,7 +80,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Skills format specification (v1.0 and v2.0)
 - Extension framework documentation
 
-[Unreleased]: https://github.com/mark64oswald/healthsim-common/compare/v1.2.0...HEAD
-[1.2.0]: https://github.com/mark64oswald/healthsim-common/compare/v1.1.0...v1.2.0
-[1.1.0]: https://github.com/mark64oswald/healthsim-common/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/mark64oswald/healthsim-common/releases/tag/v1.0.0
+[Unreleased]: https://github.com/mark64oswald/healthsim-workspace/compare/v1.2.0...HEAD
+[1.2.0]: https://github.com/mark64oswald/healthsim-workspace/compare/v1.1.0...v1.2.0
+[1.1.0]: https://github.com/mark64oswald/healthsim-workspace/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/mark64oswald/healthsim-workspace/releases/tag/v1.0.0

@@ -1,12 +1,12 @@
-# HealthSim Common
+# HealthSim Workspace
 
-**The shared foundation for the HealthSim product family.**
+**The unified repository for the HealthSim product family.**
 
-This repository contains everything shared across HealthSim products:
+This repository contains everything for HealthSim:
 - **Skills** - Structured markdown documents that Claude uses to generate clinically coherent healthcare data
-- **Formats** - Output transformation specs (FHIR, C-CDA, HL7v2, X12, NCPDP)
+- **Formats** - Output transformation specs (FHIR, C-CDA, HL7v2, X12, NCPDP, CDISC)
 - **References** - Shared terminology, code systems, and clinical rules
-- **Python** - Core utilities for generation, validation, state management, and dimensional output
+- **Packages** - Python infrastructure (MCP servers, validation, dimensional output)
 
 ---
 
