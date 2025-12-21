@@ -15,8 +15,9 @@ Start here to verify your setup and learn the basics.
 | Simple Patient | "Generate a patient" | Basic PatientSim output |
 | Office Visit Claim | "Generate a professional claim for an office visit" | Basic MemberSim output |
 | Prescription Fill | "Generate a pharmacy claim for lisinopril" | Basic RxMemberSim output |
+| Phase 3 Trial | "Generate a Phase 3 oncology trial with 20 subjects" | Basic TrialSim output |
 
-See: [PatientSim Example 1](patientsim-examples.md#example-1-simple-patient), [MemberSim Example 1](membersim-examples.md#example-1-simple-office-visit-claim), [RxMemberSim Example 1](rxmembersim-examples.md#example-1-simple-generic-prescription)
+See: [PatientSim Example 1](patientsim-examples.md#example-1-simple-patient), [MemberSim Example 1](membersim-examples.md#example-1-simple-office-visit-claim), [RxMemberSim Example 1](rxmembersim-examples.md#example-1-simple-generic-prescription), [TrialSim Quick Start](trialsim-examples.md#quick-start-examples)
 
 ---
 
@@ -31,6 +32,20 @@ Learn to generate data for specific clinical conditions.
 | **CKD** | "Generate a patient with Stage 4 CKD" | [PatientSim Example 4](patientsim-examples.md#example-4-ckd-patient) |
 | **Oncology** | "Generate a Stage IIA breast cancer patient" | [Oncology Examples](oncology-examples.md) |
 | **Behavioral Health** | "Generate a psychotherapy claim for depression" | [MemberSim](membersim-examples.md) |
+
+---
+
+### Level 2.5: Clinical Trials (15 minutes)
+
+Generate clinical trial data with CDISC compliance.
+
+| Scenario | Example Prompt | Guide |
+|----------|----------------|-------|
+| **Phase 3 Trial** | "Generate Phase 3 oncology trial with 100 subjects" | [TrialSim Quick Start](trialsim-examples.md#quick-start-examples) |
+| **Dose Escalation** | "Generate Phase 1 3+3 dose escalation study" | [Phase 1 Examples](trialsim-examples.md#phase-i-dose-escalation-examples) |
+| **Adverse Events** | "Generate AEs with MedDRA coding for 50 subjects" | [TrialSim AE Example](trialsim-examples.md#example-2-generate-adverse-events) |
+| **SDTM Output** | "Generate DM and AE domains as SDTM" | [SDTM Domain Examples](trialsim-examples.md#sdtm-domain-output-examples) |
+| **Trial Analytics** | "Generate trial data as star schema for DuckDB" | [Dimensional Analytics](trialsim-examples.md#dimensional-analytics-examples) |
 
 ---
 
@@ -84,7 +99,9 @@ Create realistic end-to-end test data spanning multiple products.
 | **Hospitalization Episode** | Inpatient admission, follow-up, discharge meds | [Cross-Domain Example 2](cross-domain-examples.md#example-2-hospitalization-with-follow-up) |
 | **Prior Auth Flow** | Rejection → PA submission → Approval → Fill | [Cross-Domain Example 3](cross-domain-examples.md#example-3-prior-auth-flow) |
 | **Value-Based Care** | Patient with quality measures and care gaps | [Cross-Domain Example 4](cross-domain-examples.md#example-4-value-based-care-report) |
-| **Oncology Journey** | Cancer patient with treatment, claims, pharmacy | [Cross-Domain Example 5](cross-domain-examples.md#example-5-oncology-patient-journey) |
+| **Trial + EMR Linkage** | Trial subject linked to PatientSim medical history | [Cross-Domain Example 5](cross-domain-examples.md#example-5-clinical-trial-subject-with-emr-linkage) |
+| **Trial + Provider Network** | Trial site linked to NetworkSim facilities | [Cross-Domain Example 6](cross-domain-examples.md#example-6-trial-subject-with-site-provider-linkage) |
+| **Trial Analytics** | Cross-product dimensional analytics | [Cross-Domain Example 7](cross-domain-examples.md#example-7-cross-product-dimensional-analytics) |
 
 ---
 
@@ -95,9 +112,10 @@ Create realistic end-to-end test data spanning multiple products.
 | [PatientSim Examples](patientsim-examples.md) | Clinical data generation | Patients, diagnoses, medications, labs |
 | [MemberSim Examples](membersim-examples.md) | Claims and payer data | Professional, facility, adjudication |
 | [RxMemberSim Examples](rxmembersim-examples.md) | Pharmacy data | Prescriptions, DUR alerts, copay cards |
+| [TrialSim Examples](trialsim-examples.md) | Clinical trial data | SDTM domains, AEs, efficacy, sites |
 | [Oncology Examples](oncology-examples.md) | Cancer-specific scenarios | Staging, treatment, biomarkers |
 | [Cross-Domain Examples](cross-domain-examples.md) | Multi-product scenarios | End-to-end test data |
-| [Format Examples](format-examples.md) | Output transformations | FHIR, HL7v2, X12, C-CDA, CSV |
+| [Format Examples](format-examples.md) | Output transformations | FHIR, HL7v2, X12, C-CDA, SDTM, CSV |
 
 ---
 
@@ -125,6 +143,17 @@ Generate a colorectal cancer patient with liver metastases
 Generate a sepsis patient with ICU admission
 Generate an ED chest pain patient with HEART score workup
 Generate a hip replacement patient with pre-op and post-op care
+```
+
+### Clinical Trials
+
+```text
+Generate a Phase 3 oncology trial with 200 subjects randomized 2:1
+Generate adverse events with MedDRA coding for 100 subjects
+Generate DM and AE domains as SDTM for a Phase 2 trial
+Generate a Phase 1 dose escalation study with 3+3 design
+Generate tumor response data with RECIST 1.1 assessments
+Generate trial data as star schema for DuckDB analytics
 ```
 
 ### Maternal & Pediatric

@@ -122,13 +122,19 @@ Generate a paid professional claim for a cardiology office visit
 Generate a pharmacy claim for lisinopril with a drug interaction alert
 ```
 
-### Example 4: Cross-Domain Generation
+### Example 4: Generate a Clinical Trial (TrialSim)
+
+```
+Generate a Phase 3 oncology trial with 50 subjects
+```
+
+### Example 5: Cross-Domain Generation
 
 ```
 Generate a diabetic patient with their recent office visit claim and pharmacy claims for their medications
 ```
 
-### Example 5: Format Transformation
+### Example 6: Format Transformation
 
 ```
 Generate an HL7 ADT^A01 admission message for a patient with pneumonia
@@ -332,6 +338,101 @@ See [examples/oncology-examples.md](examples/oncology-examples.md) for detailed 
 
 ---
 
+## Hello, Clinical Trials!
+
+TrialSim generates realistic synthetic clinical trial data for testing CDISC-compliant systems, regulatory submission pipelines, and clinical data management tools.
+
+> **Note:** TrialSim generates synthetic clinical trial data only. This is test data for software development - the trial designs, adverse event patterns, and efficacy results are simulated.
+
+### Phase 3 Pivotal Trial
+
+```
+Generate a Phase 3 oncology trial with 200 subjects randomized 2:1 to treatment vs placebo
+```
+
+This generates a complete Phase 3 trial with:
+
+- Study design (randomization ratio, masking, endpoints)
+- 20 sites across multiple countries
+- 200 subjects with demographics and baseline characteristics
+- Treatment arm assignments
+- Subject disposition (completers, discontinuations)
+
+### Adverse Events with MedDRA Coding
+
+```
+Generate adverse events for a Phase III immunotherapy trial with 150 subjects
+```
+
+This generates safety data with:
+
+- Treatment-emergent adverse events (TEAEs)
+- Serious adverse events (SAEs)
+- MedDRA hierarchy (SOC → HLGT → HLT → PT → LLT)
+- CTCAE grades and causality assessments
+
+### SDTM Domain Output
+
+```
+Generate DM and AE domains for 50 subjects as SDTM
+```
+
+This generates CDISC-compliant datasets:
+
+- Demographics (DM) with USUBJID, ARM, RFSTDTC
+- Adverse Events (AE) with MedDRA coding
+- Ready for regulatory submission testing
+
+### Phase 1 Dose Escalation
+
+```
+Generate a Phase 1 dose escalation study using 3+3 design with 5 dose levels
+```
+
+This generates first-in-human trial data:
+
+- Cohort-by-cohort dose escalation
+- Dose-limiting toxicities (DLTs)
+- Maximum tolerated dose (MTD) determination
+- Pharmacokinetic sampling schedule
+
+### Efficacy with RECIST
+
+```
+Generate tumor response data for an oncology trial with RECIST 1.1 assessments
+```
+
+This generates efficacy endpoints:
+
+- Target lesion measurements
+- Response categories (CR, PR, SD, PD)
+- Best overall response
+- Change from baseline calculations
+
+### Star Schema for Trial Analytics
+
+```
+Generate Phase III trial with 100 subjects as star schema for DuckDB
+```
+
+This creates dimensional analytics tables:
+
+- **Dimensions**: dim_study, dim_site, dim_subject, dim_treatment_arm, dim_meddra
+- **Facts**: fact_enrollment, fact_adverse_event, fact_efficacy, fact_visit
+- Ready for enrollment dashboards, safety surveillance, site performance
+
+### Load to Databricks
+
+```
+Generate Phase II CNS trial data for Databricks, catalog 'dev_catalog', schema 'gold'
+```
+
+Claude will create tables and load trial data to your enterprise analytics environment.
+
+See [examples/trialsim-examples.md](examples/trialsim-examples.md) for comprehensive clinical trial examples.
+
+---
+
 ## Hello, Analytics!
 
 HealthSim data can be loaded directly into analytics databases. You have flexibility in how you structure the data - from simple flat tables to full star schemas.
@@ -473,14 +574,21 @@ healthsim-common/
 │   │   ├── professional-claims.md
 │   │   ├── facility-claims.md
 │   │   └── ...
-│   └── rxmembersim/           # Pharmacy/PBM data generation
-│       ├── retail-pharmacy.md
-│       ├── dur-alerts.md
-│       └── ...
+│   ├── rxmembersim/           # Pharmacy/PBM data generation
+│   │   ├── retail-pharmacy.md
+│   │   ├── dur-alerts.md
+│   │   └── ...
+│   └── trialsim/              # Clinical trials data generation
+│       ├── phase1-dose-escalation.md
+│       ├── phase3-pivotal.md
+│       ├── domains/           # SDTM domains (DM, AE, LB, etc.)
+│       └── therapeutic-areas/ # Oncology, CV, CNS, CGT
 ├── formats/                    # Output format transformations
 │   ├── fhir-r4.md
 │   ├── hl7v2-adt.md
 │   ├── x12-837.md
+│   ├── cdisc-sdtm.md          # CDISC SDTM for trials
+│   ├── cdisc-adam.md          # CDISC ADaM for trials
 │   ├── dimensional-analytics.md  # DuckDB/Databricks star schemas
 │   └── ...
 ├── references/                 # Code systems and rules
