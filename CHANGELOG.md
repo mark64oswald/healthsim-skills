@@ -9,6 +9,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[Hello-HealthSim]** Enhanced TrialSim Examples - Phase 3
+  - Complete rewrite of trialsim-examples.md (328 → 806 lines)
+  - Phase I examples: 3+3, BOIN, CRM, SAD/MAD, expansion cohorts
+  - Phase II examples: Simon's two-stage, minimax, MCP-Mod dose-ranging
+  - Phase III examples: Superiority, non-inferiority, multi-regional, DSMB
+  - All 8 SDTM domain output examples with CSV format
+  - ADaM analysis dataset examples (ADSL, ADAE, ADTTE, ADLB)
+  - Comprehensive quick reference tables and tips
+
+- **[Formats]** Enhanced CDISC ADaM Format - Phase 3
+  - Complete rewrite of formats/cdisc-adam.md (120 → 633 lines)
+  - Full ADSL variable mappings with all population flags
+  - ADAE with treatment-emergent and first occurrence flags
+  - ADTTE for survival analysis (OS, PFS, DOR, TTR)
+  - ADLB with baseline, change from baseline, shift analysis
+  - ADTR for tumor response (RECIST 1.1)
+  - ADRS for best overall response analysis
+  - Derivation rules and transformation examples
+
 - **[Formats]** Enhanced CDISC SDTM Format - Batch 4
   - Complete rewrite of formats/cdisc-sdtm.md (112 → 702 lines)
   - Added all 8 SDTM domain mappings: DM, AE, CM, LB, VS, EX, DS, MH
