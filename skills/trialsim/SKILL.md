@@ -152,8 +152,8 @@ Trial subjects are patients with additional trial-specific data:
 | domains/ (DM, AE, VS, LB, CM, EX, DS, MH) | ✅ Complete |
 | therapeutic-areas/ | ✅ Complete |
 | rwe/ | ✅ Complete |
-| phase1-dose-escalation.md | 📋 Planned |
-| phase2-proof-of-concept.md | 📋 Planned |
+| phase1-dose-escalation.md | ✅ Complete |
+| phase2-proof-of-concept.md | ✅ Complete |
 
 ## Related Skills
 
