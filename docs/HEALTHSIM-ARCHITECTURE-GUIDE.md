@@ -322,26 +322,45 @@ description: "{What this skill does}. Use when user requests: {trigger 1}, {trig
 
 ### 8.3 Cross-Product Integration
 
-When developing skills that span multiple products (e.g., therapeutic areas that exist in both PatientSim and TrialSim), follow these patterns:
+When generating data that spans multiple products (e.g., a patient journey from clinical encounter to claims to pharmacy), follow these patterns:
+
+**Identity Correlation:**
+See `references/data-models.md` → "Cross-Product Identity Correlation" section for:
+- Entity inheritance model (Person → Patient/Member/RxMember)
+- Identity linking keys (SSN as universal correlator)
+- Cross-product identity JSON pattern
+- Event correlation timing across products
 
 **Shared Domain Knowledge:**
 - Place foundational concepts in `references/` (e.g., `oncology-domain.md`)
 - Reference data (codes, medications) goes in `references/{domain}/`
 
 **Cross-Referencing:**
-- Add explicit links in "Related Skills" sections
-- Include integration pattern notes explaining when to use each product's skill
-- Example: PatientSim oncology → clinical care journeys; TrialSim oncology → trial endpoints
+- All scenario skills include "Related Skills" sections with cross-product links
+- Each link includes an integration pattern note explaining when to use each product's skill
 
 **Current Cross-Product Mappings:**
 
-| Domain | PatientSim | TrialSim | Shared Reference |
-|--------|------------|----------|------------------|
-| Oncology | `oncology/*.md` | `therapeutic-areas/oncology.md` | `references/oncology-domain.md` |
-| Cardiovascular | `heart-failure.md` | `therapeutic-areas/cardiovascular.md` | - |
-| CNS/Behavioral | `behavioral-health.md` | `therapeutic-areas/cns.md` | - |
+| Domain | PatientSim | MemberSim | RxMemberSim | TrialSim | Shared Reference |
+|--------|------------|-----------|-------------|----------|------------------|
+| Oncology | `oncology/*.md` | `facility-claims.md` | `specialty-pharmacy.md` | `therapeutic-areas/oncology.md` | `references/oncology-domain.md` |
+| Cardiovascular | `heart-failure.md`, `ed-chest-pain.md` | `facility-claims.md` | `retail-pharmacy.md` | `therapeutic-areas/cardiovascular.md` | - |
+| CNS/Behavioral | `behavioral-health.md` | `behavioral-health.md` | `retail-pharmacy.md` | `therapeutic-areas/cns.md` | `references/mental-health-reference.md` |
+| Diabetes | `diabetes-management.md` | `professional-claims.md` | `retail-pharmacy.md`, `specialty-pharmacy.md` | - | - |
+| CKD | `chronic-kidney-disease.md` | `facility-claims.md` | `specialty-pharmacy.md` | - | - |
+| Maternal | `maternal-health.md` | `facility-claims.md` | `retail-pharmacy.md` | - | - |
+| Surgical | `elective-joint.md` | `facility-claims.md`, `prior-authorization.md` | `retail-pharmacy.md` | - | - |
 
-**Best Practice:** When creating a new scenario skill, check if related skills exist in other products. Add bidirectional cross-references.
+**Integration Pattern Examples:**
+
+| Scenario | PatientSim | → MemberSim | → RxMemberSim |
+|----------|------------|-------------|---------------|
+| HF Admission | Inpatient encounter, meds, labs | Facility claim (DRG 291-293) | Discharge Rx fills (0-3 days) |
+| Diabetes Visit | Office encounter, A1C | Professional claim (99214) | Rx fills same day |
+| Oncology | Treatment regimen | Infusion claims (J-codes) | Oral oncolytic fills |
+| Joint Replacement | Surgical episode | Prior auth → Facility claim (DRG 469-470) | Post-op pain meds |
+
+**Best Practice:** When creating a new scenario skill, check if related skills exist in other products. Add bidirectional cross-references with integration pattern guidance.
 
 ### 8.4 Checklist
 

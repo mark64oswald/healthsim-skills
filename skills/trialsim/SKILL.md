@@ -83,11 +83,32 @@ Activate TrialSim when user mentions:
 
 ## Integration with Other Products
 
-| From | To | Integration |
-|------|-----|-------------|
-| PatientSim | TrialSim | Patient → Subject (add consent, randomization) |
-| NetworkSim | TrialSim | Provider → Investigator (add credentials, training) |
-| PopulationSim | TrialSim | Demographics → Recruitment pool |
+TrialSim integrates with other HealthSim products for complete clinical trial data:
+
+| From | To | Integration Pattern |
+|------|-----|---------------------|
+| PatientSim | TrialSim | Patient → Subject (add consent, randomization, protocol visits) |
+| NetworkSim | TrialSim | Provider → Investigator (add credentials, training, delegation log) |
+| PopulationSim | TrialSim | Demographics → Recruitment pool (geographic, demographic eligibility) |
+
+### Cross-Product: PatientSim
+
+Trial subjects are patients with additional trial-specific data:
+
+- [../patientsim/oncology/](../patientsim/oncology/) - Oncology trial subjects
+- [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - CV outcomes trial subjects
+- [../patientsim/behavioral-health.md](../patientsim/behavioral-health.md) - CNS trial subjects
+- [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Metabolic trial subjects
+
+> **Integration Pattern:** Use PatientSim for baseline clinical characteristics. TrialSim adds protocol-specific assessments (RECIST, NYHA class changes), randomization, and SDTM-formatted data.
+
+### Therapeutic Area Skills
+
+| Area | PatientSim Skill | TrialSim Skill |
+|------|------------------|----------------|
+| Oncology | `oncology/*.md` | `therapeutic-areas/oncology.md` |
+| Cardiovascular | `heart-failure.md` | `therapeutic-areas/cardiovascular.md` |
+| CNS/Neurology | `behavioral-health.md` | `therapeutic-areas/cns.md` |
 
 ## Development Status
 

@@ -380,6 +380,7 @@ See [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) for transformation.
 
 ## Related Skills
 
+### RxMemberSim Scenarios
 - [retail-pharmacy.md](retail-pharmacy.md) - Standard retail fills
 - [specialty-pharmacy.md](specialty-pharmacy.md) - Specialty drug distribution
 - [dur-alerts.md](dur-alerts.md) - Drug utilization review
@@ -388,6 +389,45 @@ See [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) for transformation.
 - [rx-prior-auth.md](rx-prior-auth.md) - Pharmacy prior authorization
 - [rx-accumulator.md](rx-accumulator.md) - Pharmacy accumulator tracking
 - [manufacturer-programs.md](manufacturer-programs.md) - Copay cards, PAPs, hub programs
-- [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) - NCPDP format
+
+### Cross-Product: PatientSim (Clinical)
+
+RxMemberSim pharmacy claims correspond to PatientSim medication orders:
+
+| RxMemberSim Skill | PatientSim Scenarios | Integration |
+|-------------------|---------------------|-------------|
+| [retail-pharmacy.md](retail-pharmacy.md) | Chronic disease meds, discharge Rx | Fill date +0-3 days from order/discharge |
+| [specialty-pharmacy.md](specialty-pharmacy.md) | Oncology, biologics | Limited distribution, PA often required |
+| [dur-alerts.md](dur-alerts.md) | Multi-drug regimens | DDI based on patient's med list |
+| [rx-prior-auth.md](rx-prior-auth.md) | High-cost drugs | Clinical criteria from PatientSim |
+
+**PatientSim Scenario Links:**
+- [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Oral agents, insulin, GLP-1s
+- [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - GDMT medications
+- [../patientsim/chronic-kidney-disease.md](../patientsim/chronic-kidney-disease.md) - ESAs, phosphate binders
+- [../patientsim/behavioral-health.md](../patientsim/behavioral-health.md) - Psychiatric medications
+- [../patientsim/oncology/](../patientsim/oncology/) - Oral oncolytics, supportive care
+
+> **Integration Pattern:** Generate medication orders in PatientSim, then use RxMemberSim to model pharmacy fills. Match NDCs, use appropriate fill timing (retail: same day; specialty: +1-7 days), and apply formulary/PA rules.
+
+### Cross-Product: MemberSim (Claims)
+
+Pharmacy and medical benefits are often coordinated:
+
+| RxMemberSim Skill | MemberSim Skill | Integration |
+|-------------------|-----------------|-------------|
+| [formulary-management.md](formulary-management.md) | [plan-benefits.md](../membersim/plan-benefits.md) | Coordinated benefit design |
+| [rx-accumulator.md](rx-accumulator.md) | [accumulator-tracking.md](../membersim/accumulator-tracking.md) | Combined deductible/OOP |
+| [rx-prior-auth.md](rx-prior-auth.md) | [prior-authorization.md](../membersim/prior-authorization.md) | Pharmacy vs. medical PA |
+| [rx-enrollment.md](rx-enrollment.md) | [enrollment-eligibility.md](../membersim/enrollment-eligibility.md) | Synchronized coverage |
+
+> **Integration Pattern:** For integrated medical+Rx plans, pharmacy costs count toward combined OOP maximum. Ensure coverage dates and accumulator totals are synchronized.
+
+### Output Formats
+- [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) - NCPDP D.0 format
+- [../../formats/csv.md](../../formats/csv.md) - CSV export
+- [../../formats/sql.md](../../formats/sql.md) - SQL export
+
+### Reference Data
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
 - [../../references/code-systems.md](../../references/code-systems.md) - NDC, GPI, NCPDP codes

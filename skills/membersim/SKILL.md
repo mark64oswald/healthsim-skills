@@ -381,15 +381,38 @@ Key oncology claim elements:
 - [accumulator-tracking.md](accumulator-tracking.md) - Cost sharing tracking
 - [value-based-care.md](value-based-care.md) - VBC, HEDIS, risk adjustment
 
-### Cross-Product: PatientSim Oncology
-- [../patientsim/oncology/](../patientsim/oncology/) - Clinical oncology patient generation
-- [../patientsim/oncology/breast-cancer.md](../patientsim/oncology/breast-cancer.md) - Breast cancer clinical data
-- [../patientsim/oncology/lung-cancer.md](../patientsim/oncology/lung-cancer.md) - Lung cancer clinical data
-- [../patientsim/oncology/colorectal-cancer.md](../patientsim/oncology/colorectal-cancer.md) - Colorectal cancer clinical data
+### Cross-Product: PatientSim (Clinical)
 
-### Cross-Product: RxMemberSim
-- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - Oral oncolytic claims
-- [../rxmembersim/rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) - Pharmacy PA for oncology drugs
+MemberSim claims correspond to PatientSim clinical encounters:
+
+| MemberSim Skill | PatientSim Scenarios | Integration |
+|-----------------|---------------------|-------------|
+| [professional-claims.md](professional-claims.md) | Office visits, consults | Match E&M codes to encounter complexity |
+| [facility-claims.md](facility-claims.md) | Inpatient, ED, surgery | Match DRG to admission diagnoses |
+| [prior-authorization.md](prior-authorization.md) | Elective procedures | PA approved → procedure scheduled |
+| [behavioral-health.md](behavioral-health.md) | Psychiatric care | Match visit types and diagnoses |
+
+**PatientSim Scenario Links:**
+- [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - HF admission claims
+- [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Diabetes office visit claims
+- [../patientsim/elective-joint.md](../patientsim/elective-joint.md) - Surgical episode claims
+- [../patientsim/oncology/](../patientsim/oncology/) - Oncology infusion claims
+- [../patientsim/behavioral-health.md](../patientsim/behavioral-health.md) - Behavioral health claims
+
+> **Integration Pattern:** Generate clinical encounter in PatientSim first, then use MemberSim to create corresponding claims with matching service dates, diagnosis codes, and procedures.
+
+### Cross-Product: RxMemberSim (Pharmacy)
+
+Medical and pharmacy benefits are often coordinated:
+
+| MemberSim Skill | RxMemberSim Skill | Integration |
+|-----------------|-------------------|-------------|
+| [plan-benefits.md](plan-benefits.md) | [formulary-management.md](../rxmembersim/formulary-management.md) | Coordinated benefit design |
+| [accumulator-tracking.md](accumulator-tracking.md) | [rx-accumulator.md](../rxmembersim/rx-accumulator.md) | Combined deductible/OOP |
+| [prior-authorization.md](prior-authorization.md) | [rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) | Medical vs. pharmacy PA |
+| [enrollment-eligibility.md](enrollment-eligibility.md) | [rx-enrollment.md](../rxmembersim/rx-enrollment.md) | Synchronized coverage |
+
+> **Integration Pattern:** For integrated medical+Rx benefits, ensure accumulators are synchronized and coverage dates match. Some specialty drugs are covered under medical benefit (infused) vs. pharmacy benefit (oral).
 
 ### Output Formats
 - [../../formats/x12-834.md](../../formats/x12-834.md) - X12 enrollment format

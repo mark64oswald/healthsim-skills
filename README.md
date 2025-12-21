@@ -61,6 +61,43 @@ The getting started guide includes:
 
 ---
 
+## Cross-Product Integration
+
+HealthSim products work together to generate complete healthcare data journeys:
+
+```
+PatientSim (Clinical)  →  MemberSim (Claims)  →  RxMemberSim (Pharmacy)
+     │                         │                        │
+     └─────────────────────────┼────────────────────────┘
+                               │
+                          TrialSim (if enrolled in clinical trial)
+```
+
+### Example: Heart Failure Patient Journey
+
+| Day | Product | Event | Output |
+|-----|---------|-------|--------|
+| 0 | PatientSim | ED visit, HF diagnosis | Encounter, labs, meds |
+| 3 | PatientSim | Inpatient discharge | Discharge summary |
+| 5 | MemberSim | Facility claim | 837I (DRG 291) |
+| 3 | RxMemberSim | Discharge Rx fills | NCPDP claims |
+| 30 | PatientSim | Cardiology follow-up | Office encounter |
+| 32 | MemberSim | Professional claim | 837P (99214) |
+
+### Identity Correlation
+
+The same person can exist across all products using a common identity pattern. See `references/data-models.md` → "Cross-Product Identity Correlation" for:
+- Entity inheritance (Person → Patient/Member/RxMember)
+- Identity linking keys (SSN as universal correlator)
+- Event correlation timing
+
+### Learn More
+
+- [docs/HEALTHSIM-ARCHITECTURE-GUIDE.md](docs/HEALTHSIM-ARCHITECTURE-GUIDE.md) - Section 8.3: Cross-Product Integration
+- [docs/CROSS-PRODUCT-INTEGRATION-GAPS.md](docs/CROSS-PRODUCT-INTEGRATION-GAPS.md) - Integration roadmap
+
+---
+
 ## Repository Structure
 
 ```

@@ -232,6 +232,42 @@ Claude combines patterns from multiple scenario skills to generate a coherent pa
 - [oncology/lung-cancer.md](oncology/lung-cancer.md) - Lung cancer scenarios (NSCLC/SCLC)
 - [oncology/colorectal-cancer.md](oncology/colorectal-cancer.md) - Colorectal cancer scenarios
 
+### Cross-Product: MemberSim (Claims)
+
+PatientSim clinical encounters generate corresponding claims in MemberSim:
+
+| PatientSim Scenario | MemberSim Skill | Typical Timing |
+|---------------------|-----------------|----------------|
+| Office visits | [professional-claims.md](../membersim/professional-claims.md) | Same day |
+| Inpatient stays | [facility-claims.md](../membersim/facility-claims.md) | +2-14 days |
+| Surgeries | [prior-authorization.md](../membersim/prior-authorization.md), [facility-claims.md](../membersim/facility-claims.md) | PA before, claim after |
+| Behavioral health | [behavioral-health.md](../membersim/behavioral-health.md) | Same day |
+
+> **Integration Pattern:** Generate clinical encounter in PatientSim first, then use MemberSim to create corresponding claims with matching dates, diagnoses, and procedures.
+
+### Cross-Product: RxMemberSim (Pharmacy)
+
+PatientSim medication orders generate prescription fills in RxMemberSim:
+
+| PatientSim Scenario | RxMemberSim Skill | Typical Timing |
+|---------------------|-------------------|----------------|
+| Chronic disease meds | [retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) | Same day or +1-3 days |
+| Discharge meds | [retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) | +0-3 days post-discharge |
+| Specialty drugs | [specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) | +1-7 days |
+| High-cost drugs | [rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) | PA required first |
+
+> **Integration Pattern:** Generate medication orders in PatientSim, then use RxMemberSim to model pharmacy fills with matching NDCs and appropriate fill timing.
+
+### Cross-Product: TrialSim (Clinical Trials)
+
+For patients enrolled in clinical trials:
+
+- [../trialsim/therapeutic-areas/oncology.md](../trialsim/therapeutic-areas/oncology.md) - Oncology trial endpoints
+- [../trialsim/therapeutic-areas/cardiovascular.md](../trialsim/therapeutic-areas/cardiovascular.md) - CV outcomes trials
+- [../trialsim/therapeutic-areas/cns.md](../trialsim/therapeutic-areas/cns.md) - CNS trial assessments
+
+> **Integration Pattern:** Use PatientSim for clinical care journeys. When a patient enrolls in a trial, apply TrialSim skills for trial-specific data (RECIST, SDTM format, randomization).
+
 ### Output Formats
 - [../../formats/fhir-r4.md](../../formats/fhir-r4.md) - FHIR transformation
 - [../../formats/hl7v2-adt.md](../../formats/hl7v2-adt.md) - HL7v2 ADT messages
