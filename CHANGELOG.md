@@ -9,7 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **[TrialSim]** SDTM Domain Skills (Phase 2 Implementation)
+- **[TrialSim]** SDTM Domain Skills - Batch 2 (Expanded Domains)
+  - EX (Exposure) domain - study drug exposure, dose modifications, infusion cycles
+  - DS (Disposition) domain - subject disposition, discontinuation reasons, CONSORT
+  - MH (Medical History) domain - pre-existing conditions, MedDRA coding, comorbidities
+  - All skills include: YAML frontmatter, 3 examples, validation rules, business rules
+  - Updated domains/README.md with implementation status (all 8 domains complete)
+  - Updated SKILL.md quick links with new domain references
+  - All SDTM domain skills now complete (DM, AE, VS, LB, CM, EX, DS, MH)
+
+- **[TrialSim]** SDTM Domain Skills (Phase 2 Implementation - Batch 1)
   - `skills/trialsim/domains/` directory with README.md overview
   - DM (Demographics) domain - subject identifiers, demographics, treatment arms
   - AE (Adverse Events) domain - MedDRA coding hierarchy, SAE flags, outcomes

@@ -25,9 +25,9 @@ skills/trialsim/
 │   ├── vital-signs-vs.md              # VS - Vital sign measurements
 │   ├── laboratory-lb.md               # LB - Laboratory results (LOINC)
 │   ├── concomitant-meds-cm.md         # CM - Concomitant medications (ATC)
-│   ├── exposure-ex.md                 # EX - Study drug exposure (planned)
-│   ├── disposition-ds.md              # DS - Subject disposition (planned)
-│   └── medical-history-mh.md          # MH - Medical history (planned)
+│   ├── exposure-ex.md                 # EX - Study drug exposure
+│   ├── disposition-ds.md              # DS - Subject disposition
+│   └── medical-history-mh.md          # MH - Medical history
 │
 ├── therapeutic-areas/                 # Indication-specific skills
 │   ├── README.md                      # Therapeutic area index
@@ -53,6 +53,9 @@ skills/trialsim/
 | Vital signs (VS) | `domains/vital-signs-vs.md` | "vital signs", "VS domain", "blood pressure" |
 | Laboratory results (LB) | `domains/laboratory-lb.md` | "lab results", "LB domain", "chemistry", "LOINC" |
 | Concomitant meds (CM) | `domains/concomitant-meds-cm.md` | "concomitant meds", "CM domain", "ATC" |
+| Study drug exposure (EX) | `domains/exposure-ex.md` | "exposure", "EX domain", "dosing", "dose modification" |
+| Subject disposition (DS) | `domains/disposition-ds.md` | "disposition", "DS domain", "discontinuation" |
+| Medical history (MH) | `domains/medical-history-mh.md` | "medical history", "MH domain", "comorbidities" |
 | A Phase III pivotal trial | `phase3-pivotal.md` | "Phase 3", "pivotal", "registrational" |
 | An oncology trial | `therapeutic-areas/oncology.md` | "oncology", "cancer", "RECIST", "ORR" |
 | A cardiovascular trial | `therapeutic-areas/cardiovascular.md` | "cardiovascular", "MACE", "heart failure" |
@@ -80,9 +83,9 @@ skills/trialsim/
 | VS | domains/vital-signs-vs.md | ✅ Complete | BP, HR, temp, weight |
 | LB | domains/laboratory-lb.md | ✅ Complete | LOINC coding, ref ranges |
 | CM | domains/concomitant-meds-cm.md | ✅ Complete | ATC classification |
-| EX | domains/exposure-ex.md | 📋 Planned | Study drug exposure |
-| DS | domains/disposition-ds.md | 📋 Planned | Subject disposition |
-| MH | domains/medical-history-mh.md | 📋 Planned | Medical history |
+| EX | domains/exposure-ex.md | ✅ Complete | Study drug exposure, dose modifications |
+| DS | domains/disposition-ds.md | ✅ Complete | Discontinuation, milestones |
+| MH | domains/medical-history-mh.md | ✅ Complete | Pre-existing conditions, MedDRA |
 
 ### Therapeutic Area Skills
 
@@ -115,8 +118,8 @@ skills/trialsim/
 See [TrialSim Development Plan](../../docs/TRIALSIM-DEVELOPMENT-PLAN.md) for complete roadmap.
 
 **Phase 1 (Foundation):** Domain knowledge, Phase 3 pivotal ✅  
-**Phase 2 (SDTM Domains):** Core domain skills (DM, AE, VS, LB, CM) ✅  
-**Phase 3 (Expanded Domains):** EX, DS, MH + additional trial phases  
+**Phase 2 (SDTM Domains):** Core domain skills (DM, AE, VS, LB, CM, EX, DS, MH) ✅  
+**Phase 3 (Trial Phases):** Phase 1, Phase 2, Phase 4, adaptive designs  
 **Phase 4 (Advanced):** Adaptive designs, rare disease, platform trials
 
 ## Related Documentation

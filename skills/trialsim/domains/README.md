@@ -28,9 +28,9 @@ Skills for generating CDISC SDTM-compliant domain datasets for clinical trial su
 | CM | ✅ Complete | Concomitant medications with WHO-DD |
 | LB | ✅ Complete | Laboratory with LOINC coding |
 | VS | ✅ Complete | Vital signs |
-| EX | 📋 Planned | Study drug exposure |
-| DS | 📋 Planned | Disposition |
-| MH | 📋 Planned | Medical history |
+| EX | ✅ Complete | Study drug exposure with dose modifications |
+| DS | ✅ Complete | Subject disposition and discontinuation |
+| MH | ✅ Complete | Medical history with MedDRA coding |
 
 ---
 
@@ -145,4 +145,5 @@ SDTM domains use CDISC Controlled Terminology. Key codelists:
 
 | Version | Date | Changes |
 |---------|------|---------|
+| 1.1 | 2024-12 | Added EX, DS, MH domain skills |
 | 1.0 | 2024-12 | Initial domain directory with DM, AE, CM, LB, VS |

@@ -50,6 +50,9 @@ Activate TrialSim when user mentions:
 | VS | [domains/vital-signs-vs.md](domains/vital-signs-vs.md) | Vital sign measurements |
 | LB | [domains/laboratory-lb.md](domains/laboratory-lb.md) | Laboratory results with LOINC |
 | CM | [domains/concomitant-meds-cm.md](domains/concomitant-meds-cm.md) | Concomitant medications with ATC |
+| EX | [domains/exposure-ex.md](domains/exposure-ex.md) | Study drug exposure, dose modifications |
+| DS | [domains/disposition-ds.md](domains/disposition-ds.md) | Subject disposition, discontinuation |
+| MH | [domains/medical-history-mh.md](domains/medical-history-mh.md) | Medical history, comorbidities |
 | Domain Index | [domains/README.md](domains/README.md) | All SDTM domains overview |
 
 ### Therapeutic Areas
@@ -139,10 +142,9 @@ Trial subjects are patients with additional trial-specific data:
 | clinical-trials-domain.md | ✅ Complete |
 | recruitment-enrollment.md | ✅ Complete |
 | phase3-pivotal.md | ✅ Complete |
-| domains/ (DM, AE, VS, LB, CM) | ✅ Complete |
+| domains/ (DM, AE, VS, LB, CM, EX, DS, MH) | ✅ Complete |
 | therapeutic-areas/ | ✅ Complete |
 | rwe/ | ✅ Complete |
-| domains/ (EX, DS, MH) | 📋 Planned |
 | phase1-dose-escalation.md | 📋 Planned |
 | phase2-proof-of-concept.md | 📋 Planned |
 
