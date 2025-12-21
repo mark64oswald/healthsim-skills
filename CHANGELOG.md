@@ -9,6 +9,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[Docs]** TrialSim Documentation Suite
+  - `TRIALSIM-PROMPT-GUIDE.md` - Comprehensive usage guide with example prompts
+    - Prompt patterns by use case (trial phases, domains, therapeutic areas)
+    - Output format requests (JSON, SDTM, ADaM, CSV)
+    - Combining skills patterns and cross-product integration
+    - Troubleshooting and validation prompts
+  - `TRIALSIM-DEVELOPER-GUIDE.md` - Developer reference v3.0
+    - Current implementation status (20 skills complete)
+    - Skill template with all required sections
+    - CDISC standards reference (domains, variable prefixes, MedDRA)
+    - Cross-product integration patterns
+    - Development roadmap (Phase 3+ priorities)
+
 - **[Hello-HealthSim]** Enhanced TrialSim Examples - Phase 3
   - Complete rewrite of trialsim-examples.md (328 → 806 lines)
   - Phase I examples: 3+3, BOIN, CRM, SAD/MAD, expansion cohorts
