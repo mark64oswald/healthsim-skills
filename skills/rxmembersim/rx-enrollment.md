@@ -524,8 +524,17 @@ End of pharmacy coverage.
 
 ## Related Skills
 
+### RxMemberSim
 - [SKILL.md](SKILL.md) - RxMemberSim overview
 - [retail-pharmacy.md](retail-pharmacy.md) - Retail pharmacy claims
 - [rx-accumulator.md](rx-accumulator.md) - Pharmacy accumulator tracking
+- [formulary-management.md](formulary-management.md) - Formulary assigned at enrollment
+
+### Cross-Product: MemberSim
+- [../membersim/enrollment-eligibility.md](../membersim/enrollment-eligibility.md) - Medical benefit enrollment
+
+> **Integration Pattern:** Medical enrollment (MemberSim) and pharmacy enrollment (this skill) typically occur together. Use MemberSim for medical coverage setup, RxMemberSim for pharmacy benefit setup. Ensure coverage effective dates match, and subscriber/dependent relationships are consistent.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - Code systems
 - [../../references/data-models.md](../../references/data-models.md) - Data models

@@ -606,8 +606,23 @@ Apply this skill when the user's request involves:
 
 ## Related Skills
 
+### RxMemberSim
 - [SKILL.md](SKILL.md) - RxMemberSim overview
 - [retail-pharmacy.md](retail-pharmacy.md) - Claim with formulary check
 - [specialty-pharmacy.md](specialty-pharmacy.md) - Specialty tier drugs
+- [rx-prior-auth.md](rx-prior-auth.md) - PA requirements by formulary status
 - [dur-alerts.md](dur-alerts.md) - Clinical edits
+
+### Cross-Product: MemberSim
+- [../membersim/plan-benefits.md](../membersim/plan-benefits.md) - Medical plan design
+
+> **Integration Pattern:** Formulary structure (this skill) defines pharmacy benefit drug coverage. Use MemberSim plan-benefits for medical benefit structure. Coordinated plan design ensures consistent deductibles, OOP maximums, and tier structures across medical and pharmacy.
+
+### Cross-Product: PatientSim
+- [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Diabetes drug tiers and alternatives
+- [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - Cardiac medication tiers
+
+> **Integration Pattern:** Use formulary-management to determine which medications are covered and at what cost. This informs PatientSim medication selection when generating realistic patient scenarios.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - GPI, NDC codes

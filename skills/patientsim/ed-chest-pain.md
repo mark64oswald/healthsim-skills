@@ -872,13 +872,17 @@ STEMI:
 
 ### Cross-Product: MemberSim
 
-- [../membersim/professional-claims.md](../membersim/professional-claims.md) - ED physician billing
+- [../membersim/professional-claims.md](../membersim/professional-claims.md) - ED physician billing, cardiology consult
 - [../membersim/facility-claims.md](../membersim/facility-claims.md) - ED facility claims, cardiac cath facility billing
+
+> **Integration Pattern:** Use PatientSim for ED workup, disposition decisions, and admission if needed. Use MemberSim for ED facility claims (revenue code 045x) and professional claims. STEMI → cath lab generates high-cost facility claims.
 
 ### Cross-Product: RxMemberSim
 
 - [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Cardiac medication fills (statins, antiplatelets, beta-blockers)
-- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - Specialty cardiac medications
+- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - PCSK9 inhibitors for high-risk patients
+
+> **Integration Pattern:** Use PatientSim for acute medication orders. Use RxMemberSim for discharge medication fills - ACS patients typically start DAPT (aspirin + P2Y12 inhibitor), high-intensity statin.
 
 ### Reference Files
 

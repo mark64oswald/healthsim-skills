@@ -449,12 +449,18 @@ Common parity-related denial review triggers:
 ### Cross-Product: PatientSim
 
 - [../patientsim/SKILL.md](../patientsim/SKILL.md) - Clinical patient generation
+- [../patientsim/behavioral-health.md](../patientsim/behavioral-health.md) - Psychiatric encounters and treatment
 - [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Depression comorbidity with chronic illness
+- [../patientsim/maternal-health.md](../patientsim/maternal-health.md) - Postpartum depression
+
+> **Integration Pattern:** Use PatientSim for psychiatric encounters and clinical documentation. Use MemberSim behavioral-health for claims - ensure diagnosis codes and visit types align with PatientSim encounters.
 
 ### Cross-Product: RxMemberSim
 
 - [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Antidepressant, anxiolytic fills
-- [../rxmembersim/rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) - PA for controlled substances
+- [../rxmembersim/rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) - PA for controlled substances, specialty psych meds
+
+> **Integration Pattern:** Use PatientSim for medication orders. Use RxMemberSim for pharmacy fills - psychiatric medications often have refill restrictions (Schedule II-IV), quantity limits, and PA requirements for newer agents.
 
 ### References
 

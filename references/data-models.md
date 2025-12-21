@@ -1549,3 +1549,140 @@ Manufacturer copay assistance program:
 | DURAlert.claim_id | PharmacyClaim.claim_id | Yes |
 | CopayAssistance.member_id | RxMember.member_id | Yes |
 | CopayAssistance.ndc | FormularyDrug.ndc | No |
+
+---
+
+## Cross-Product Identity Correlation
+
+When generating data that spans multiple HealthSim products (e.g., a patient journey from clinical encounter to claims to pharmacy), use these patterns to maintain identity consistency.
+
+### Entity Inheritance Model
+
+All person entities inherit from the Core Person Model:
+
+```
+                    ┌──────────────┐
+                    │    Person    │
+                    │  (id, name,  │
+                    │  birth_date, │
+                    │   gender)    │
+                    └──────┬───────┘
+                           │
+       ┌───────────────────┼───────────────────┐
+       │                   │                   │
+       ▼                   ▼                   ▼
+┌──────────────┐   ┌──────────────┐   ┌──────────────┐
+│   Patient    │   │    Member    │   │   RxMember   │
+│  (+ mrn,     │   │ (+ member_id,│   │(+ cardholder_│
+│    ssn)      │   │  subscriber_ │   │  id, bin,    │
+│              │   │  id, group_  │   │  pcn, group_ │
+│              │   │  id)         │   │  number)     │
+└──────────────┘   └──────────────┘   └──────────────┘
+       │                   │                   │
+       │                   │                   │
+       ▼                   ▼                   ▼
+   PatientSim          MemberSim          RxMemberSim
+```
+
+### Identity Linking Keys
+
+When the same person exists across multiple products, use these fields to correlate:
+
+| Link Type | Primary Key | Secondary Keys | Notes |
+|-----------|-------------|----------------|-------|
+| **Universal** | SSN | - | Most reliable cross-product link (when available) |
+| **Medical-to-Payer** | Patient.ssn = Member.ssn | Patient.mrn ↔ Member.member_id (via mapping) | Claims reference patient's clinical events |
+| **Payer-to-Pharmacy** | Member.member_id = RxMember.member_id | Member.subscriber_id = RxMember.subscriber_id | Often same ID in integrated systems |
+| **Medical-to-Pharmacy** | Patient.ssn = RxMember.ssn | - | Prescriptions link to patient records |
+
+### Cross-Product Identity Pattern
+
+When generating a person who appears in multiple products:
+
+```json
+{
+  "_comment": "Cross-product identity correlation object",
+  "correlation_id": "CORR-2025-001",
+  "person": {
+    "ssn": "123456789",
+    "name": {
+      "given_name": "Maria",
+      "family_name": "Garcia"
+    },
+    "birth_date": "1958-03-15",
+    "gender": "F"
+  },
+  "identities": {
+    "patientsim": {
+      "mrn": "MRN-001234",
+      "facility": "General Hospital"
+    },
+    "membersim": {
+      "member_id": "MEM-ABC123",
+      "subscriber_id": "MEM-ABC123",
+      "group_id": "GRP-ACME-001",
+      "plan_code": "GOLD-PPO-2025"
+    },
+    "rxmembersim": {
+      "cardholder_id": "RX-ABC123",
+      "person_code": "01",
+      "bin": "610014",
+      "pcn": "RXGROUP",
+      "group_number": "ACME2025"
+    },
+    "trialsim": {
+      "subject_id": "SUBJ-TRL-001",
+      "screening_id": "SCR-2025-0042"
+    }
+  }
+}
+```
+
+### Event Correlation Across Products
+
+When an event in one product should correlate to events in other products:
+
+| Source Event (Product) | Correlated Event (Product) | Timing | Linking Fields |
+|------------------------|---------------------------|--------|----------------|
+| Encounter (PatientSim) | Claim (MemberSim) | +0-14 days | service_date ≈ admission_date; diagnosis codes match |
+| Medication order (PatientSim) | Prescription (RxMemberSim) | Same day | NDC matches; prescriber_npi consistent |
+| Discharge (PatientSim) | PharmacyClaim (RxMemberSim) | +0-3 days | Discharge meds → retail fills |
+| Prior Auth approved (MemberSim) | Encounter scheduled (PatientSim) | +1-30 days | Auth number referenced |
+| Subject enrollment (TrialSim) | Encounters (PatientSim) | Per protocol | Study visits generate encounters |
+
+### Generation Guidelines
+
+**Single-Product Generation:**
+- Generate Person attributes first
+- Add product-specific identifiers (MRN, member_id, cardholder_id)
+- SSN is optional but recommended for future correlation
+
+**Multi-Product Generation:**
+1. Generate base Person with SSN
+2. Create product-specific identities with consistent Person attributes
+3. Use SSN as the correlation key
+4. Ensure dates/events align logically across products
+
+**Example: Patient with Heart Failure Journey**
+
+```
+Day 0:  PatientSim - ED encounter, CHF diagnosis (I50.9)
+Day 3:  PatientSim - Inpatient discharge with medications
+Day 5:  MemberSim  - Facility claim submitted (matches encounter dates, DRG 291)
+Day 3:  RxMemberSim - Discharge prescription filled (furosemide, carvedilol)
+Day 30: PatientSim - Cardiology follow-up encounter
+Day 32: MemberSim  - Professional claim submitted (99214)
+```
+
+### TrialSim Identity Considerations
+
+Clinical trial subjects have additional identity layers:
+
+| Context | Identifier | Notes |
+|---------|------------|-------|
+| Trial-internal | subject_id | Randomization ID, blinded |
+| Screening | screening_id | Pre-randomization tracking |
+| Site EMR | mrn | If site uses local EMR for source data |
+| Sponsor systems | subject_id | De-identified for sponsor |
+
+For trials with EMR integration (eSource), the subject_id correlates to a Patient.mrn at the site level.

@@ -1443,13 +1443,17 @@ Low-risk patient selected for outpatient arthroplasty program.
 ### Cross-Product: MemberSim
 
 - [../membersim/professional-claims.md](../membersim/professional-claims.md) - Orthopedic surgeon billing
-- [../membersim/facility-claims.md](../membersim/facility-claims.md) - Inpatient surgical DRG claims, SNF billing
+- [../membersim/facility-claims.md](../membersim/facility-claims.md) - Inpatient surgical DRG claims (469/470), SNF billing
 - [../membersim/prior-authorization.md](../membersim/prior-authorization.md) - Elective surgery authorization
+
+> **Integration Pattern:** Use PatientSim for surgical episode from pre-op through discharge. Use MemberSim for prior auth workflow, facility claims (bundled payment model), and post-acute SNF claims.
 
 ### Cross-Product: RxMemberSim
 
 - [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Post-op medications (pain management, anticoagulants)
 - [../rxmembersim/dur-alerts.md](../rxmembersim/dur-alerts.md) - Opioid therapy monitoring
+
+> **Integration Pattern:** Use PatientSim for medication orders during episode. Use RxMemberSim for discharge prescription fills - opioid prescriptions trigger DUR alerts and may have quantity limits.
 
 ### Reference Files
 

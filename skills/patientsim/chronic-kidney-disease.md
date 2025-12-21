@@ -335,10 +335,14 @@ Apply this skill when the user's request involves:
 - [../membersim/professional-claims.md](../membersim/professional-claims.md) - Nephrology office visit claims
 - [../membersim/facility-claims.md](../membersim/facility-claims.md) - Dialysis facility claims, AV fistula procedures
 
+> **Integration Pattern:** Use PatientSim for CKD staging and clinical progression. Use MemberSim for dialysis facility claims (revenue codes 082x) and nephrology E&M claims.
+
 ### Cross-Product: RxMemberSim
 
 - [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Renal medication fills (sevelamer, calcitriol, sodium bicarbonate)
 - [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - ESAs (epoetin alfa, darbepoetin), calcimimetics
+
+> **Integration Pattern:** Use PatientSim for medication orders and lab monitoring. Use RxMemberSim for specialty pharmacy patterns - ESAs often require PA and have strict utilization management.
 
 ### References
 

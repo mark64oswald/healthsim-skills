@@ -488,8 +488,21 @@ When a claim is submitted:
 
 ## Related Skills
 
+### MemberSim
 - [SKILL.md](SKILL.md) - MemberSim overview
 - [professional-claims.md](professional-claims.md) - Claims requiring PA
 - [facility-claims.md](facility-claims.md) - Inpatient PA
-- [../../skills/rxmembersim/prior-authorization.md](../rxmembersim/prior-authorization.md) - Pharmacy PA
+
+### Cross-Product: PatientSim
+- [../patientsim/elective-joint.md](../patientsim/elective-joint.md) - Elective surgery requiring PA
+- [../patientsim/oncology/README.md](../patientsim/oncology/README.md) - Oncology treatment PA
+
+> **Integration Pattern:** Use PatientSim to identify procedures requiring authorization. Use MemberSim to model the PA workflow - submission, review, approval/denial, then claim with auth number.
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) - Pharmacy prior authorization
+
+> **Integration Pattern:** Medical PA (this skill) covers procedures and services. Pharmacy PA (RxMemberSim) covers drug-specific authorizations. Some treatments require both - e.g., infused biologics may need medical PA while oral specialty drugs need pharmacy PA.
+
+### References
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas

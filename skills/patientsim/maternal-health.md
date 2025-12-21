@@ -516,14 +516,18 @@ Apply this skill when the user's request involves:
 
 ### Cross-Product: MemberSim
 
-- [../membersim/professional-claims.md](../membersim/professional-claims.md) - Prenatal visit claims
-- [../membersim/facility-claims.md](../membersim/facility-claims.md) - Delivery claims, DRG assignment
-- [../membersim/behavioral-health.md](../membersim/behavioral-health.md) - Postpartum depression claims
+- [../membersim/professional-claims.md](../membersim/professional-claims.md) - Prenatal visit claims (global OB billing)
+- [../membersim/facility-claims.md](../membersim/facility-claims.md) - Delivery claims (DRG 765-768), NICU if needed
+- [../membersim/behavioral-health.md](../membersim/behavioral-health.md) - Postpartum depression screening/treatment claims
+
+> **Integration Pattern:** Use PatientSim for prenatal visits, delivery, and postpartum care. Use MemberSim for global OB billing (59400/59510) or itemized claims, delivery facility DRGs.
 
 ### Cross-Product: RxMemberSim
 
 - [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Prenatal vitamins, postpartum medications
-- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - Specialty medications (anticoagulants)
+- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - Anticoagulants for high-risk pregnancies
+
+> **Integration Pattern:** Use PatientSim for medication orders during pregnancy. Use RxMemberSim for pharmacy fills - prenatal vitamins (often OTC tier), postpartum contraception, and any maintenance medications.
 
 ### References
 

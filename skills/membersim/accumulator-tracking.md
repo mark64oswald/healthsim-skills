@@ -536,7 +536,16 @@ Apply this skill when the user's request involves:
 
 ## Related Skills
 
+### MemberSim
 - [SKILL.md](SKILL.md) - MemberSim overview
 - [professional-claims.md](professional-claims.md) - Claim adjudication
 - [facility-claims.md](facility-claims.md) - Hospital cost sharing
+- [plan-benefits.md](plan-benefits.md) - Plan deductible/OOP limits
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/rx-accumulator.md](../rxmembersim/rx-accumulator.md) - Pharmacy accumulator tracking
+
+> **Integration Pattern:** Many plans have integrated medical+Rx accumulators. When a member's medical deductible is met, pharmacy claims may also process differently. Use MemberSim for medical accumulators, RxMemberSim for pharmacy. For integrated plans, ensure accumulator totals are synchronized.
+
+### References
 - [../../references/data-models.md](../../references/data-models.md) - Accumulator schema

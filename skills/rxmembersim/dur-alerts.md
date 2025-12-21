@@ -588,8 +588,22 @@ Apply this skill when the user's request involves:
 
 ## Related Skills
 
+### RxMemberSim
 - [SKILL.md](SKILL.md) - RxMemberSim overview
 - [retail-pharmacy.md](retail-pharmacy.md) - Standard fills
 - [specialty-pharmacy.md](specialty-pharmacy.md) - High-risk drug monitoring
 - [formulary-management.md](formulary-management.md) - Coverage rules
+
+### Cross-Product: PatientSim
+- [../patientsim/elective-joint.md](../patientsim/elective-joint.md) - Post-op opioid monitoring
+- [../patientsim/behavioral-health.md](../patientsim/behavioral-health.md) - Psychiatric drug interactions
+
+> **Integration Pattern:** Use PatientSim to establish patient medication list and clinical context. Use RxMemberSim dur-alerts to generate realistic drug-drug interactions, therapeutic duplications, and age-related precautions based on the patient's profile.
+
+### Cross-Product: MemberSim
+- [../membersim/professional-claims.md](../membersim/professional-claims.md) - PMP/PDMP integration context
+
+> **Integration Pattern:** DUR alerts may trigger clinical interventions documented in MemberSim professional claims (pharmacist consultations, prescriber outreach).
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - GPI, DUR codes

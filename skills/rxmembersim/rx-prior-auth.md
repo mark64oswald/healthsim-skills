@@ -848,9 +848,24 @@ comparison_to_fax:
 
 ## Related Skills
 
+### RxMemberSim
 - [SKILL.md](SKILL.md) - RxMemberSim overview
 - [formulary-management.md](formulary-management.md) - Formulary and tier structure
 - [specialty-pharmacy.md](specialty-pharmacy.md) - Specialty drug handling
 - [dur-alerts.md](dur-alerts.md) - DUR and clinical edits
+
+### Cross-Product: PatientSim
+- [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - PA for GLP-1s, SGLT2i
+- [../patientsim/oncology/README.md](../patientsim/oncology/README.md) - PA for oral oncolytics
+- [../patientsim/behavioral-health.md](../patientsim/behavioral-health.md) - PA for specialty psych meds
+
+> **Integration Pattern:** Use PatientSim to establish clinical criteria for PA approval (diagnosis, lab values, prior therapies). Use RxMemberSim rx-prior-auth to model the PA workflow - criteria matching determines approval/denial.
+
+### Cross-Product: MemberSim
+- [../membersim/prior-authorization.md](../membersim/prior-authorization.md) - Medical benefit PA
+
+> **Integration Pattern:** Pharmacy PA (this skill) covers drugs under pharmacy benefit. Medical PA (MemberSim) covers procedures and medical benefit drugs. Some treatments may require coordination between both.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - Code systems
 - [../../references/data-models.md](../../references/data-models.md) - Data models

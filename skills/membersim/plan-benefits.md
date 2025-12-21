@@ -858,11 +858,20 @@ Services typically requiring prior authorization:
 
 ## Related Skills
 
+### MemberSim
 - [SKILL.md](SKILL.md) - MemberSim overview
 - [enrollment-eligibility.md](enrollment-eligibility.md) - Enrollment with plan selection
 - [accumulator-tracking.md](accumulator-tracking.md) - Tracking against plan limits
 - [professional-claims.md](professional-claims.md) - Claims adjudication using plan benefits
 - [prior-authorization.md](prior-authorization.md) - PA requirements by plan
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/formulary-management.md](../rxmembersim/formulary-management.md) - Pharmacy benefit tiers, formulary structure
+- [../rxmembersim/rx-accumulator.md](../rxmembersim/rx-accumulator.md) - Pharmacy deductible/OOP tracking
+
+> **Integration Pattern:** Medical and pharmacy benefits are often separate but coordinated. Use MemberSim for medical plan design. Use RxMemberSim for pharmacy benefit design. Many plans have combined medical+Rx deductibles and OOP maximums - ensure consistency.
+
+### References
 - [../../formats/csv.md](../../formats/csv.md) - CSV export for plans
 - [../../formats/sql.md](../../formats/sql.md) - SQL schema for plans
 - [../../references/code-systems.md](../../references/code-systems.md) - Code systems

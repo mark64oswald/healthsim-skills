@@ -503,8 +503,25 @@ Apply this skill when the user's request involves:
 
 ## Related Skills
 
+### RxMemberSim
 - [SKILL.md](SKILL.md) - RxMemberSim overview
 - [retail-pharmacy.md](retail-pharmacy.md) - Standard retail fills
+- [rx-prior-auth.md](rx-prior-auth.md) - PA requirements for specialty drugs
 - [dur-alerts.md](dur-alerts.md) - Drug interaction checks
 - [formulary-management.md](formulary-management.md) - PA and step therapy
+- [manufacturer-programs.md](manufacturer-programs.md) - Copay assistance
+
+### Cross-Product: PatientSim
+- [../patientsim/oncology/README.md](../patientsim/oncology/README.md) - Oral oncolytics (Ibrance, Tagrisso, Revlimid)
+- [../patientsim/chronic-kidney-disease.md](../patientsim/chronic-kidney-disease.md) - ESAs, calcimimetics
+- [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - Entresto (sacubitril/valsartan)
+
+> **Integration Pattern:** Use PatientSim for specialty medication orders and clinical monitoring. Use RxMemberSim specialty-pharmacy for dispensing - includes limited distribution, cold chain requirements, patient counseling, and adherence programs.
+
+### Cross-Product: MemberSim
+- [../membersim/prior-authorization.md](../membersim/prior-authorization.md) - Medical benefit drugs (infused biologics)
+
+> **Integration Pattern:** Some specialty drugs are covered under medical benefit (infused) vs. pharmacy benefit (oral/self-injectable). Use MemberSim PA for medical benefit drugs, RxMemberSim for pharmacy benefit drugs.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - NDC, GPI codes

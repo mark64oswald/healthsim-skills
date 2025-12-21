@@ -339,12 +339,28 @@ When generating behavioral health patients:
 
 ## Related Skills
 
-- [../membersim/behavioral-health.md](../membersim/behavioral-health.md) - Claims perspective for behavioral health
+### PatientSim
 - [diabetes-management.md](diabetes-management.md) - For metabolic monitoring with antipsychotics
-- [../../formats/hl7v2-adt.md](../../formats/hl7v2-adt.md) - Psychiatric admission messages
+
+### Cross-Product: MemberSim
+- [../membersim/behavioral-health.md](../membersim/behavioral-health.md) - Behavioral health claims
+- [../membersim/professional-claims.md](../membersim/professional-claims.md) - Psychiatry/therapy E&M claims
+
+> **Integration Pattern:** Use PatientSim for clinical encounters, assessments (PHQ-9, GAD-7), and medication management. Use MemberSim for behavioral health claims - parity requirements mean mental health benefits must equal medical benefits.
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Psychotropic medication fills
+- [../rxmembersim/rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) - PA for specialty psych meds
+
+> **Integration Pattern:** Use PatientSim for medication orders. Use RxMemberSim for fills - antidepressants, antipsychotics, mood stabilizers. Adherence tracking is critical for psychiatric medications.
 
 ### Cross-Product: TrialSim
-
 - [../trialsim/therapeutic-areas/cns.md](../trialsim/therapeutic-areas/cns.md) - CNS/neurology clinical trials, cognitive assessments
 
 > **Integration Pattern:** This PatientSim skill covers psychiatric clinical care. For CNS drug trials involving psychiatric endpoints (e.g., depression scales in dementia trials), reference TrialSim CNS skill for trial-specific patterns.
+
+### References
+- [../../references/code-systems.md](../../references/code-systems.md) - ICD-10 psychiatric codes
+- [../../references/mental-health-reference.md](../../references/mental-health-reference.md) - Behavioral health domain knowledge
+- [../../formats/fhir-r4.md](../../formats/fhir-r4.md) - FHIR Condition and MedicationRequest
+- [../../formats/hl7v2-adt.md](../../formats/hl7v2-adt.md) - Psychiatric admission messages

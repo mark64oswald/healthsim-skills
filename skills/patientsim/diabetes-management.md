@@ -365,8 +365,25 @@ When generating diabetic patients:
 
 ## Related Skills
 
+### PatientSim
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [chronic-kidney-disease.md](chronic-kidney-disease.md) - CKD scenarios (common comorbidity)
 - [heart-failure.md](heart-failure.md) - Heart failure scenarios
+
+### Cross-Product: MemberSim
+- [../membersim/professional-claims.md](../membersim/professional-claims.md) - Office visit claims for diabetes management
+- [../membersim/accumulator-tracking.md](../membersim/accumulator-tracking.md) - Deductible/OOP tracking for chronic care
+
+> **Integration Pattern:** Use PatientSim for clinical encounters and lab monitoring. Use MemberSim for E&M claims (99213/99214) and chronic care management billing.
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Oral diabetes medication fills
+- [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - GLP-1 agonists, insulin
+- [../rxmembersim/rx-prior-auth.md](../rxmembersim/rx-prior-auth.md) - PA for newer agents (SGLT2i, GLP-1)
+- [../rxmembersim/formulary-management.md](../rxmembersim/formulary-management.md) - Tier placement for diabetes drugs
+
+> **Integration Pattern:** Use PatientSim for medication orders and clinical monitoring. Use RxMemberSim for pharmacy fills, refill patterns, and adherence tracking.
+
+### References
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
 - [../../references/code-systems.md](../../references/code-systems.md) - ICD-10, LOINC codes

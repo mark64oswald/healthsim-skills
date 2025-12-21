@@ -389,7 +389,23 @@ For quality measure compliance, ensure:
 
 ## Related Skills
 
+### PatientSim Scenarios
 - [SKILL.md](SKILL.md) - PatientSim overview
+- [adt-workflow.md](adt-workflow.md) - Admission/transfer to ICU
+- [orders-results.md](orders-results.md) - Lab ordering for sepsis workup
+
+### Cross-Product: MemberSim
+- [../membersim/facility-claims.md](../membersim/facility-claims.md) - ICU facility claims, sepsis DRG (870-872)
+- [../membersim/professional-claims.md](../membersim/professional-claims.md) - Critical care billing (99291/99292)
+
+> **Integration Pattern:** Use PatientSim for sepsis clinical progression and SEP-1 bundle compliance. Use MemberSim for high-acuity facility claims - sepsis with MCC (DRG 870) is high-cost admission.
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Discharge antibiotic prescriptions
+
+> **Integration Pattern:** Use PatientSim for IV antibiotic orders during admission. Use RxMemberSim for oral step-down antibiotics at discharge (if applicable).
+
+### References
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
 - [../../references/code-systems.md](../../references/code-systems.md) - ICD-10, LOINC codes
 - [../../references/validation-rules.md](../../references/validation-rules.md) - Clinical coherence rules

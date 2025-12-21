@@ -835,9 +835,23 @@ Maximizers coordinate manufacturer assistance to ensure patient costs count towa
 
 ## Related Skills
 
+### RxMemberSim
 - [SKILL.md](SKILL.md) - RxMemberSim overview
 - [specialty-pharmacy.md](specialty-pharmacy.md) - Specialty drug distribution and copay assistance
 - [formulary-management.md](formulary-management.md) - Tier structure affecting cost sharing
 - [rx-accumulator.md](rx-accumulator.md) - Deductible and OOP tracking
+
+### Cross-Product: PatientSim
+- [../patientsim/oncology/README.md](../patientsim/oncology/README.md) - Oncology copay assistance (high utilization)
+- [../patientsim/chronic-kidney-disease.md](../patientsim/chronic-kidney-disease.md) - ESA manufacturer programs
+
+> **Integration Pattern:** Use PatientSim to establish clinical need for high-cost specialty drugs. Use manufacturer-programs to model copay assistance enrollment, benefit application, and accumulator adjustment. Common for oral oncolytics, biologics, and specialty drugs.
+
+### Cross-Product: MemberSim
+- [../membersim/accumulator-tracking.md](../membersim/accumulator-tracking.md) - Accumulator adjustment programs
+
+> **Integration Pattern:** Some manufacturers fund "accumulator adjustment" programs to help patients reach deductible/OOP faster. Coordinate with MemberSim accumulators for accurate cost tracking.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - NCPDP codes
 - [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) - Claims format with COB

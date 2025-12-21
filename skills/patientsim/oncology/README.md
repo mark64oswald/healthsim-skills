@@ -38,14 +38,19 @@ Generate a 58-year-old with Stage III colon cancer, MSI-high status
 > **Integration Pattern:** Use PatientSim oncology skills for clinical care journeys. When a patient enrolls in a clinical trial, apply TrialSim skills for trial-specific data (RECIST assessments, randomization, SDTM format).
 
 ### MemberSim (Claims)
-- Facility claims for infusion center treatments
-- Professional claims for oncology office visits
-- Prior authorization for specialty oncology drugs
+- [../membersim/facility-claims.md](../../membersim/facility-claims.md) - Infusion center claims, inpatient oncology
+- [../membersim/professional-claims.md](../../membersim/professional-claims.md) - Oncology office visits, chemotherapy administration
+- [../membersim/prior-authorization.md](../../membersim/prior-authorization.md) - Prior auth for specialty oncology drugs
+
+> **Integration Pattern:** Use PatientSim for treatment regimens and clinical progression. Use MemberSim for oncology claims - chemotherapy infusions generate facility claims with J-codes, office visits generate E&M claims.
 
 ### RxMemberSim (Pharmacy)
-- Specialty pharmacy for oral oncolytics (Ibrance, Tagrisso)
-- Supportive care medications (antiemetics, G-CSF)
-- Manufacturer copay assistance programs
+- [../rxmembersim/specialty-pharmacy.md](../../rxmembersim/specialty-pharmacy.md) - Oral oncolytics (Ibrance, Tagrisso, Revlimid)
+- [../rxmembersim/retail-pharmacy.md](../../rxmembersim/retail-pharmacy.md) - Supportive care (antiemetics, G-CSF)
+- [../rxmembersim/manufacturer-programs.md](../../rxmembersim/manufacturer-programs.md) - Copay assistance, patient support programs
+- [../rxmembersim/rx-prior-auth.md](../../rxmembersim/rx-prior-auth.md) - PA requirements for oral oncolytics
+
+> **Integration Pattern:** Use PatientSim for medication orders. Use RxMemberSim for specialty pharmacy dispensing - oral oncolytics require specialty pharmacy, limited distribution, and often manufacturer copay assistance.
 
 ## Reference Data
 

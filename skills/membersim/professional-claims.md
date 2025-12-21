@@ -422,9 +422,24 @@ Apply this skill when the user's request involves:
 
 ## Related Skills
 
+### MemberSim
 - [SKILL.md](SKILL.md) - MemberSim overview
 - [facility-claims.md](facility-claims.md) - Institutional claims
 - [prior-authorization.md](prior-authorization.md) - PA requirements
 - [accumulator-tracking.md](accumulator-tracking.md) - Cost sharing
+
+### Cross-Product: PatientSim
+- [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Diabetes office visits (99213/99214)
+- [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - Cardiology visits
+- [../patientsim/behavioral-health.md](../patientsim/behavioral-health.md) - Psychiatry/therapy visits
+
+> **Integration Pattern:** Use PatientSim to generate clinical encounters. Use MemberSim to generate corresponding professional claims with matching dates, diagnosis codes, and appropriate E&M levels.
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Prescriptions from office visits
+
+> **Integration Pattern:** Office visits often result in new prescriptions. Correlate visit dates with prescription written dates in RxMemberSim.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - CPT, ICD-10 codes
 - [../../formats/x12-837.md](../../formats/x12-837.md) - 837P format

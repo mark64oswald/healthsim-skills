@@ -548,8 +548,24 @@ Deductible Credit: $0
 
 ## Related Skills
 
+### RxMemberSim
 - [SKILL.md](SKILL.md) - RxMemberSim overview
 - [specialty-pharmacy.md](specialty-pharmacy.md) - Specialty drug fills
 - [dur-alerts.md](dur-alerts.md) - Drug interaction checks
 - [formulary-management.md](formulary-management.md) - Tier and coverage
+
+### Cross-Product: PatientSim
+- [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Oral diabetes medications (metformin, SGLT2i)
+- [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - GDMT medications (carvedilol, lisinopril)
+- [../patientsim/chronic-kidney-disease.md](../patientsim/chronic-kidney-disease.md) - Renal medications
+- [../patientsim/behavioral-health.md](../patientsim/behavioral-health.md) - Psychiatric medications
+
+> **Integration Pattern:** Use PatientSim for medication orders. Use RxMemberSim retail-pharmacy for fills at community pharmacies. Match NDCs, correlate fill dates to prescription written dates, and apply appropriate refill patterns.
+
+### Cross-Product: MemberSim
+- [../membersim/accumulator-tracking.md](../membersim/accumulator-tracking.md) - Pharmacy costs count toward OOP
+
+> **Integration Pattern:** For integrated medical+Rx benefits, pharmacy costs contribute to combined deductible/OOP. Coordinate accumulator tracking between MemberSim and RxMemberSim.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - NDC codes

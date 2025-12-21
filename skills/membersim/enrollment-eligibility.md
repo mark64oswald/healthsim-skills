@@ -672,9 +672,18 @@ Response to eligibility inquiry.
 
 ## Related Skills
 
+### MemberSim
 - [SKILL.md](SKILL.md) - MemberSim overview
 - [professional-claims.md](professional-claims.md) - Professional claims
+- [plan-benefits.md](plan-benefits.md) - Plan selection during enrollment
 - [accumulator-tracking.md](accumulator-tracking.md) - Accumulator tracking
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/rx-enrollment.md](../rxmembersim/rx-enrollment.md) - Pharmacy benefit enrollment
+
+> **Integration Pattern:** Medical enrollment (this skill) and pharmacy enrollment often occur together. Use MemberSim for medical coverage enrollment. Use RxMemberSim for pharmacy benefit setup (BIN, PCN, group number). Ensure coverage dates are synchronized.
+
+### References
 - [../../formats/x12-834.md](../../formats/x12-834.md) - X12 834 Enrollment format
 - [../../formats/x12-270-271.md](../../formats/x12-270-271.md) - X12 270/271 Eligibility format
 - [../../references/code-systems.md](../../references/code-systems.md) - Code systems

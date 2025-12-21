@@ -424,8 +424,26 @@ Adjustments:
 
 ## Related Skills
 
+### MemberSim
 - [SKILL.md](SKILL.md) - MemberSim overview
-- [professional-claims.md](professional-claims.md) - Physician claims
+- [professional-claims.md](professional-claims.md) - Physician claims (often accompany facility)
 - [prior-authorization.md](prior-authorization.md) - Inpatient PA
+
+### Cross-Product: PatientSim
+- [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - HF admissions (DRG 291-293)
+- [../patientsim/ed-chest-pain.md](../patientsim/ed-chest-pain.md) - ED facility claims
+- [../patientsim/sepsis-acute-care.md](../patientsim/sepsis-acute-care.md) - Sepsis DRG (870-872)
+- [../patientsim/elective-joint.md](../patientsim/elective-joint.md) - Joint replacement DRG (469-470)
+- [../patientsim/maternal-health.md](../patientsim/maternal-health.md) - Delivery DRG (765-768)
+- [../patientsim/oncology/README.md](../patientsim/oncology/README.md) - Oncology infusion claims
+
+> **Integration Pattern:** Use PatientSim to generate inpatient stays or ED visits. Use MemberSim facility-claims to generate corresponding 837I claims with matching admission/discharge dates, diagnosis codes, and appropriate DRG assignment.
+
+### Cross-Product: RxMemberSim
+- [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - Discharge prescription fills
+
+> **Integration Pattern:** Inpatient stays result in discharge medications. Generate pharmacy claims in RxMemberSim 0-3 days after PatientSim discharge date.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - Revenue codes, DRGs
 - [../../formats/x12-837.md](../../formats/x12-837.md) - 837I format

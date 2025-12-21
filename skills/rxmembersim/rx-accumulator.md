@@ -742,8 +742,18 @@ When secondary coverage pays:
 
 ## Related Skills
 
+### RxMemberSim
 - [SKILL.md](SKILL.md) - RxMemberSim overview
 - [rx-enrollment.md](rx-enrollment.md) - Pharmacy enrollment
 - [retail-pharmacy.md](retail-pharmacy.md) - Retail pharmacy claims
+- [specialty-pharmacy.md](specialty-pharmacy.md) - High-cost specialty accumulation
+
+### Cross-Product: MemberSim
+- [../membersim/accumulator-tracking.md](../membersim/accumulator-tracking.md) - Medical benefit accumulators
+- [../membersim/plan-benefits.md](../membersim/plan-benefits.md) - Combined deductible/OOP design
+
+> **Integration Pattern:** For integrated medical+Rx plans, pharmacy costs (this skill) and medical costs (MemberSim) may share deductibles and OOP maximums. Ensure accumulator totals are synchronized across products. When medical deductible is met, pharmacy claims may adjudicate differently.
+
+### References
 - [../../references/code-systems.md](../../references/code-systems.md) - Code systems
 - [../../references/data-models.md](../../references/data-models.md) - Data models

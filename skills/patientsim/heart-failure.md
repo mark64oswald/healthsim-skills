@@ -347,12 +347,16 @@ Apply this skill when the user's request involves:
 ### Cross-Product: MemberSim
 
 - [../membersim/professional-claims.md](../membersim/professional-claims.md) - Cardiology office visit claims
-- [../membersim/facility-claims.md](../membersim/facility-claims.md) - Heart failure admission claims
+- [../membersim/facility-claims.md](../membersim/facility-claims.md) - Heart failure admission claims (DRG 291, 292, 293)
+
+> **Integration Pattern:** Use PatientSim for HF encounters and clinical progression. Use MemberSim for claims generation - facility claims for admissions, professional claims for cardiology follow-ups.
 
 ### Cross-Product: RxMemberSim
 
 - [../rxmembersim/retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) - GDMT medication fills (carvedilol, lisinopril, furosemide)
 - [../rxmembersim/specialty-pharmacy.md](../rxmembersim/specialty-pharmacy.md) - Sacubitril/valsartan (Entresto), SGLT2 inhibitors
+
+> **Integration Pattern:** Use PatientSim for medication orders. Use RxMemberSim for pharmacy fills post-discharge and ongoing refill patterns. HF readmission risk correlates with medication adherence.
 
 ### References
 
