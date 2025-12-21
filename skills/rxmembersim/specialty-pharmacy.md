@@ -1,3 +1,8 @@
+---
+name: specialty-pharmacy
+description: "Specialty pharmacy transactions for high-cost biologics, injectables, and limited distribution drugs. Triggers: specialty pharmacy, biologic, injectable, Humira, Enbrel, Remicade, biosimilar, limited distribution, cold chain, hub services, copay assistance"
+---
+
 # Specialty Pharmacy Scenario
 
 A scenario template for generating specialty pharmacy transactions for high-cost biologics, injectables, and limited distribution drugs.
@@ -500,6 +505,30 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| NDC format | 11-digit numeric | 00074433906 (Humira) |
+| Days supply | Typically 28-30 for injectables | 28 days |
+| Quantity | Match dosing schedule | 2 pens (biweekly dosing) |
+| Prior auth | Required for most specialty drugs | PA approved before fill |
+| Specialty pharmacy | Must be accredited/contracted | CVS Specialty, Accredo |
+| Cold chain | Temperature-sensitive drugs flagged | Requires refrigeration |
+| Limited distribution | Some drugs have exclusive networks | Only 3 pharmacies dispense |
+| REMS | Risk Evaluation required for some drugs | Revlimid REMS enrollment |
+| Refill timing | Typically 75-80% of days supply | Allow refill at day 21 of 28 |
+
+### Business Rules
+
+- **Prior Authorization**: Most specialty drugs require PA; approval typically valid 6-12 months
+- **Step Therapy**: Many require trial/failure of lower-cost alternatives first
+- **Quantity Limits**: Often limited to 30-day supply regardless of cost savings
+- **Biosimilar Substitution**: Not automatic like generic substitution; requires prescriber approval
+- **Copay Assistance**: Most brand specialty drugs have manufacturer copay cards ($0-$5 copay common)
+- **Hub Services**: Many drugs require enrollment (refill reminders, adherence support)
+- **Accumulator Programs**: Manufacturer assistance may or may not count toward deductible/OOP
 
 ## Related Skills
 

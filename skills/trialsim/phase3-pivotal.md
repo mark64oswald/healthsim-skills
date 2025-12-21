@@ -55,4 +55,4 @@ Phase 3 pivotal trials are confirmatory studies designed to provide substantial 
 
 - [Clinical Trials Domain](clinical-trials-domain.md)
 - [Recruitment & Enrollment](recruitment-enrollment.md)
-- [Oncology Trials](therapeutic-areas/oncology-trials.md)
+- [Oncology Trials](therapeutic-areas/oncology.md)

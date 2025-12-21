@@ -1,3 +1,8 @@
+---
+name: diabetes-management
+description: "Type 2 diabetes mellitus scenarios across all stages - pre-diabetes through complex insulin-dependent regimens with complications. Triggers: diabetes, T2DM, diabetic patient, A1C, blood sugar, glucose control, metformin, insulin, diabetes medications, nephropathy, retinopathy, neuropathy, disease progression"
+---
+
 # Type 2 Diabetes Management Scenario - Disease Progression Events
 
 A scenario template for generating patients with Type 2 diabetes mellitus across all stages of disease progression, from pre-diabetes through complex insulin-dependent regimens with complications.
@@ -362,6 +367,30 @@ When generating diabetic patients:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| A1C | 4.0-14.0% (realistic range) | 8.5% (uncontrolled) |
+| Fasting glucose | 70-400 mg/dL | 145 mg/dL |
+| eGFR | 0-120 mL/min/1.73m² | 65 (CKD stage 2) |
+| Creatinine | Positive, correlates with eGFR | 1.2 mg/dL |
+| Diabetes type | Type 1, Type 2, GDM, other | "Type 2" |
+| Medications | Appropriate for A1C level | Metformin + SGLT2i |
+| Diagnosis code | Valid ICD-10 | E11.9, E11.65 |
+| Duration | Years since diagnosis | 8 years |
+
+### Business Rules
+
+- **Medication Escalation**: Start metformin → add second agent if A1C >7.5% → add third if still uncontrolled
+- **eGFR Thresholds**: Metformin contraindicated if eGFR <30; adjust dose if 30-45
+- **A1C Targets**: <7% for most adults; <8% for elderly or complex patients
+- **Complication Screening**: Annual eye exam, foot exam, urine microalbumin
+- **Insulin Initiation**: If A1C >10% or oral agents fail; start basal, may add bolus
+- **GLP-1/SGLT2i**: Preferred add-ons for CV or renal benefit; often require PA
+- **Hypoglycemia Risk**: Higher with sulfonylureas and insulin
+- **Weight Considerations**: GLP-1s and SGLT2i promote weight loss; insulin may cause gain
 
 ## Related Skills
 

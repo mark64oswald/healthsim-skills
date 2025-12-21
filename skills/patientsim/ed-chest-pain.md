@@ -1,3 +1,8 @@
+---
+name: ed-chest-pain
+description: "Emergency Department chest pain presentations with complete event sequences from symptom onset through disposition. Triggers: chest pain, cardiac, ED, MI, STEMI, NSTEMI, ACS, acute coronary syndrome, troponin, ECG, rule out MI, emergency department"
+---
+
 # Emergency Department Chest Pain Scenario - Complete Event Timelines
 
 A scenario template for generating patients presenting to the Emergency Department with chest pain **with complete event sequences from symptom onset through disposition**, covering the spectrum from benign musculoskeletal pain to acute myocardial infarction.
@@ -853,6 +858,30 @@ STEMI:
 - 90 min: Patient to CCU, hemodynamically stable
 - 24-48h: Echo shows EF 45%, inferior wall hypokinesis
 - 3-5 days: Cardiac rehabilitation referral, discharge planning
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Troponin | Positive numeric or "negative" | 0.45 ng/mL (elevated) |
+| HEART score | 0-10 | 6 (high risk) |
+| TIMI score | 0-7 for UA/NSTEMI | 4 (intermediate) |
+| Door-to-ECG | ≤10 minutes per guidelines | 8 minutes |
+| Door-to-balloon | ≤90 minutes for STEMI | 55 minutes |
+| ECG findings | Documented interpretation | ST elevation V2-V4 |
+| Chest pain character | Typical, atypical, non-cardiac | "typical" |
+| Risk stratification | low, intermediate, high | "high risk" |
+
+### Business Rules
+
+- **STEMI Protocol**: Door-to-balloon <90 min; activate cath lab immediately
+- **NSTEMI/UA**: Risk stratify with HEART/TIMI; high risk → early invasive strategy
+- **Serial Troponins**: At presentation and 3-6 hours later; high-sensitivity troponin preferred
+- **ECG Timing**: Obtain within 10 minutes of arrival; repeat if symptoms change
+- **Aspirin**: Give immediately unless contraindicated
+- **Anticoagulation**: Heparin for ACS; choice depends on planned strategy
+- **Risk Scores**: HEART score validated for ED chest pain disposition decisions
+- **Stress Testing**: Low-risk patients may undergo stress testing before discharge
 
 ## References
 

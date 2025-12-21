@@ -1,3 +1,8 @@
+---
+name: maternal-health
+description: "Obstetric patients across pregnancy phases - prenatal care, labor and delivery, postpartum. Triggers: pregnancy, prenatal, obstetric, gestational diabetes, preeclampsia, labor, delivery, postpartum, OB, maternal"
+---
+
 # Maternal Health Scenario
 
 A scenario template for generating obstetric patients across pregnancy phases including prenatal care, labor and delivery, and postpartum follow-up.
@@ -505,6 +510,30 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Gestational age | 0-42 weeks | 38 weeks 2 days |
+| EDD | Valid future date | 2025-06-15 |
+| Gravida/Para | G≥P; P=TPAL format | G3P2012 |
+| BP | Systolic/diastolic | 142/92 (preeclampsia) |
+| Proteinuria | Negative to 4+ | 2+ (concerning) |
+| GBS status | positive, negative, unknown | "positive" |
+| Delivery type | vaginal, cesarean | "cesarean" |
+| APGAR | 0-10 at 1 and 5 min | 8/9 |
+
+### Business Rules
+
+- **Prenatal Visits**: Monthly until 28 wks, biweekly 28-36 wks, weekly 36+ wks
+- **Gestational Diabetes**: Screen at 24-28 weeks; earlier if risk factors
+- **Preeclampsia**: BP ≥140/90 + proteinuria after 20 weeks; monitor closely
+- **GBS Screening**: Collect at 36-37 weeks; treat if positive during labor
+- **Term Pregnancy**: 37-42 weeks; delivery timing depends on risk factors
+- **Post-Dates**: >42 weeks; consider induction by 41-42 weeks
+- **High-Risk Conditions**: Chronic HTN, diabetes, multiple gestation, prior cesarean
+- **Postpartum**: 6-week visit; screen for depression (Edinburgh scale)
 
 ## Related Skills
 

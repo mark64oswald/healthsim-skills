@@ -1,3 +1,8 @@
+---
+name: heart-failure
+description: "Heart failure patients with guideline-directed medical therapy across NYHA classes and EF categories. Triggers: heart failure, CHF, ejection fraction, HFrEF, HFpEF, HFmrEF, decompensated heart failure, cardiology, GDMT, cardiac"
+---
+
 # Heart Failure Scenario
 
 A scenario template for generating heart failure patients with guideline-directed medical therapy across all NYHA classes and ejection fraction categories.
@@ -329,6 +334,30 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Ejection fraction | 0-80% (typically 10-70%) | 35% (HFrEF) |
+| NYHA class | I, II, III, or IV | Class III |
+| BNP | Positive, elevated in HF | 850 pg/mL |
+| NT-proBNP | Positive, elevated in HF | 2500 pg/mL |
+| Creatinine | Positive, may be elevated | 1.4 mg/dL |
+| Potassium | 3.5-5.5 mEq/L (watch with ACEi/ARB) | 4.8 mEq/L |
+| GDMT medications | Appropriate for EF category | Beta-blocker for HFrEF |
+| Diuretic dose | Match fluid status | Furosemide 40-80mg |
+
+### Business Rules
+
+- **HFrEF (EF ≤40%)**: GDMT includes ACEi/ARB/ARNI, beta-blocker, MRA, SGLT2i
+- **HFpEF (EF ≥50%)**: Focus on diuretics, BP control, treat comorbidities
+- **HFmrEF (EF 41-49%)**: May benefit from HFrEF therapies
+- **Decompensation**: IV diuretics, fluid restriction, daily weights
+- **Lab Monitoring**: Creatinine and potassium with ACEi/ARB initiation/titration
+- **Device Therapy**: ICD if EF ≤35%; CRT if EF ≤35% + wide QRS
+- **Readmission Risk**: 30-day readmission ~20%; medication adherence critical
+- **Cardiorenal Syndrome**: HF and CKD commonly coexist; affects medication choices
 
 ## Related Skills
 

@@ -1,3 +1,8 @@
+---
+name: enrollment-eligibility
+description: "Member enrollment transactions (834) and eligibility verification responses (270/271). Triggers: enrollment, eligibility, member add, 834, 270, 271, COBRA, open enrollment, QLE, coverage verification"
+---
+
 # Enrollment and Eligibility Scenario
 
 A scenario template for generating member enrollment transactions and eligibility verification responses.

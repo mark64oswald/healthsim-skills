@@ -1,3 +1,8 @@
+---
+name: adt-workflow
+description: "Admit/Discharge/Transfer events following HL7v2 ADT messaging patterns. Triggers: ADT, admission, discharge, transfer, patient movement, census, inpatient workflow, A01, A02, A03, bed management"
+---
+
 # ADT Workflow Scenario
 
 A scenario template for generating Admit/Discharge/Transfer events following HL7v2 ADT messaging patterns.

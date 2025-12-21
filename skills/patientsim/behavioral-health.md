@@ -1,3 +1,8 @@
+---
+name: behavioral-health
+description: "Mental health and substance use disorders - depression, anxiety, bipolar, PTSD, SUD. Triggers: depression, anxiety, bipolar, PTSD, mental health, psychiatric, antidepressants, mood stabilizers, substance use, addiction, therapy, PHQ-9, GAD-7"
+---
+
 # Behavioral Health Clinical Scenario
 
 A scenario template for generating patients with mental health and substance use disorders, including depression, anxiety, bipolar disorder, PTSD, and substance use disorders.
@@ -336,6 +341,30 @@ When generating behavioral health patients:
 
 - [../../references/code-systems.md](../../references/code-systems.md) - ICD-10 psychiatric codes
 - [../../formats/fhir-r4.md](../../formats/fhir-r4.md) - FHIR Condition and MedicationRequest
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| PHQ-9 score | 0-27 | 15 (moderately severe) |
+| GAD-7 score | 0-21 | 12 (moderate anxiety) |
+| MDQ score | 0-13 for screening | 8 (positive screen) |
+| AUDIT-C score | 0-12 | 5 (hazardous drinking) |
+| Diagnosis code | Valid ICD-10 F-codes | F32.1 (MDD, moderate) |
+| Medication class | Appropriate for diagnosis | SSRI for MDD |
+| Suicide risk | low, moderate, high | "moderate" |
+| Admission type | voluntary, involuntary | "voluntary" |
+
+### Business Rules
+
+- **Depression Severity**: PHQ-9 <5 (minimal), 5-9 (mild), 10-14 (moderate), 15-19 (mod severe), ≥20 (severe)
+- **Anxiety Severity**: GAD-7 <5 (minimal), 5-9 (mild), 10-14 (moderate), ≥15 (severe)
+- **Medication Trials**: Adequate trial = 4-6 weeks at therapeutic dose before switching
+- **Treatment Resistance**: ≥2 failed adequate trials defines treatment-resistant depression
+- **Metabolic Monitoring**: Antipsychotics require baseline/periodic metabolic panels
+- **Safety Assessment**: Document suicide risk assessment at each visit
+- **Level of Care**: Outpatient, IOP, PHP, inpatient based on acuity
+- **Involuntary Admission**: Danger to self/others or gravely disabled
 
 ## Related Skills
 

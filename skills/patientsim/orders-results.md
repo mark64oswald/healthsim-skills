@@ -1,3 +1,8 @@
+---
+name: orders-results
+description: "Clinical orders (lab, radiology, medication) and their corresponding results with realistic values. Triggers: lab orders, test results, observations, ORM, ORU, lab panels, CMP, CBC, radiology orders, medication orders, LOINC"
+---
+
 # Orders and Results Scenario
 
 A scenario template for generating clinical orders (laboratory, radiology, medication) and their corresponding results with realistic values and interpretations.
@@ -399,6 +404,30 @@ OBX|5|NM|2823-3^Potassium^LN||4.2|mmol/L|3.5-5.0|N|||F|||20250115150000
   ]
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Order code | Valid CPT/LOINC | 80053 (CMP), 2345-7 (glucose) |
+| Result value | Within physiologic range | 95 mg/dL |
+| Reference range | Low-high format | 70-100 mg/dL |
+| Result status | final, preliminary, corrected | "final" |
+| Order status | ordered, completed, cancelled | "completed" |
+| Collection time | Valid datetime | 2025-01-15T08:30:00 |
+| Result time | After collection time | 2025-01-15T10:15:00 |
+| Abnormal flag | L, H, LL, HH, N | "H" (high) |
+
+### Business Rules
+
+- **Order-Result Pairing**: Each result must link to a valid order
+- **Turnaround Time**: Labs typically 1-24 hours; imaging read within hours
+- **Critical Values**: Immediate notification required (e.g., K+ >6.5)
+- **Reference Ranges**: Age/sex-specific where applicable
+- **Result Interpretation**: Abnormal flags based on reference range comparison
+- **Panel Components**: CMP has 14 tests; CBC has 8+ parameters
+- **Repeat Testing**: Abnormal results may prompt repeat confirmation
+- **Result Amendment**: Corrected results must maintain original and correction
 
 ## Related Skills
 

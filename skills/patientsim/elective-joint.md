@@ -1,3 +1,8 @@
+---
+name: elective-joint
+description: "Elective total joint arthroplasty (hip/knee replacement) with complete perioperative event sequences. Triggers: joint replacement, hip replacement, knee replacement, arthroplasty, orthopedic surgery, perioperative, POD, post-operative, DVT, surgical"
+---
+
 # Elective Joint Replacement Scenario - Complete Surgical Event Timelines
 
 A scenario template for generating patients undergoing elective total joint arthroplasty (hip or knee replacement) **with complete perioperative event sequences** from pre-operative evaluation through surgery, daily post-operative progression (POD 0-3), complications, and discharge planning.
@@ -1430,6 +1435,30 @@ Low-risk patient selected for outpatient arthroplasty program.
 - American Society of Anesthesiologists (ASA) Perioperative Management Guidelines, 2023
 - CDC Guideline for Prevention of Surgical Site Infection, 2017
 - Journal of Arthroplasty - Prosthetic Joint Infection Management, 2023
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Procedure code | Valid CPT | 27447 (TKA), 27130 (THA) |
+| DRG | Valid MS-DRG | 469 (major joint w/ MCC), 470 (w/o MCC) |
+| ASA class | I-VI | ASA II |
+| BMI | Typically <40 for elective | 32.5 |
+| Hemoglobin | Pre-op baseline | 13.5 g/dL |
+| INR | <1.5 for surgery | 1.1 |
+| LOS | Days, typically 1-3 | 2 days |
+| Discharge disposition | home, SNF, rehab | "home with PT" |
+
+### Business Rules
+
+- **Pre-op Optimization**: BMI <40, A1C <8%, smoking cessation, dental clearance
+- **DVT Prophylaxis**: Required post-op; aspirin, LMWH, or direct oral anticoagulant
+- **Antibiotic Prophylaxis**: Pre-incision cefazolin (or vancomycin if MRSA)
+- **Blood Management**: Tranexamic acid; consider autologous blood donation
+- **Pain Management**: Multimodal approach; regional blocks preferred
+- **Early Mobilization**: Physical therapy POD 0-1
+- **Discharge Criteria**: Pain controlled, mobilizing safely, wound intact
+- **Bundled Payment**: 90-day episode includes surgery, hospital, and post-acute care
 
 ## Related Skills
 

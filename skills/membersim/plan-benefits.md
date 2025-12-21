@@ -1,3 +1,8 @@
+---
+name: plan-benefits
+description: "Health plan benefit structures including HMO, PPO, HDHP with cost-sharing configurations. Triggers: plan, benefit plan, plan design, HMO, PPO, HDHP, copay structure, deductible, plan configuration, cost sharing"
+---
+
 # Plan & Benefits Configuration Scenario
 
 A scenario template for generating health plan benefit structures including HMO, PPO, HDHP, and other plan types with cost-sharing configurations.

@@ -1,3 +1,8 @@
+---
+name: professional-claims
+description: "Professional (CMS-1500/837P) claims for physician and outpatient services. Triggers: professional claim, 837P, CMS-1500, physician billing, office visit claims, E&M codes, outpatient procedures, claim adjudication"
+---
+
 # Professional Claims Scenario
 
 A scenario template for generating professional (CMS-1500/837P) claims for physician and outpatient services, including E&M visits, procedures, and diagnostics.
@@ -419,6 +424,31 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Claim ID | Unique identifier | CLM-2025-001234 |
+| Service date | Valid date, not future | 2025-01-15 |
+| CPT code | Valid 5-digit CPT | 99214 (office visit) |
+| ICD-10 code | Valid diagnosis code | E11.9 (Type 2 DM) |
+| Place of service | 2-digit POS code | 11 (office), 22 (outpatient) |
+| Provider NPI | 10-digit valid NPI | 1234567890 |
+| Billed amount | Positive amount | $150.00 |
+| Units | Positive integer | 1 |
+| Modifier | Valid CPT modifier | 25 (significant E&M) |
+
+### Business Rules
+
+- **E&M Level Selection**: Match complexity to documentation (99211-99215)
+- **Modifier 25**: Required for E&M with same-day procedure
+- **Place of Service**: Must match claim type (11=office, 22=outpatient hospital)
+- **Diagnosis Pointer**: Each CPT must link to supporting diagnosis
+- **Prior Authorization**: Some services require PA number on claim
+- **Timely Filing**: Claims must be filed within payer deadline (typically 90-365 days)
+- **NPI Validation**: Rendering and billing NPI must be active and enrolled
+- **Duplicate Check**: Same provider/patient/date/CPT rejected as duplicate
 
 ## Related Skills
 

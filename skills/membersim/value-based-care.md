@@ -1,3 +1,8 @@
+---
+name: value-based-care
+description: "Value-based care arrangements including quality measures, HEDIS, risk adjustment, and alternative payment models. Triggers: value-based care, VBC, HEDIS, quality measures, risk adjustment, HCC, ACO, capitation, quality bonus, Stars rating"
+---
+
 # Value-Based Care Scenario
 
 A scenario template for generating value-based care arrangements including quality measures, HEDIS, risk adjustment, and alternative payment models.
@@ -594,6 +599,30 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Measure ID | Valid HEDIS/CMS measure | BCS (Breast Cancer Screening) |
+| Measure rate | 0.0 to 1.0 or percentage | 0.85 (85%) |
+| HCC code | Valid CMS-HCC | HCC 19 (Diabetes with complications) |
+| RAF score | Positive decimal | 1.25 |
+| Quality score | Within measure range | 4.5 Stars (1-5 scale) |
+| Attribution | Member attributed to provider | Attributed via plurality |
+| Measurement period | Valid date range | 2024-01-01 to 2024-12-31 |
+| Payment model | Valid VBC type | Shared savings, capitation, bundled |
+
+### Business Rules
+
+- **HEDIS Measures**: Standardized quality measures with specific numerator/denominator definitions
+- **Risk Adjustment**: HCC coding captures member acuity; drives capitation rates
+- **Attribution**: Members attributed to PCPs based on plurality of visits
+- **Quality Thresholds**: Bonus payments tied to meeting specific rate targets
+- **Measurement Year**: Typically calendar year; lookback for continuous enrollment
+- **Gap Closure**: Claims/encounters that close quality gaps within measurement period
+- **Stars Ratings**: Medicare Advantage quality ratings (1-5 stars) affect rebates
+- **Shared Savings**: Savings vs. benchmark shared between payer and provider
 
 ## Related Skills
 

@@ -1,3 +1,8 @@
+---
+name: breast-cancer
+description: "Breast cancer patient journeys from screening through treatment and survivorship. Triggers: breast cancer, breast mass, mammogram, ER/PR/HER2, mastectomy, lumpectomy, tamoxifen, aromatase inhibitors, Herceptin, oncology, chemotherapy"
+---
+
 # Breast Cancer Management
 
 Comprehensive scenario skill for generating realistic breast cancer patient journeys, from screening detection through treatment, surveillance, and survivorship or metastatic management.
@@ -1150,6 +1155,30 @@ Key areas requiring validation:
 - Surveillance protocols per current guidelines
 
 Last validation review: Pending
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Stage | 0, I, II, III, IV | Stage IIA |
+| ER status | positive, negative | "positive" |
+| PR status | positive, negative | "positive" |
+| HER2 status | positive, negative, equivocal | "negative" |
+| Ki-67 | 0-100% | 25% |
+| Tumor size | cm | 2.3 cm |
+| Node status | pN0, pN1, pN2, pN3 | pN1 (1-3 nodes) |
+| Grade | 1, 2, 3 | Grade 2 |
+
+### Business Rules
+
+- **Molecular Subtype**: ER/PR/HER2 status determines treatment approach
+- **Luminal A**: ER+/PR+/HER2-/low Ki-67 → Endocrine therapy often sufficient
+- **Luminal B**: ER+/PR+/HER2±/high Ki-67 → May need chemo + endocrine
+- **HER2-enriched**: HER2+ → Trastuzumab-based therapy
+- **Triple Negative**: ER-/PR-/HER2- → Chemotherapy primary treatment
+- **Oncotype DX**: Recurrence score guides chemo decision in ER+/HER2-/node-negative
+- **Neoadjuvant**: Pre-operative chemo for locally advanced or to enable BCT
+- **Adjuvant Endocrine**: 5-10 years for ER+ disease
 
 ## Related Skills
 

@@ -1,3 +1,8 @@
+---
+name: childhood-asthma
+description: "Pediatric asthma patients across severity levels including acute exacerbations. Triggers: childhood asthma, pediatric asthma, wheezing, albuterol, inhaled steroids, asthma action plan, pediatric respiratory, children breathing"
+---
+
 # Childhood Asthma Scenario
 
 A scenario template for generating pediatric patients with asthma across severity levels, from intermittent to severe persistent, including acute exacerbations.
@@ -294,6 +299,30 @@ Apply this skill when the user's request involves:
 - albuterol nebulizer
 - controller medication
 - asthma action plan
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Age | Typically 2-18 years | 8 years |
+| Severity | intermittent, mild, moderate, severe | "moderate persistent" |
+| Peak flow | % predicted | 75% predicted |
+| O2 saturation | 90-100% | 94% |
+| Rescue inhaler use | Days per week | 3 days/week |
+| Night symptoms | Nights per month | 4 nights/month |
+| Controller meds | ICS dose category | Low-dose ICS |
+| Exacerbations | Per year requiring steroids | 2 per year |
+
+### Business Rules
+
+- **Classification**: Based on symptoms, night awakenings, rescue use, FEV1
+- **Intermittent**: Symptoms ≤2 days/wk, ≤2 nights/mo → SABA PRN only
+- **Persistent**: Symptoms >2 days/wk → Daily controller (ICS)
+- **Step Therapy**: Start at step matching severity; step up/down based on control
+- **Controller Options**: ICS, ICS/LABA, leukotriene modifiers
+- **Spacer Use**: Required for MDI in children; improves delivery
+- **Asthma Action Plan**: Green/yellow/red zones based on symptoms and peak flow
+- **Annual Assessment**: Review control, adjust step, update action plan
 
 ## Dependencies
 

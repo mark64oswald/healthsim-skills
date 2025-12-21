@@ -1,3 +1,8 @@
+---
+name: behavioral-health-claims
+description: "Behavioral health professional claims including psychotherapy, psychiatric evaluation, and SUD treatment. Triggers: behavioral health claim, mental health claim, psychotherapy, psychiatry billing, substance abuse, SUD, therapy session, PHP, IOP"
+---
+
 # Behavioral Health Claims Scenario
 
 A scenario template for generating behavioral health professional claims including psychotherapy, psychiatric evaluation, and substance use disorder treatment.
@@ -437,6 +442,30 @@ Common parity-related denial review triggers:
 - Higher copays for behavioral health than medical specialists
 - More restrictive prior auth requirements
 - Different network access standards
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Claim ID | Unique identifier | BH-2025-001234 |
+| Service date | Valid date, not future | 2025-01-15 |
+| CPT code | Valid BH CPT | 90834 (45-min therapy) |
+| ICD-10 code | Valid mental health diagnosis | F32.1 (moderate depression) |
+| Provider type | Licensed BH provider | Psychiatrist, LCSW, PhD |
+| Provider NPI | 10-digit valid NPI | 1234567890 |
+| Session duration | Minutes per CPT code | 45 min (90834), 60 min (90837) |
+| Place of service | Valid POS code | 11 (office), 02 (telehealth) |
+
+### Business Rules
+
+- **E&M vs. Psychotherapy**: Psychiatrists may bill both E&M and therapy same day (add-on codes)
+- **Telehealth Modifier**: Telehealth sessions require POS 02 and may need modifier 95
+- **Parity Compliance**: Mental health benefits must be comparable to medical benefits
+- **Carve-Out**: Some plans carve out BH to separate administrator (Magellan, Optum BH)
+- **Session Limits**: Some plans limit annual therapy visits (e.g., 30/year)
+- **Provider Restrictions**: Must see in-network provider or pre-authorize out-of-network
+- **Inpatient Authorization**: BH inpatient stays typically require concurrent review
+- **SUD Services**: Substance use treatment has specific codes and requirements
 
 ## Related Skills
 

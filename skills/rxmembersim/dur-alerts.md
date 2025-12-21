@@ -1,3 +1,8 @@
+---
+name: dur-alerts
+description: "Drug Utilization Review alerts including drug interactions, therapeutic duplication, early refill rejections, and clinical edits. Triggers: DUR, drug interaction, DDI, therapeutic duplication, early refill, clinical alert, drug-drug interaction, contraindication"
+---
+
 # Drug Utilization Review (DUR) Alerts Scenario
 
 A scenario template for generating DUR alerts including drug interactions, therapeutic duplication, and early refill rejections.
@@ -585,6 +590,29 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| DUR code | Valid NCPDP DUR/PPS codes | DD (Drug-Drug), TD (Therapeutic Dup) |
+| Severity level | 1 (low) to 3 (high) or text | Severity 3, "Severe" |
+| Professional service | Valid NCPDP service code | P0 (Patient Counseling) |
+| Result of service | Valid NCPDP result code | 1A (Filled as prescribed) |
+| Reason for service | Valid NCPDP reason code | DD (Drug-Drug Interaction) |
+| Alert description | Clinical description of alert | "Warfarin + aspirin: increased bleeding" |
+| Override required | Boolean for hard stops | true (requires pharmacist override) |
+
+### Business Rules
+
+- **Drug-Drug Interactions (DDI)**: Severity 1-3 based on clinical significance
+- **Therapeutic Duplication**: Same drug class, different NDCs
+- **Early Refill**: Typically reject if >25% of days supply remaining
+- **Age Precautions**: Beers Criteria for patients ≥65
+- **Pregnancy Precautions**: Category X drugs for female patients 12-50
+- **Controlled Substance Monitoring**: PDMP checks for opioids, benzodiazepines
+- **Quantity Limits**: Opioid quantity thresholds (e.g., >90 MME/day)
+- **Pharmacist Override**: Some alerts are informational; others require intervention
 
 ## Related Skills
 

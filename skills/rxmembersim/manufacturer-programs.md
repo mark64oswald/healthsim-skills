@@ -1,3 +1,8 @@
+---
+name: manufacturer-programs
+description: "Manufacturer assistance programs including copay cards, patient assistance programs, and hub services. Triggers: copay card, copay assistance, PAP, patient assistance, manufacturer program, hub services, free drug program, accumulator adjustment"
+---
+
 # Manufacturer Programs Scenario
 
 A scenario template for generating manufacturer assistance programs including copay cards, patient assistance programs, and hub services.
@@ -832,6 +837,31 @@ Maximizers coordinate manufacturer assistance to ensure patient costs count towa
 2. **PAPs**: Income verification required; no patient solicitation
 3. **Foundations**: Independent governance; disease-based (not drug-specific)
 4. **Documentation**: Maintain records of eligibility verification
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Program ID | Unique identifier | HUMIRA-COMPLETE-2025 |
+| Program BIN | 6-digit copay card processor | 004682 |
+| Program PCN | Processor control number | CN |
+| Program Group | Group identifier | HUMIRACPC |
+| Max benefit | Annual max in dollars | $16000/year |
+| Per-fill max | Max per transaction | $500/fill |
+| Remaining benefit | Non-negative, ≤ max | $14500 remaining |
+| Eligibility | Commercial only (typically) | No Medicare Part D |
+| Effective dates | Valid date range | 2025-01-01 to 2025-12-31 |
+
+### Business Rules
+
+- **Copay Card Eligibility**: Commercial insurance only; Medicare/Medicaid excluded
+- **Per-Fill Maximum**: Caps assistance per transaction (e.g., $500/fill)
+- **Annual Maximum**: Total yearly benefit cap (e.g., $16,000/year)
+- **Stacking Rules**: May combine with insurance; applied as secondary payer
+- **Accumulator Adjustment**: Plan may/may not count manufacturer assistance toward deductible
+- **Hub Enrollment**: Required for many specialty drugs (refill reminders, adherence)
+- **PAP Income Limits**: Patient Assistance Programs have income eligibility (e.g., <400% FPL)
+- **Foundation Independence**: Charitable foundations must be drug-agnostic
 
 ## Related Skills
 

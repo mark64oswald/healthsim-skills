@@ -1,3 +1,8 @@
+---
+name: chronic-kidney-disease
+description: "Chronic kidney disease patients across all stages including dialysis and transplant evaluation. Triggers: CKD, kidney disease, renal failure, eGFR, creatinine, dialysis, nephrology, ESRD, transplant"
+---
+
 # Chronic Kidney Disease Scenario
 
 A scenario template for generating patients with chronic kidney disease across all stages, including dialysis and transplant evaluation.
@@ -321,6 +326,30 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| eGFR | 0-120 mL/min/1.73m² | 25 (Stage 4) |
+| CKD stage | 1-5 based on eGFR | Stage 4 (eGFR 15-29) |
+| Creatinine | Positive, inversely correlates with eGFR | 3.2 mg/dL |
+| BUN | Positive, elevated in CKD | 45 mg/dL |
+| Potassium | 3.5-6.5 mEq/L (may be elevated) | 5.8 mEq/L |
+| Hemoglobin | Anemia common in CKD | 10.2 g/dL |
+| Phosphorus | May be elevated | 5.5 mg/dL |
+| PTH | Elevated in CKD | 180 pg/mL |
+
+### Business Rules
+
+- **CKD Staging**: Stage 1 (eGFR ≥90), Stage 2 (60-89), Stage 3a (45-59), Stage 3b (30-44), Stage 4 (15-29), Stage 5 (<15)
+- **Anemia Management**: ESAs when Hgb <10; target 10-11.5 g/dL
+- **Mineral Bone Disease**: Phosphate binders, vitamin D analogs, calcimimetics
+- **Medication Adjustment**: Many drugs require dose adjustment or avoidance in CKD
+- **ACEi/ARB**: Renoprotective but monitor creatinine/potassium closely
+- **Dialysis Initiation**: Usually when eGFR <10-15 or symptomatic uremia
+- **Transplant Evaluation**: Begin when eGFR <20
+- **Comorbidities**: HTN, diabetes, and CVD very common
 
 ## Related Skills
 

@@ -1,3 +1,8 @@
+---
+name: facility-claims
+description: "Institutional (UB-04/837I) claims for hospital inpatient, outpatient, and observation services. Triggers: facility claim, 837I, UB-04, hospital claims, inpatient, DRG, revenue codes, institutional, hospital billing"
+---
+
 # Facility Claims Scenario
 
 A scenario template for generating institutional (UB-04/837I) claims for hospital inpatient, outpatient, and observation services.
@@ -421,6 +426,31 @@ Adjustments:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Claim ID | Unique identifier | FAC-2025-001234 |
+| Admission date | Valid date, not future | 2025-01-10 |
+| Discharge date | On or after admission | 2025-01-14 |
+| Revenue code | Valid 4-digit code | 0120 (room & board) |
+| DRG | Valid MS-DRG | 470 (joint replacement) |
+| Type of bill | 3-digit TOB code | 111 (inpatient admit) |
+| Principal diagnosis | Valid ICD-10 | I50.9 (heart failure) |
+| Facility NPI | 10-digit valid NPI | 1234567890 |
+| Total charges | Positive amount | $45,000.00 |
+
+### Business Rules
+
+- **DRG Assignment**: Based on principal diagnosis, procedures, complications, age
+- **Type of Bill**: First digit = facility type, second = bill classification, third = frequency
+- **Revenue Codes**: Required for each service line; maps to department/service
+- **Admission Type**: 1=Emergency, 2=Urgent, 3=Elective, 4=Newborn
+- **Discharge Status**: 01=home, 02=SNF, 20=expired, 30=still patient
+- **Length of Stay**: Discharge date - Admission date; affects DRG payment
+- **Present on Admission**: POA indicators required for each diagnosis
+- **Outlier Payments**: Extra-long stays or high-cost cases may receive outlier payment
 
 ## Related Skills
 

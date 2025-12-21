@@ -1,3 +1,8 @@
+---
+name: lung-cancer
+description: "Lung cancer patient journeys for NSCLC and SCLC with biomarker-driven treatment selection. Triggers: lung cancer, lung mass, pulmonary nodule, NSCLC, SCLC, adenocarcinoma, squamous cell, EGFR, ALK, ROS1, KRAS, PD-L1, osimertinib, immunotherapy, pembrolizumab"
+---
+
 # Lung Cancer Management
 
 Comprehensive scenario skill for generating realistic lung cancer patient journeys, covering both Non-Small Cell Lung Cancer (NSCLC) and Small Cell Lung Cancer (SCLC), from diagnosis through biomarker-driven treatment selection, progression, and palliative care.
@@ -1384,6 +1389,30 @@ Key areas requiring validation:
 - SCLC staging and treatment protocols
 
 Last validation review: Pending
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Stage | I, II, III, IV (or IA-IVB) | Stage IIIA |
+| Histology | NSCLC, SCLC, adenocarcinoma, etc. | "adenocarcinoma" |
+| EGFR status | mutated, wild-type, specific mutation | "L858R mutation" |
+| ALK status | positive, negative | "negative" |
+| PD-L1 TPS | 0-100% | 80% |
+| Tumor size | cm | 3.5 cm |
+| Node status | N0, N1, N2, N3 | N2 |
+| Performance status | ECOG 0-4 | ECOG 1 |
+
+### Business Rules
+
+- **NSCLC vs SCLC**: Different staging, treatment, and prognosis
+- **Biomarker Testing**: EGFR, ALK, ROS1, BRAF, PD-L1 required for NSCLC
+- **EGFR+**: Osimertinib first-line for exon 19 del or L858R
+- **ALK+**: Alectinib or brigatinib first-line
+- **PD-L1 High (≥50%)**: Pembrolizumab monotherapy option
+- **Stage I-II**: Surgery +/- adjuvant therapy
+- **Stage III**: Chemoradiation +/- immunotherapy consolidation
+- **Stage IV**: Systemic therapy; targeted if actionable mutation
 
 ## Related Skills
 

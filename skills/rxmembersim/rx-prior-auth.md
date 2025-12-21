@@ -1,3 +1,8 @@
+---
+name: rx-prior-auth
+description: "Pharmacy prior authorization requests including clinical PA, step therapy overrides, formulary exceptions, and ePA transactions. Triggers: pharmacy PA, prior authorization, step therapy, formulary exception, ePA, clinical criteria, PA denial, PA approval"
+---
+
 # Pharmacy Prior Authorization Scenario
 
 A scenario template for generating pharmacy prior authorization requests including clinical PA, step therapy overrides, and formulary exceptions.
@@ -845,6 +850,31 @@ comparison_to_fax:
 | NCPDP SCRIPT | "as ePA" | Electronic PA workflow |
 | PDF | "PA letter" | Provider/member notification |
 | CSV | "as CSV" | PA tracking report |
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| PA number | Unique identifier | PA-2025-001234 |
+| Request date | Valid date, not future | 2025-01-15 |
+| Decision date | On or after request date | 2025-01-17 |
+| Decision | approved, denied, pending | "approved" |
+| Approval duration | Months valid | 12 months |
+| Drug NDC | Valid 11-digit NDC | 00074433906 |
+| Diagnosis code | Valid ICD-10 | E11.9 (Type 2 diabetes) |
+| Prescriber NPI | 10-digit valid NPI | 1234567890 |
+| Clinical criteria | Boolean flags | prior_therapy_failed: true |
+
+### Business Rules
+
+- **Turnaround Time**: Standard PA 72 hours; urgent PA 24 hours
+- **Clinical Criteria**: Drug-specific requirements (diagnosis, labs, prior therapies)
+- **Step Therapy**: Requires documentation of trial/failure of required prior drugs
+- **Formulary Exception**: Requires clinical justification for non-formulary drug
+- **Approval Duration**: Typically 6-12 months; specialty drugs may be shorter
+- **Appeal Process**: Denied PAs can be appealed with additional documentation
+- **ePA Integration**: Electronic PA (NCPDP SCRIPT) enables real-time adjudication
+- **Grandfathering**: Existing patients on drug may be auto-approved at renewal
 
 ## Related Skills
 

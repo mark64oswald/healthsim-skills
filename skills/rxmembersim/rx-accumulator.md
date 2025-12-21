@@ -1,3 +1,8 @@
+---
+name: rx-accumulator
+description: "Pharmacy benefit accumulators including deductibles, OOP maximums, and Medicare Part D phases. Triggers: pharmacy accumulator, deductible, OOP maximum, Part D, coverage gap, donut hole, catastrophic phase, TrOOP"
+---
+
 # Pharmacy Accumulator Tracking Scenario
 
 A scenario template for generating pharmacy benefit accumulators including deductibles, OOP maximums, and Medicare Part D phases.
@@ -739,6 +744,30 @@ When secondary coverage pays:
 | CSV | "as CSV" | Accumulator reporting |
 | SQL | "as SQL" | Database loading |
 | PDF | "accumulator statement" | Member statements |
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Deductible amount | Non-negative | $500 individual, $1000 family |
+| OOP maximum | ≥ deductible | $3000 individual |
+| Accumulator YTD | Non-negative, ≤ maximum | $1250 of $3000 OOP |
+| Plan year | Valid date range | 2025-01-01 to 2025-12-31 |
+| Part D phase | Valid phase name | "Initial Coverage", "Coverage Gap" |
+| TrOOP | True Out-of-Pocket tracking | $2100 of $8000 |
+| Family tier | individual or family | "family" |
+| Reset date | Plan year start | 2025-01-01 |
+
+### Business Rules
+
+- **Deductible Phase**: Member pays 100% until deductible met
+- **Coinsurance Phase**: Member pays copay/coinsurance after deductible
+- **OOP Maximum**: Member pays $0 after OOP max reached
+- **Family Accumulation**: Family members may share accumulators
+- **Part D Phases**: Deductible → Initial Coverage → Coverage Gap → Catastrophic
+- **TrOOP Calculation**: Only certain costs count toward TrOOP (excludes premiums)
+- **Accumulator Adjustment**: Manufacturer copay assistance may not count toward accumulators
+- **Mid-Year Changes**: Job change may reset or carry over accumulators
 
 ## Related Skills
 

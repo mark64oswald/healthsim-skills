@@ -1,3 +1,8 @@
+---
+name: sepsis-acute-care
+description: "Sepsis patients across severity levels with SEP-1 bundle compliance and ICU care patterns. Triggers: sepsis, septic shock, SIRS, critical care, ICU, bacteremia, bloodstream infection, acute care, qSOFA"
+---
+
 # Sepsis and Acute Care Scenario
 
 A scenario template for generating sepsis patients across severity levels with SEP-1 bundle compliance and ICU-level care patterns.
@@ -386,6 +391,30 @@ For quality measure compliance, ensure:
 3. **Hour 6**:
    - Vasopressors if hypotension persists after fluid resuscitation
    - Repeat lactate if initial lactate elevated
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| SOFA score | 0-24 | 8 (organ dysfunction) |
+| qSOFA | 0-3 | 2 (positive screen) |
+| Lactate | Positive, mmol/L | 4.2 mmol/L (elevated) |
+| MAP | Positive, mmHg | 58 mmHg (hypotensive) |
+| WBC | Positive, cells/mcL | 18,500 (leukocytosis) |
+| Temperature | 95-105°F or 35-41°C | 102.4°F (fever) |
+| Creatinine | Positive, may be elevated | 2.1 mg/dL |
+| Bilirubin | Positive, may be elevated | 3.5 mg/dL |
+
+### Business Rules
+
+- **Sepsis Definition**: Infection + SOFA ≥2 (or increase by 2)
+- **Septic Shock**: Sepsis + vasopressors + lactate >2 despite fluids
+- **SEP-1 Bundle**: Blood cultures, lactate, antibiotics, fluids within 3 hours
+- **Time Zero**: When sepsis first recognized (not arrival time)
+- **Fluid Resuscitation**: 30 mL/kg crystalloid for hypotension or lactate ≥4
+- **Antibiotic Timing**: Broad-spectrum within 1 hour of recognition
+- **Source Control**: Drain abscesses, remove infected devices
+- **Mortality**: Increases ~8% per hour of delayed antibiotics
 
 ## Related Skills
 

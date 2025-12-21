@@ -1,3 +1,8 @@
+---
+name: state-management
+description: "Save, load, and manage workspace scenarios to preserve synthetic patient data across sessions. Triggers: save, load, workspace, scenario, persist, resume, continue from, list scenarios, delete scenario"
+---
+
 # State Management
 
 _Save, load, and manage workspace scenarios to preserve your synthetic patient data across sessions._

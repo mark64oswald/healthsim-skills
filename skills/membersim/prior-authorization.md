@@ -1,3 +1,8 @@
+---
+name: prior-authorization
+description: "Prior authorization requests and decisions for medical services, procedures, and medications. Triggers: prior authorization, prior auth, PA, pre-certification, medical necessity, utilization management, UM, authorization approval, denial"
+---
+
 # Prior Authorization Scenario
 
 A scenario template for generating prior authorization requests and decisions for medical services, procedures, and medications.
@@ -485,6 +490,31 @@ When a claim is submitted:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Auth number | Unique identifier | AUTH-2025-001234 |
+| Request date | Valid date, not future | 2025-01-10 |
+| Decision date | On or after request date | 2025-01-12 |
+| Status | pending, approved, denied, expired | "approved" |
+| Service code | Valid CPT/HCPCS | 27447 (total knee) |
+| Diagnosis code | Valid ICD-10 | M17.11 (knee OA) |
+| Provider NPI | 10-digit valid NPI | 1234567890 |
+| Approval duration | Valid date range | 90 days |
+| Units approved | Positive integer | 1 |
+
+### Business Rules
+
+- **Turnaround Time**: Standard 5-15 business days; urgent 24-72 hours
+- **Clinical Criteria**: Service-specific requirements (e.g., BMI, conservative treatment)
+- **Medical Necessity**: Must document why service is required
+- **Retro Authorization**: Emergency services may be authorized after the fact
+- **Peer-to-Peer**: Provider can request clinical review with payer MD on denial
+- **Appeal Rights**: Denials can be appealed; timeline varies by payer
+- **Auth Validity**: Approvals expire; service must occur within validity period
+- **Units vs. Duration**: Some PAs approve specific units; others approve time period
 
 ## Related Skills
 

@@ -1,3 +1,8 @@
+---
+name: formulary-management
+description: "Formulary structures including tier configurations, step therapy, quantity limits, and coverage policies. Triggers: formulary, drug tier, step therapy, prior authorization required, quantity limit, non-formulary, preferred drug, coverage policy"
+---
+
 # Formulary Management Scenario
 
 A scenario template for generating formulary structures including tier configurations, step therapy, and coverage policies.
@@ -603,6 +608,30 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Tier number | 1-6 (or plan-specific) | Tier 1 (generic), Tier 5 (specialty) |
+| Copay/coinsurance | Non-negative, tier-appropriate | $10 (T1), $50 (T3), 20% (T5) |
+| PA required | Boolean flag | true (requires prior auth) |
+| Step therapy | Array of required prior drugs | ["metformin", "sulfonylurea"] |
+| Quantity limit | Per-fill or per-month | 30 tablets/fill, 90/month |
+| GPI | 14-digit drug classification | 27100030000310 |
+| Formulary status | on/off formulary, tier | "Preferred Brand", "Non-Formulary" |
+| Effective date | Valid date range | 2025-01-01 to 2025-12-31 |
+
+### Business Rules
+
+- **Tier Structure**: Generic (T1) < Preferred Brand (T2) < Non-Preferred Brand (T3) < Specialty (T4-5)
+- **Step Therapy**: Must try/fail lower-cost options before covering higher-tier drugs
+- **Prior Authorization**: Required for specialty, high-cost, or high-risk drugs
+- **Quantity Limits**: Prevent stockpiling; encourage appropriate use
+- **Age/Gender Limits**: Some drugs limited by age or gender (e.g., fertility drugs)
+- **Diagnosis Requirements**: Some drugs require specific ICD-10 codes
+- **Specialty Tier**: Typically coinsurance (20-33%) rather than fixed copay
+- **Formulary Updates**: Typically quarterly; new drugs may be excluded initially
 
 ## Related Skills
 

@@ -69,7 +69,7 @@ skills/trialsim/
 
 ## Development Roadmap
 
-See [TrialSim Development Guide v3.0](../../docs/trialsim-development-guide-v3.md) for complete roadmap.
+See [TrialSim Development Plan](../../docs/TRIALSIM-DEVELOPMENT-PLAN.md) for complete roadmap.
 
 **Phase 1 (Foundation):** Domain knowledge, Phase 3 pivotal ✅
 **Phase 2 (Core Scenarios):** Recruitment, additional phases

@@ -1,3 +1,8 @@
+---
+name: colorectal-cancer
+description: "Colorectal cancer patient journeys from screening through surgery, adjuvant therapy, and surveillance. Triggers: colon cancer, rectal cancer, colorectal, GI oncology, FOLFOX, FOLFIRI, MSI, dMMR, Lynch syndrome, KRAS, NRAS, BRAF, cetuximab, colonoscopy"
+---
+
 # Colorectal Cancer Management
 
 Comprehensive scenario skill for generating realistic colorectal cancer patient journeys, covering colon and rectal cancer from screening detection through surgery, adjuvant therapy, metastatic treatment, and surveillance.
@@ -1860,6 +1865,30 @@ family_implications:
   recommendation: genetic_counseling_and_testing_all_first_degree
   children: testing_available_at_adulthood
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Stage | 0, I, II, III, IV | Stage IIIB |
+| Location | colon, rectum, specific site | "sigmoid colon" |
+| KRAS status | mutated, wild-type | "wild-type" |
+| NRAS status | mutated, wild-type | "wild-type" |
+| BRAF status | mutated (V600E), wild-type | "wild-type" |
+| MSI status | MSI-H, MSS | "MSS" |
+| CEA | ng/mL | 8.5 ng/mL |
+| Node status | pN0, pN1, pN2 | pN1 (1-3 nodes) |
+
+### Business Rules
+
+- **Screening**: Colonoscopy q10y starting age 45 (average risk)
+- **RAS Testing**: KRAS/NRAS wild-type required for anti-EGFR therapy
+- **MSI Testing**: MSI-H/dMMR patients eligible for immunotherapy
+- **Stage I**: Surgery alone usually curative
+- **Stage II**: Surgery +/- adjuvant chemo based on risk factors
+- **Stage III**: Surgery + adjuvant FOLFOX (3-6 months)
+- **Stage IV**: Systemic therapy; consider metastasectomy if limited mets
+- **CEA Monitoring**: Baseline and surveillance marker
 
 ## Related Skills
 

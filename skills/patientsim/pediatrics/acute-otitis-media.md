@@ -1,3 +1,8 @@
+---
+name: acute-otitis-media
+description: "Pediatric ear infections including acute otitis media (AOM) and recurrent ear infections. Triggers: ear infection, otitis media, AOM, amoxicillin child, pediatric ENT, ear tubes, myringotomy, ear pain, pediatric fever"
+---
+
 # Acute Otitis Media Scenario
 
 A scenario template for generating pediatric patients with ear infections, including acute otitis media (AOM), otitis media with effusion (OME), and recurrent ear infections.
@@ -287,6 +292,30 @@ Apply this skill when the user's request involves:
 - recurrent ear infections
 - middle ear infection
 - otalgia
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Age | Typically 6mo-6yr | 2 years |
+| Temperature | May be elevated | 101.5°F |
+| Ear affected | left, right, bilateral | "right" |
+| TM appearance | bulging, erythematous, etc. | "bulging with effusion" |
+| Antibiotic | Weight-based dosing | Amoxicillin 90mg/kg/day |
+| Duration | Days of symptoms | 3 days |
+| Severity | mild, moderate, severe | "moderate" |
+| Recurrence | Episodes in past 6-12 mo | 3 episodes in 6 months |
+
+### Business Rules
+
+- **Observation Option**: Age ≥2, unilateral, non-severe → can observe 48-72h
+- **Immediate Antibiotics**: Age <2, bilateral, severe symptoms, high fever
+- **First-line Antibiotic**: High-dose amoxicillin (80-90 mg/kg/day)
+- **Penicillin Allergy**: Cephalosporin or macrolide
+- **Treatment Failure**: No improvement at 48-72h → switch antibiotic
+- **Recurrent AOM**: ≥3 episodes in 6 mo or ≥4 in 12 mo → consider ENT referral
+- **Tympanostomy Tubes**: For recurrent AOM or chronic OME
+- **Pain Management**: Acetaminophen or ibuprofen for otalgia
 
 ## Dependencies
 

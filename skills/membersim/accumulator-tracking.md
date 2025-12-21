@@ -1,3 +1,8 @@
+---
+name: accumulator-tracking
+description: "Member benefit accumulators including deductibles, out-of-pocket maximums, and cost-sharing tracking. Triggers: deductible, out-of-pocket, OOP, accumulator, cost-sharing, MOOP, coinsurance, member responsibility, year-to-date"
+---
+
 # Accumulator Tracking Scenario
 
 A scenario template for generating member benefit accumulators including deductibles, out-of-pocket maximums, and cost-sharing tracking.
@@ -533,6 +538,30 @@ Apply this skill when the user's request involves:
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Deductible amount | Non-negative | $1500 individual |
+| OOP maximum | ≥ deductible | $6000 individual |
+| Accumulator YTD | 0 to maximum | $2500 of $6000 OOP |
+| Plan year | Valid date range | 2025-01-01 to 2025-12-31 |
+| Tier | individual, family | "family" |
+| Network | in-network, out-of-network | "in-network" |
+| Service category | medical, pharmacy, combined | "medical" |
+| Reset date | Plan year start | 2025-01-01 |
+
+### Business Rules
+
+- **Deductible Phase**: Member pays 100% until deductible met (up to allowed amount)
+- **Coinsurance Phase**: Member pays coinsurance % after deductible
+- **OOP Maximum**: Member pays $0 for covered services after OOP max reached
+- **Family vs Individual**: Family may have embedded individual limits
+- **In-Network vs OON**: Separate accumulators for each network tier
+- **Excluded Services**: Some services don't count toward accumulators
+- **Annual Reset**: Accumulators reset to $0 on plan year start date
+- **Mid-Year Changes**: Job change may reset or transfer accumulators
 
 ## Related Skills
 

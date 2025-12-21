@@ -1,3 +1,8 @@
+---
+name: rx-enrollment
+description: "Pharmacy benefit enrollment and eligibility including member adds, changes, and terminations. Triggers: pharmacy enrollment, eligibility, BIN, PCN, group number, pharmacy benefit, member ID, cardholder, coverage activation"
+---
+
 # Pharmacy Enrollment Scenario
 
 A scenario template for generating pharmacy benefit enrollment and eligibility transactions including member adds, changes, and terminations.
@@ -521,6 +526,31 @@ End of pharmacy coverage.
 | NCPDP E1 | "as NCPDP eligibility" | Eligibility transaction |
 | CSV | "as CSV" | Bulk enrollment export |
 | SQL | "as SQL" | Database loading |
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| Cardholder ID | Unique identifier | RX0001234567 |
+| BIN | 6-digit processor ID | 003858 |
+| PCN | Processor control number | A4, ADV |
+| Group number | Plan group identifier | RXGROUP001 |
+| Effective date | Valid date | 2025-01-01 |
+| Term date | On or after effective | 2025-12-31, null (active) |
+| Relationship | subscriber, spouse, dependent | "subscriber" |
+| Person code | Position in family | 01 (subscriber), 02 (spouse) |
+| DOB | Valid date, not future | 1975-05-15 |
+
+### Business Rules
+
+- **BIN/PCN/Group**: Required for claim routing; must match processor configuration
+- **Cardholder ID**: Unique per member; may include check digit
+- **Coverage Hierarchy**: Subscriber primary; dependents linked to subscriber
+- **Effective Dates**: Coverage active from effective_date through term_date
+- **COB (Coordination of Benefits)**: Member may have multiple pharmacy coverages
+- **Medicare Part D**: Special enrollment rules and LIS (Low Income Subsidy) flags
+- **COBRA**: Continuation coverage maintains same BIN/PCN/Group
+- **Retroactive Changes**: Enrollment changes may be backdated for qualifying events
 
 ## Related Skills
 

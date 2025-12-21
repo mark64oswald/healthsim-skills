@@ -1,3 +1,8 @@
+---
+name: retail-pharmacy
+description: "Retail pharmacy prescription fills and claims including new prescriptions, refills, and mail order. Triggers: retail pharmacy, prescription fill, refill, CVS, Walgreens, mail order, days supply, copay, pharmacy claim, NCPDP"
+---
+
 # Retail Pharmacy Scenario
 
 A scenario template for generating retail pharmacy prescription fills and claims including new prescriptions, refills, and mail order.
@@ -545,6 +550,30 @@ Deductible Credit: $0
   }
 }
 ```
+
+## Validation Rules
+
+| Rule | Requirement | Example |
+|------|-------------|---------|
+| NDC format | 11-digit numeric (5-4-2 format) | 00093505601 |
+| Days supply | 1-90 for retail, 1-100 for mail | 30 (standard), 90 (mail order) |
+| Quantity | Must be positive, match package size | 30, 60, 90 tablets |
+| Fill date | Cannot be future, must be after Rx written date | 2025-01-15 |
+| Refill number | 0 for new, 1-11 for refills | Refill 3 of 5 |
+| Copay | Non-negative, appropriate for tier | $10 (Tier 1), $35 (Tier 2) |
+| BIN/PCN | Valid processor identifiers | BIN: 003858, PCN: A4 |
+| Pharmacy NPI | 10-digit valid NPI | 1234567890 |
+| Prescriber NPI | 10-digit valid NPI | 0987654321 |
+| DAW code | 0-9 per NCPDP standard | 0 (no selection), 1 (substitution not allowed) |
+
+### Business Rules
+
+- **New vs Refill**: New fills have refill_number = 0; refills have refill_number > 0
+- **Mail Order**: Typically 90-day supply, lower cost per day than retail
+- **Early Refill**: Most plans allow refill at 75-80% of days supply consumed
+- **Controlled Substances**: Schedule II cannot have refills; must be new Rx each time
+- **Generic Substitution**: DAW 0 allows generic; DAW 1 requires brand
+- **Quantity Limits**: Some drugs have max quantity per fill (e.g., opioids)
 
 ## Related Skills
 
