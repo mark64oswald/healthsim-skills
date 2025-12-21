@@ -111,11 +111,9 @@ skills/trialsim/
 
 | Skill | Phase | Notes |
 |-------|-------|-------|
-| phase1-dose-escalation.md | Phase 2 | 3+3 design, MTD |
-| phase2-proof-of-concept.md | Phase 2 | Dose ranging, futility |
-| phase4-postmarket.md | Phase 3 | Safety surveillance |
-| adaptive-design.md | Phase 3 | Adaptive randomization |
-| rare-disease.md | Phase 3 | Small populations |
+| phase4-postmarket.md | Phase 3 | Safety surveillance, PSUR |
+| adaptive-design.md | Phase 3 | Bayesian adaptive, platform trials |
+| rare-disease.md | Phase 3 | Small populations, natural history |
 
 ## Development Roadmap
 
@@ -123,12 +121,18 @@ See [TrialSim Development Plan](../../docs/TRIALSIM-DEVELOPMENT-PLAN.md) for com
 
 **Phase 1 (Foundation):** Domain knowledge, Phase 3 pivotal ✅  
 **Phase 2 (SDTM Domains):** Core domain skills (DM, AE, VS, LB, CM, EX, DS, MH) ✅  
-**Phase 3 (Trial Phases):** Phase 1, Phase 2, Phase 4, adaptive designs  
-**Phase 4 (Advanced):** Adaptive designs, rare disease, platform trials
+**Phase 2 (Trial Phases):** Phase 1 dose escalation, Phase 2 POC ✅  
+**Phase 2 (Therapeutic Areas):** Oncology, CNS, CV, CGT ✅  
+**Phase 2 (RWE):** Overview, Synthetic Control ✅  
+**Phase 3 (Next):** Phase 4 post-market, adaptive designs, rare disease
 
 ## Related Documentation
 
-- [HealthSim Architecture Guide](../../docs/HEALTHSIM-ARCHITECTURE-GUIDE.md)
-- [Hello HealthSim Examples](../../hello-healthsim/examples/)
-- [CDISC SDTM Format](../../formats/cdisc-sdtm.md)
-- [Domain Skills Index](domains/README.md)
+- [TrialSim Prompt Guide](../../docs/TRIALSIM-PROMPT-GUIDE.md) - Example prompts and usage patterns
+- [TrialSim Developer Guide](../../docs/TRIALSIM-DEVELOPER-GUIDE.md) - Skill template, CDISC reference, roadmap
+- [TrialSim Development Plan](../../docs/TRIALSIM-DEVELOPMENT-PLAN.md) - Original planning document
+- [HealthSim Architecture Guide](../../docs/HEALTHSIM-ARCHITECTURE-GUIDE.md) - Cross-product patterns
+- [Hello HealthSim Examples](../../hello-healthsim/examples/trialsim-examples.md) - Working examples
+- [CDISC SDTM Format](../../formats/cdisc-sdtm.md) - SDTM output transformation
+- [CDISC ADaM Format](../../formats/cdisc-adam.md) - ADaM output transformation
+- [Domain Skills Index](domains/README.md) - SDTM domain overview
