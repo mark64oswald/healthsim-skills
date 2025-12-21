@@ -39,7 +39,14 @@ Activate TrialSim when user mentions:
 |-------|-------|-------------|
 | Domain Knowledge | [clinical-trials-domain.md](clinical-trials-domain.md) | Core trial concepts, phases, regulatory |
 | Recruitment | [recruitment-enrollment.md](recruitment-enrollment.md) | Screening funnel, enrollment patterns |
-| Phase 3 Trials | [phase3-pivotal.md](phase3-pivotal.md) | Pivotal registration trials |
+
+### Trial Phase Skills
+
+| Phase | Skill | Description |
+|-------|-------|-------------|
+| Phase 1 | [phase1-dose-escalation.md](phase1-dose-escalation.md) | FIH, dose escalation, MTD (3+3, BOIN, CRM) |
+| Phase 2 | [phase2-proof-of-concept.md](phase2-proof-of-concept.md) | POC, dose-ranging, futility (Simon's, MCP-Mod) |
+| Phase 3 | [phase3-pivotal.md](phase3-pivotal.md) | Pivotal registration trials, NDA/BLA |
 
 ### SDTM Domain Skills
 

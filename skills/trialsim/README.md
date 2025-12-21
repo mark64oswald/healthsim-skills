@@ -11,9 +11,9 @@ skills/trialsim/
 ├── clinical-trials-domain.md          # Core domain knowledge
 ├── recruitment-enrollment.md          # Recruitment funnel
 │
-├── phase1-dose-escalation.md          # Phase I scenarios (planned)
-├── phase2-proof-of-concept.md         # Phase II scenarios (planned)
-├── phase3-pivotal.md                  # Phase III scenarios
+├── phase1-dose-escalation.md          # Phase I dose escalation
+├── phase2-proof-of-concept.md         # Phase II proof-of-concept
+├── phase3-pivotal.md                  # Phase III pivotal scenarios
 ├── phase4-postmarket.md               # Phase IV scenarios (planned)
 ├── adaptive-design.md                 # Adaptive trial designs (planned)
 ├── rare-disease.md                    # Small population trials (planned)
@@ -57,6 +57,8 @@ skills/trialsim/
 | Subject disposition (DS) | `domains/disposition-ds.md` | "disposition", "DS domain", "discontinuation" |
 | Medical history (MH) | `domains/medical-history-mh.md` | "medical history", "MH domain", "comorbidities" |
 | A Phase III pivotal trial | `phase3-pivotal.md` | "Phase 3", "pivotal", "registrational" |
+| A Phase I dose escalation | `phase1-dose-escalation.md` | "Phase 1", "FIH", "MTD", "3+3", "BOIN" |
+| A Phase II POC trial | `phase2-proof-of-concept.md` | "Phase 2", "POC", "Simon's", "dose-ranging" |
 | An oncology trial | `therapeutic-areas/oncology.md` | "oncology", "cancer", "RECIST", "ORR" |
 | A cardiovascular trial | `therapeutic-areas/cardiovascular.md` | "cardiovascular", "MACE", "heart failure" |
 | A CNS/neurology trial | `therapeutic-areas/cns.md` | "CNS", "neurology", "Alzheimer's", "Parkinson's" |
@@ -71,7 +73,9 @@ skills/trialsim/
 | Skill | Status | Notes |
 |-------|--------|-------|
 | clinical-trials-domain.md | ✅ Complete | Core domain knowledge |
-| phase3-pivotal.md | ✅ Complete | Comprehensive Phase III |
+| phase1-dose-escalation.md | ✅ Complete | FIH, 3+3, BOIN, CRM, PK sampling |
+| phase2-proof-of-concept.md | ✅ Complete | Simon's, MCP-Mod, futility analysis |
+| phase3-pivotal.md | ✅ Complete | Comprehensive Phase III patterns |
 | recruitment-enrollment.md | ✅ Complete | Screening funnel, I/E |
 
 ### SDTM Domain Skills

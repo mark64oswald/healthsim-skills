@@ -9,6 +9,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[TrialSim]** Trial Phase Skills - Batch 3 (Comprehensive Phase Coverage)
+  - phase1-dose-escalation.md - First-in-human, SAD/MAD, MTD determination
+    - Dose escalation designs: 3+3, BOIN, CRM, mTPI, Keyboard
+    - PK/PD sampling patterns, DLT assessment criteria
+    - Sentinel dosing, expansion cohorts, RP2D determination
+  - phase2-proof-of-concept.md - POC, dose-ranging, efficacy signal
+    - Phase 2a: Simon's two-stage, Bryant & Day designs
+    - Phase 2b: MCP-Mod dose-response modeling
+    - Futility analysis, interim decisions, go/no-go criteria
+  - phase3-pivotal.md - Enhanced from placeholder to comprehensive skill
+    - Superiority, non-inferiority, equivalence designs
+    - Multi-regional trial considerations, ICH E5/E17
+    - DSMB oversight, interim analyses, regulatory endpoints
+  - All skills include: YAML frontmatter, 3+ examples, validation rules, business rules
+
 - **[TrialSim]** SDTM Domain Skills - Batch 2 (Expanded Domains)
   - EX (Exposure) domain - study drug exposure, dose modifications, infusion cycles
   - DS (Disposition) domain - subject disposition, discontinuation reasons, CONSORT
