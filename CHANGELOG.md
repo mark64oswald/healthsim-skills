@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[Formats]** Enhanced CDISC SDTM Format - Batch 4
+  - Complete rewrite of formats/cdisc-sdtm.md (112 → 702 lines)
+  - Added all 8 SDTM domain mappings: DM, AE, CM, LB, VS, EX, DS, MH
+  - Variable mappings with source fields and controlled terminology references
+  - JSON → SDTM transformation examples for each domain
+  - Domain-level and cross-domain validation rules
+  - Controlled terminology tables (SEX, RACE, ETHNIC, ROUTE, FREQ, etc.)
+  - Links to domain skills and related format skills
+
 - **[TrialSim]** Trial Phase Skills - Batch 3 (Comprehensive Phase Coverage)
   - phase1-dose-escalation.md - First-in-human, SAD/MAD, MTD determination
     - Dose escalation designs: 3+3, BOIN, CRM, mTPI, Keyboard
