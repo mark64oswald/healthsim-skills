@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **[Cross-Product]** Bidirectional PopulationSim Cross-References (2024-12-23)
+  - Added PopulationSim integration sections to all product SKILL.md files:
+    - `skills/patientsim/SKILL.md` - Demographics & SDOH foundations for patient generation
+    - `skills/membersim/SKILL.md` - Demographics & Market Intelligence for member generation
+    - `skills/rxmembersim/SKILL.md` - Medication utilization patterns by population
+    - `skills/trialsim/SKILL.md` - Feasibility & Diversity planning for trial design
+  - Each section includes: integration table, pattern description, concrete example
+  - Completes bidirectional cross-references between PopulationSim and all products
+
 - **[PopulationSim]** Version 1.0 Complete - Status Updated to Active (2024-12-23)
   - Updated product status from "In Development" to "Active" across all documentation
   - Files updated:
