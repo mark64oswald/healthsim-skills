@@ -30,7 +30,7 @@ The getting started guide includes:
 | **MemberSim** | Claims/payer data | "Generate a denied MRI claim requiring prior auth" |
 | **RxMemberSim** | Pharmacy/PBM data | "Generate a drug interaction alert for warfarin" |
 | **TrialSim** | Clinical trial data | "Generate a Phase III oncology trial with 200 subjects" |
-| **PopulationSim** | Demographics/SDOH *(planned)* | "Generate a population cohort for rural diabetes study" |
+| **PopulationSim** | Demographics/SDOH | "Generate a population profile for Maricopa County" |
 | **NetworkSim** | Provider networks *(planned)* | "Generate a cardiology provider network for Atlanta" |
 
 ### Clinical Domains
