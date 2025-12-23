@@ -128,13 +128,19 @@ Generate a pharmacy claim for lisinopril with a drug interaction alert
 Generate a Phase 3 oncology trial with 50 subjects
 ```
 
-### Example 5: Cross-Domain Generation
+### Example 5: Population Intelligence (PopulationSim)
+
+```
+Generate a population profile for Maricopa County, Arizona including demographics and SDOH
+```
+
+### Example 6: Cross-Domain Generation
 
 ```
 Generate a diabetic patient with their recent office visit claim and pharmacy claims for their medications
 ```
 
-### Example 6: Format Transformation
+### Example 7: Format Transformation
 
 ```
 Generate an HL7 ADT^A01 admission message for a patient with pneumonia
@@ -644,6 +650,15 @@ Once you're comfortable with basic generation:
 | "drug interaction alert" | Claim + DUR response + clinical info |
 | "specialty drug claim" | High-cost drug + prior auth + copay assistance |
 
+### TrialSim (Clinical Trials)
+
+| Request | What You Get |
+|---------|--------------|
+| "Phase 3 oncology trial" | Trial + sites + subjects + SDTM domains |
+| "trial with 200 subjects" | Complete study with demographics + AEs |
+| "breast cancer trial" | TA-specific protocol + efficacy endpoints |
+| "SDTM for my trial" | CDISC-compliant domain datasets |
+
 ### Oncology (PatientSim)
 
 | Request | What You Get |
@@ -652,6 +667,15 @@ Once you're comfortable with basic generation:
 | "lung cancer EGFR positive" | Patient + molecular testing + targeted therapy |
 | "colon cancer MSI-high" | Patient + genomic testing + adjuvant chemo |
 | "cancer with comorbidities" | Multi-morbid patient + dose adjustments |
+
+### PopulationSim (Demographics & SDOH)
+
+| Request | What You Get |
+|---------|--------------|
+| "county profile for Maricopa" | Demographics + health indicators + SDOH |
+| "SVI analysis for rural Texas" | Social vulnerability by census tract |
+| "define cohort for diabetes study" | CohortSpecification for generation |
+| "trial feasibility for NASH" | Site recommendations + enrollment projection |
 
 ### Format Requests
 
