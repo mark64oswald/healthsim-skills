@@ -1,18 +1,18 @@
 ---
 name: populationsim-trial-support
 description: >
-  Trial support skills for PopulationSim. Use for clinical trial feasibility
-  assessment, site selection, enrollment projections, and diversity planning.
-  Leverages population data to inform trial design and execution.
+  Trial support skills for clinical trial feasibility and planning. Provides
+  population-level insights for site selection, enrollment projection, and
+  diversity planning. Complements TrialSim's subject-level generation.
 ---
 
 # Trial Support Skills
 
 ## Overview
 
-Trial support skills apply PopulationSim's population intelligence to clinical trial planning and execution. They help sponsors and sites make data-driven decisions about trial feasibility, site selection, enrollment timelines, and diversity requirements.
+Trial support skills provide population-level analytics to support clinical trial planning and feasibility assessment. These skills complement TrialSim by providing the demographic and epidemiologic foundation for realistic trial simulations.
 
-**Key Capability**: Transform population health data into actionable trial planning intelligence.
+**Key Capability**: Transform real-world population data into actionable trial planning parameters, enabling realistic enrollment projections and diversity-aware site selection.
 
 ---
 
@@ -20,198 +20,173 @@ Trial support skills apply PopulationSim's population intelligence to clinical t
 
 | Skill | Purpose | Key Triggers |
 |-------|---------|--------------|
-| [site-feasibility.md](site-feasibility.md) | Assess site-level feasibility | "site feasibility", "can this site enroll", "population at site" |
-| [enrollment-projections.md](enrollment-projections.md) | Project enrollment timelines | "enrollment projection", "how long to enroll", "enrollment rate" |
-| [diversity-planning.md](diversity-planning.md) | Plan for diverse enrollment | "diversity requirements", "minority enrollment", "representative sample" |
+| [feasibility-estimation.md](feasibility-estimation.md) | Estimate eligible population for protocol | "feasibility", "eligible population", "how many patients" |
+| [site-selection-support.md](site-selection-support.md) | Identify optimal trial site locations | "site selection", "where to conduct trial", "best locations" |
+| [enrollment-projection.md](enrollment-projection.md) | Project enrollment rates and timelines | "enrollment projection", "recruitment timeline", "enrollment rate" |
 
 ---
 
 ## Integration with TrialSim
 
-PopulationSim trial support provides upstream intelligence that feeds TrialSim:
-
 ```
-┌─────────────────────┐     ┌─────────────────────┐     ┌─────────────────────┐
-│   PopulationSim     │     │   PopulationSim     │     │     TrialSim        │
-│   Geographic +      │────▶│   Trial Support     │────▶│   Synthetic Trial   │
-│   Health Patterns   │     │   (Feasibility)     │     │   Execution         │
-└─────────────────────┘     └─────────────────────┘     └─────────────────────┘
-         │                           │                           │
-         ▼                           ▼                           ▼
-    Population Data           Site Feasibility            DM/DS Domains
-    Disease Prevalence        Enrollment Rates            Subject Records
-    Demographics              Diversity Plans             Trial Events
-```
-
----
-
-## Key Concepts
-
-### Eligible Population Cascade
-
-```
-Total Population (Geography)
-         │
-         ▼ Apply age filter
-    Age-Eligible Population
-         │
-         ▼ Apply condition prevalence
-    Condition-Present Population
-         │
-         ▼ Apply severity/staging criteria
-    Meets Clinical Criteria
-         │
-         ▼ Apply exclusions
-    Potentially Eligible
-         │
-         ▼ Apply access/willingness factors
-    Realistically Recruitable
-         │
-         ▼ Apply screening success rate
-    Expected Enrolled
-```
-
-### Enrollment Funnel Metrics
-
-| Stage | Typical Rate | Range |
-|-------|--------------|-------|
-| Aware → Interested | 15-25% | 5-40% |
-| Interested → Screened | 40-60% | 20-80% |
-| Screened → Eligible | 30-50% | 15-70% |
-| Eligible → Enrolled | 60-80% | 40-95% |
-| **Overall Conversion** | 3-8% | 1-15% |
-
-### Screen Failure Reasons
-
-| Reason | Typical % | Notes |
-|--------|-----------|-------|
-| Inclusion not met | 35% | Condition severity |
-| Exclusion met | 25% | Comorbidities, meds |
-| Lab abnormalities | 15% | Often unexpected |
-| Consent withdrawal | 12% | Before randomization |
-| Other | 13% | Logistics, lost to f/u |
-
----
-
-## Trial Type Considerations
-
-### Phase 1 (Healthy Volunteers)
-```yaml
-population: General healthy adults
-key_factors:
-  - Proximity to site (urban preferred)
-  - No significant medical history
-  - Flexible schedule
-typical_enrollment: 20-80 subjects
-site_requirement: Phase 1 unit
-```
-
-### Phase 2 (Proof of Concept)
-```yaml
-population: Patients with target condition
-key_factors:
-  - Condition prevalence in catchment
-  - Access to specialist care
-  - Prior treatment history
-typical_enrollment: 100-300 subjects
-site_requirement: Specialty centers
-```
-
-### Phase 3 (Pivotal)
-```yaml
-population: Broad patient population
-key_factors:
-  - Large catchment area
-  - Diverse demographics
-  - Community and academic sites
-typical_enrollment: 300-3000+ subjects
-site_requirement: Mixed site network
-```
-
-### Phase 4 (Post-Market)
-```yaml
-population: Real-world patients
-key_factors:
-  - Representative of treated population
-  - Community practices
-  - EHR integration for follow-up
-typical_enrollment: 1000-10000+ subjects
-site_requirement: Community networks
+┌──────────────────────┐     ┌──────────────────────┐
+│    PopulationSim     │     │      TrialSim        │
+│    Trial Support     │────▶│   Subject Generation │
+│                      │     │                      │
+│ • Feasibility est.   │     │ • DM domain data     │
+│ • Site selection     │     │ • Screening/Enroll   │
+│ • Enrollment proj.   │     │ • Treatment assign   │
+│ • Diversity targets  │     │ • Efficacy/Safety    │
+└──────────────────────┘     └──────────────────────┘
+         │                            │
+         └────────────┬───────────────┘
+                      ▼
+              CohortSpecification
+              (trial-qualified)
 ```
 
 ---
 
-## Diversity Requirements
+## Trial Feasibility Flow
 
-### FDA Guidance (2024)
+### 1. Define Protocol Criteria
+```
+Inclusion:
+- Age 18-75
+- Confirmed T2DM (E11)
+- HbA1c 7.5-10.5%
+- On stable metformin
 
-The FDA now requires:
-- Diversity Action Plans for Phase 3 trials
-- Enrollment goals reflecting disease epidemiology
-- Justification for any under-representation
+Exclusion:
+- CKD Stage 4-5 (N18.4, N18.5, N18.6)
+- Recent CV event
+- Current insulin use
+```
 
-### Key Demographics for Reporting
+### 2. Estimate Eligible Population
+```
+National T2DM population: 34.2M
+→ Age filter: 28.4M
+→ HbA1c range: 12.8M
+→ On metformin: 9.2M
+→ After exclusions: 6.8M eligible
+```
 
-| Category | Minimum Reporting |
-|----------|-------------------|
-| Sex | Male, Female |
-| Age | Pediatric, Adult, Elderly |
-| Race | White, Black, Asian, AIAN, NHPI, Multiple |
-| Ethnicity | Hispanic/Latino, Not Hispanic |
-| Geography | Urban, Suburban, Rural |
+### 3. Apply Geographic Constraints
+```
+Target states: TX, FL, CA, NY
+→ Regional eligible: 2.4M
+→ Top 20 metros: 1.8M accessible
+```
 
-### Disease-Specific Diversity Targets
-
-| Condition | Key Disparity | Recommended Target |
-|-----------|---------------|-------------------|
-| Diabetes | Hispanic, Black | 35-40% minority |
-| Heart Failure | Black | 25-30% Black |
-| Alzheimer's | Black, Hispanic | 30-35% minority |
-| Lung Cancer | Black, Rural | 20-25% each |
-| Lupus | Black, Female | 40%+ Black, 90%+ Female |
+### 4. Project Enrollment
+```
+Sites: 40
+Per-site eligible: ~3,000
+Screen rate: 5%/year
+Screen-to-enroll: 35%
+→ Annual enrollment: 210/site
+→ Time to 2,000 subjects: ~6 months
+```
 
 ---
 
-## Output Integration
+## Key Outputs
 
-### → Site Selection
+### Feasibility Report
+```json
+{
+  "protocol": "DIABETES-001",
+  "indication": "E11",
+  "national_eligible": 6800000,
+  "funnel": {
+    "disease_prevalent": 34200000,
+    "after_age_filter": 28400000,
+    "after_clinical_criteria": 12800000,
+    "after_exclusions": 6800000
+  },
+  "geographic_distribution": {
+    "south": 0.38,
+    "west": 0.24,
+    "midwest": 0.20,
+    "northeast": 0.18
+  }
+}
+```
 
-Trial support outputs inform site network design:
-- Identify high-potential sites
-- Balance geography and diversity
-- Set site-level enrollment targets
+### Site Recommendation
+```json
+{
+  "recommended_sites": [
+    {
+      "metro": "Houston",
+      "eligible_population": 185000,
+      "diversity_score": 0.82,
+      "competition": "moderate"
+    }
+  ],
+  "diversity_achievable": {
+    "minority_enrollment": 0.42,
+    "hispanic": 0.28,
+    "black": 0.14
+  }
+}
+```
 
-### → Protocol Design
-
-Population analysis informs protocol decisions:
-- Realistic eligibility criteria
-- Achievable enrollment timeline
-- Diversity-enabling design elements
-
-### → TrialSim Generation
-
-Feasibility data feeds synthetic trial generation:
-- Site distribution modeling
-- Realistic screening/enrollment ratios
-- Demographically accurate subject pools
+### Enrollment Projection
+```json
+{
+  "target_enrollment": 2000,
+  "sites": 40,
+  "projected_timeline_months": 8,
+  "monthly_enrollment": [
+    { "month": 1, "cumulative": 180, "sites_active": 25 },
+    { "month": 2, "cumulative": 420, "sites_active": 38 }
+  ]
+}
+```
 
 ---
 
 ## Data Sources
 
-| Source | Use |
-|--------|-----|
-| CDC PLACES | Disease prevalence by geography |
-| Census ACS | Demographics, socioeconomics |
-| CMS Claims | Healthcare utilization patterns |
-| NPPES | Provider/site locations |
-| Clinical Literature | Condition-specific enrollment rates |
+| Source | Content | Use |
+|--------|---------|-----|
+| CDC PLACES | Disease prevalence | Base population estimates |
+| Census ACS | Demographics | Age, race, geography |
+| CDC SVI | Vulnerability | Diversity, access factors |
+| AHRQ HCUP | Utilization | Care-seeking behavior |
+| ClinicalTrials.gov | Competition | Active trials by indication |
 
 ---
 
-## Related Skills
+## Diversity Considerations
 
-- [Geographic Intelligence](../geographic/README.md) - Population foundations
-- [Health Patterns](../health-patterns/README.md) - Disease prevalence
-- [Cohort Definition](../cohorts/README.md) - Target population specs
-- TrialSim Skills - Downstream trial execution
+### FDA Diversity Guidelines
+- Enrollment should reflect disease epidemiology
+- Underrepresented groups: Black, Hispanic, AIAN
+- Sex balance appropriate for condition
+- Age range reflects real-world use
+
+### PopulationSim Support
+- Demographic distribution by geography
+- Disease prevalence by race/ethnicity
+- Site recommendations for diversity
+- Enrollment projections by demographic
+
+### Example Targets
+| Condition | Black Target | Hispanic Target | Notes |
+|-----------|--------------|-----------------|-------|
+| Diabetes | 15-20% | 20-25% | Reflects prevalence |
+| Heart Failure | 18-22% | 10-15% | Higher Black burden |
+| Breast Cancer | 12-15% | 10-15% | Mortality disparity |
+| Alzheimer's | 15-20% | 12-18% | Risk difference |
+
+---
+
+## Related Categories
+
+- [Geographic Intelligence](../geographic/README.md) - Population data
+- [Health Patterns](../health-patterns/README.md) - Prevalence data
+- [Cohort Definition](../cohorts/README.md) - Trial cohort specs
+- TrialSim Skills - Subject generation
