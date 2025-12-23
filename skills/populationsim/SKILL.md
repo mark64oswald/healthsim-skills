@@ -5,8 +5,8 @@ description: >
   Use this skill for ANY request involving: (1) population demographics or profiles,
   (2) geographic health patterns or disparities, (3) social determinants of health (SDOH),
   (4) SVI or ADI analysis, (5) cohort definition or specification, (6) clinical trial
-  diversity planning or site selection, (7) service area analysis, (8) health equity assessment,
-  (9) census data or ACS variables, (10) CDC PLACES health indicators.
+  feasibility, site selection, or enrollment projection, (7) service area analysis,
+  (8) health equity assessment, (9) census data or ACS variables, (10) CDC PLACES health indicators.
 ---
 
 # PopulationSim - Population Intelligence & Cohort Generation
@@ -37,12 +37,12 @@ PopulationSim provides population-level intelligence using public data sources (
 | Analyze economics | `sdoh/economic-indicators.md` | "poverty", "income", "unemployment" |
 | Analyze community factors | `sdoh/community-factors.md` | "housing", "transportation", "food access" |
 | Define a cohort | `cohorts/cohort-specification.md` | "define cohort", "cohort spec", "population segment" |
-| Generate patients from cohort | `cohorts/patientsim-cohort.md` | "generate patients", "PatientSim cohort" |
-| Generate members from cohort | `cohorts/membersim-cohort.md` | "generate members", "MemberSim cohort" |
-| Plan trial recruitment | `cohorts/trialsim-cohort.md` | "trial recruitment", "enrollment pool" |
-| Plan trial diversity | `trial-support/diversity-planning.md` | "diversity", "FDA diversity", "representation" |
-| Select trial sites | `trial-support/site-selection.md` | "site selection", "rank sites", "feasibility" |
-| Assess protocol feasibility | `trial-support/feasibility-assessment.md` | "feasibility", "enrollment projection" |
+| Build demographics | `cohorts/demographic-distribution.md` | "age distribution", "demographics for cohort" |
+| Build clinical profile | `cohorts/clinical-prevalence-profile.md` | "comorbidity rates", "clinical profile" |
+| Build SDOH profile | `cohorts/sdoh-profile-builder.md` | "SDOH profile", "Z-code rates" |
+| Estimate trial feasibility | `trial-support/feasibility-estimation.md` | "feasibility", "eligible population" |
+| Select trial sites | `trial-support/site-selection-support.md` | "site selection", "best locations" |
+| Project enrollment | `trial-support/enrollment-projection.md` | "enrollment timeline", "recruitment rate" |
 
 ## Trigger Phrases
 
@@ -72,12 +72,14 @@ PopulationSim provides population-level intelligence using public data sources (
 - "Create a population specification for high-risk heart failure patients"
 - "Build a cohort spec for PatientSim generation"
 - "Specify a population segment for claims testing"
+- "What are the comorbidity rates for diabetics?"
 
 ### Trial Support
-- "Plan diversity for a Phase III oncology trial"
+- "Estimate feasibility for a T2DM trial"
+- "How many patients are eligible for [criteria]?"
 - "Rank trial sites for cardiovascular outcomes study"
-- "Assess feasibility for 500 subjects across 10 sites"
-- "Which metros have the best recruitment potential?"
+- "Best locations for diabetes trial enrollment"
+- "Project enrollment for 2,000 subjects across 40 sites"
 
 ## Output Types
 
@@ -140,14 +142,6 @@ Geographic entity with demographics, health indicators, and SDOH indices:
       "individual": 0.08,
       "uninsured": 0.07
     }
-  },
-  "metadata": {
-    "generated_at": "2024-12-23T10:00:00Z",
-    "data_vintage": {
-      "census": "ACS_2022_5yr",
-      "health": "CDC_PLACES_2024",
-      "svi": "CDC_SVI_2022"
-    }
   }
 }
 ```
@@ -158,56 +152,42 @@ Generation input for other HealthSim products:
 
 ```json
 {
-  "cohort_id": "CA-HIGHRISK-DM-001",
-  "name": "High-Risk Diabetics - California Underserved",
-  "description": "Adults 40-75 with T2D in high-SVI California census tracts",
-  "geography_filter": {
-    "base": "state:CA",
-    "constraint": "svi_overall >= 0.70",
-    "resolved_units": {
-      "type": "census_tract",
-      "count": 1847
-    }
+  "cohort_id": "houston_diabetics_2024",
+  "name": "Houston Metro Diabetic Adults",
+  "target_size": 10000,
+  "geography": {
+    "type": "msa",
+    "cbsa_code": "26420",
+    "name": "Houston-The Woodlands-Sugar Land, TX"
   },
-  "population_filter": {
-    "age_range": [40, 75],
-    "conditions": ["E11"],
-    "sdoh_risk": "high"
-  },
-  "estimated_real_population": 412000,
-  "demographic_profile": {
-    "race_ethnicity": {
-      "hispanic": 0.582,
-      "white_nh": 0.184,
-      "asian": 0.121,
-      "black": 0.078,
-      "other": 0.035
+  "demographics": {
+    "age": {
+      "min": 18, "max": 85, "mean": 58.4,
+      "brackets": { "18-44": 0.18, "45-64": 0.42, "65-74": 0.28, "75+": 0.12 }
     },
-    "mean_age": 58.4,
-    "female_pct": 0.52
+    "sex": { "male": 0.48, "female": 0.52 },
+    "race_ethnicity": { "white_nh": 0.28, "black": 0.22, "hispanic": 0.38, "asian": 0.08 }
   },
   "clinical_profile": {
+    "primary_condition": { "icd10": "E11", "name": "Type 2 Diabetes" },
     "comorbidities": {
-      "hypertension": 0.712,
-      "obesity": 0.624,
-      "hyperlipidemia": 0.589,
-      "depression": 0.281,
-      "ckd": 0.243
-    },
-    "avg_a1c": 8.2
+      "I10": { "name": "Hypertension", "rate": 0.71 },
+      "E78": { "name": "Hyperlipidemia", "rate": 0.68 },
+      "E66": { "name": "Obesity", "rate": 0.62 }
+    }
   },
   "sdoh_profile": {
-    "rx_cost_barrier": 0.312,
-    "limited_english": 0.284,
-    "food_insecurity": 0.224,
-    "transportation_barrier": 0.181
+    "poverty_rate": 0.18,
+    "uninsured_rate": 0.16,
+    "food_insecurity": 0.15,
+    "svi_mean": 0.58
   },
-  "target_product": "PatientSim",
-  "generation_options": {
-    "count": 500,
-    "include_encounter_history": true,
-    "include_sdoh_zcodes": true,
-    "include_medications": true
+  "z_code_rates": {
+    "Z59.6": { "name": "Low income", "rate": 0.18 },
+    "Z59.41": { "name": "Food insecurity", "rate": 0.15 }
+  },
+  "insurance_mix": {
+    "medicare": 0.38, "medicaid": 0.22, "commercial": 0.32, "uninsured": 0.08
   }
 }
 ```
@@ -250,27 +230,6 @@ Generation input for other HealthSim products:
 | CohortSpecification | TrialSim | Diverse trial subjects meeting FDA guidance |
 | PopulationProfile | NetworkSim | Service area provider network design |
 
-### Integration Examples
-
-**PopulationSim → PatientSim**:
-```
-"Define a cohort of high-risk diabetics in underserved California, 
-then generate 500 patients matching that profile"
-```
-
-**PopulationSim → TrialSim**:
-```
-"Plan diversity for a Phase III NASH trial with 800 subjects,
-then generate subjects matching FDA diversity guidance"
-```
-
-**Full Chain**:
-```
-"Profile San Diego County demographics and health patterns,
-define a heart failure cohort from high-SVI tracts,
-generate 100 patients with realistic claims history"
-```
-
 ## Data Sources
 
 | Source | Provider | Data Type | Update Frequency |
@@ -279,6 +238,49 @@ generate 100 patients with realistic claims history"
 | CDC PLACES | CDC | Health indicators (27 measures) | Annual |
 | Social Vulnerability Index | CDC/ATSDR | SDOH composite (16 variables) | Biennial |
 | Area Deprivation Index | HRSAdmin | Neighborhood deprivation | Annual |
+
+## Directory Structure
+
+```
+skills/populationsim/
+├── SKILL.md                           # This file - master router
+├── README.md                          # Product overview
+├── population-intelligence-domain.md  # Core domain knowledge
+│
+├── geographic/                        # Geographic Intelligence (Phase 2)
+│   ├── README.md                      # Category overview
+│   ├── county-profile.md              # County-level profiles
+│   ├── census-tract-analysis.md       # Tract-level analysis
+│   ├── metro-area-profile.md          # MSA/CBSA profiles
+│   └── custom-region-builder.md       # Custom region aggregation
+│
+├── health-patterns/                   # Health Analysis (Phase 3)
+│   ├── README.md                      # Category overview
+│   ├── chronic-disease-prevalence.md  # Disease burden analysis
+│   ├── health-behavior-patterns.md    # Risk factor analysis
+│   ├── healthcare-access-analysis.md  # Coverage and access
+│   └── health-outcome-disparities.md  # Disparity analysis
+│
+├── sdoh/                              # Social Determinants (Phase 4)
+│   ├── README.md                      # SDOH framework overview
+│   ├── svi-analysis.md                # Social Vulnerability Index
+│   ├── adi-analysis.md                # Area Deprivation Index
+│   ├── economic-indicators.md         # Income, poverty, employment
+│   └── community-factors.md           # Housing, transportation, food
+│
+├── cohorts/                           # Cohort Definition (Phase 5)
+│   ├── README.md                      # CohortSpecification schema
+│   ├── cohort-specification.md        # Complete cohort definition
+│   ├── demographic-distribution.md    # Age, sex, race distributions
+│   ├── clinical-prevalence-profile.md # Comorbidity patterns
+│   └── sdoh-profile-builder.md        # SDOH and Z-code rates
+│
+└── trial-support/                     # Clinical Trial Support (Phase 6)
+    ├── README.md                      # Trial integration overview
+    ├── feasibility-estimation.md      # Eligible population modeling
+    ├── site-selection-support.md      # Site network optimization
+    └── enrollment-projection.md       # Timeline projections
+```
 
 ## Quick Examples
 
@@ -299,131 +301,43 @@ San Diego County, CA (FIPS 06073) Population Profile:
 - Diabetes: 9.5% (vs 10.1% national)
 - Obesity: 28.0% (vs 32.1% national)
 - Hypertension: 28.5% (vs 32.4% national)
-- Depression: 19.5% (vs 18.6% national) ⚠️ Above national
 
 **SDOH Indices**:
 - SVI Overall: 0.42 (moderate vulnerability)
 - ADI National Rank: 35th percentile
 
-**Healthcare Access**:
-- Uninsured: 7.1%
-- PCPs per 100K: 82.4
-
 ### Example 2: Cohort for PatientSim
 
-**Request:** "Define a cohort of high-risk diabetics in underserved California for PatientSim"
+**Request:** "Define a cohort of high-risk diabetics in underserved California"
+
+**Response:** Creates CohortSpecification with:
+- Geography: CA census tracts with SVI ≥ 0.70
+- Demographics: Hispanic 58%, mean age 58.4
+- Comorbidities: HTN 71%, obesity 62%
+- SDOH: Rx cost barrier 31%, food insecurity 22%
+
+### Example 3: Trial Feasibility
+
+**Request:** "Feasibility for T2DM trial: age 40-70, HbA1c 8-11%"
 
 **Response:**
 
-```json
-{
-  "cohort_id": "CA-HIGHRISK-DM-001",
-  "name": "High-Risk Diabetics - California Underserved",
-  "geography_filter": {
-    "base": "state:CA",
-    "constraint": "svi_overall >= 0.70"
-  },
-  "population_filter": {
-    "age_range": [40, 75],
-    "conditions": ["E11"]
-  },
-  "estimated_real_population": 412000,
-  "demographic_profile": {
-    "hispanic": 0.58,
-    "mean_age": 58.4
-  },
-  "clinical_profile": {
-    "hypertension": 0.71,
-    "obesity": 0.62
-  },
-  "sdoh_profile": {
-    "rx_cost_barrier": 0.31,
-    "food_insecurity": 0.22
-  },
-  "target_product": "PatientSim"
-}
-```
+| Stage | Population | Conversion |
+|-------|------------|------------|
+| T2DM Prevalent | 34.2M | - |
+| Age 40-70 | 24.8M | 72.5% |
+| HbA1c 8-11% | 7.4M | 29.8% |
+| After exclusions | 4.2M | - |
 
-This cohort specification can be passed to PatientSim to generate 500 synthetic patients matching these characteristics.
-
-### Example 3: Trial Diversity Planning
-
-**Request:** "Plan diversity for a 500-subject Phase III NASH trial"
-
-**Response:**
-
-**NASH Trial Diversity Analysis**
-
-Disease Prevalence by Group:
-- Hispanic: 22.1% (highest risk)
-- White NH: 14.3%
-- Black: 13.8%
-- Asian: 8.9%
-
-**Recommended Enrollment Targets** (vs Industry Typical):
-| Group | Target | Industry Typical | Gap |
-|-------|--------|------------------|-----|
-| Hispanic | 35% (175) | 12% | +23% ✓ |
-| White NH | 35% (175) | 72% | -37% ✓ |
-| Black | 15% (75) | 8% | +7% ✓ |
-| Asian | 10% (50) | 3% | +7% ✓ |
-| Age 65+ | 25% (125) | 15% | +10% ✓ |
-
-**Top Metro Sites** (by NASH prevalence + diversity):
-1. Houston (7.2% NASH, diversity score 0.89)
-2. Dallas (6.8% NASH, diversity score 0.86)
-3. Los Angeles (6.5% NASH, diversity score 0.92)
-
-## Directory Structure
-
-```
-skills/populationsim/
-├── SKILL.md                           # This file - master router
-├── README.md                          # Product overview
-├── population-intelligence-domain.md  # Core domain knowledge
-│
-├── geographic/                        # Geographic Intelligence
-│   ├── README.md
-│   ├── county-profile.md
-│   ├── census-tract-analysis.md
-│   ├── metro-area-profile.md
-│   └── custom-region-builder.md
-│
-├── health-patterns/                   # Health Analysis
-│   ├── README.md
-│   ├── chronic-disease-prevalence.md
-│   ├── health-behavior-patterns.md
-│   ├── healthcare-access-analysis.md
-│   └── health-outcome-disparities.md
-│
-├── sdoh/                              # Social Determinants
-│   ├── README.md
-│   ├── svi-analysis.md
-│   ├── adi-analysis.md
-│   ├── economic-indicators.md
-│   └── community-factors.md
-│
-├── cohorts/                           # Cohort Definition
-│   ├── README.md
-│   ├── cohort-specification.md
-│   ├── patientsim-cohort.md
-│   ├── membersim-cohort.md
-│   └── trialsim-cohort.md
-│
-└── trial-support/                     # Clinical Trial Support
-    ├── README.md
-    ├── diversity-planning.md
-    ├── site-selection.md
-    └── feasibility-assessment.md
-```
+**Top Metros**: Houston (128K), Miami (115K), Los Angeles (108K)
 
 ## Related Products
 
-- [PatientSim](../patientsim/SKILL.md) - Clinical patient data (receives CohortSpecification)
-- [MemberSim](../membersim/SKILL.md) - Health plan member data (receives CohortSpecification)
-- [RxMemberSim](../rxmembersim/SKILL.md) - Pharmacy data (receives CohortSpecification via MemberSim)
-- [TrialSim](../trialsim/SKILL.md) - Clinical trial data (receives diversity specs)
-- [NetworkSim](../networksim/SKILL.md) - Provider networks (receives service area profiles)
+- [PatientSim](../patientsim/SKILL.md) - Clinical patient data
+- [MemberSim](../membersim/SKILL.md) - Health plan member data
+- [RxMemberSim](../rxmembersim/SKILL.md) - Pharmacy data
+- [TrialSim](../trialsim/SKILL.md) - Clinical trial data
+- [NetworkSim](../networksim/SKILL.md) - Provider networks
 
 ## Domain Knowledge
 

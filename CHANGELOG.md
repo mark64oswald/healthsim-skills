@@ -9,6 +9,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[PopulationSim]** Complete Implementation (Phases 1-6) - 22 Skills
+  - Phase 1: Foundation Layer
+    - `skills/populationsim/SKILL.md` - Master router with quick reference tables
+    - `skills/populationsim/README.md` - Product overview and value proposition
+    - `skills/populationsim/population-intelligence-domain.md` - Core domain knowledge
+  - Phase 2: Geographic Intelligence Skills (5 files)
+    - `geographic/README.md` - Category overview with PopulationProfile schema
+    - `geographic/county-profile.md` - Comprehensive county-level profiles
+    - `geographic/census-tract-analysis.md` - Granular tract-level analysis
+    - `geographic/metro-area-profile.md` - MSA/CBSA metropolitan profiles
+    - `geographic/custom-region-builder.md` - User-defined region aggregation
+  - Phase 3: Health Pattern Analysis Skills (5 files)
+    - `health-patterns/README.md` - CDC PLACES 27 measures overview
+    - `health-patterns/chronic-disease-prevalence.md` - Disease burden analysis
+    - `health-patterns/health-behavior-patterns.md` - Risk factor analysis
+    - `health-patterns/healthcare-access-analysis.md` - Coverage and access gaps
+    - `health-patterns/health-outcome-disparities.md` - Health equity analysis
+  - Phase 4: SDOH Analysis Skills (5 files)
+    - `sdoh/README.md` - SDOH framework with Z-code mapping
+    - `sdoh/svi-analysis.md` - CDC Social Vulnerability Index (4 themes, 16 variables)
+    - `sdoh/adi-analysis.md` - Area Deprivation Index (block group level)
+    - `sdoh/economic-indicators.md` - Income, poverty, employment analysis
+    - `sdoh/community-factors.md` - Housing, transportation, food, environment
+  - Phase 5: Cohort Definition Skills (5 files)
+    - `cohorts/README.md` - CohortSpecification object schema
+    - `cohorts/cohort-specification.md` - Complete cohort definition master skill
+    - `cohorts/demographic-distribution.md` - Age, sex, race/ethnicity distributions
+    - `cohorts/clinical-prevalence-profile.md` - Comorbidity patterns (DM, HF, COPD, depression)
+    - `cohorts/sdoh-profile-builder.md` - SDOH to Z-code mapping and rates
+  - Phase 6: Trial Support Skills (4 files)
+    - `trial-support/README.md` - TrialSim integration overview
+    - `trial-support/feasibility-estimation.md` - Eligible population funnel modeling
+    - `trial-support/site-selection-support.md` - Site network optimization
+    - `trial-support/enrollment-projection.md` - Timeline and rate projections
+  - Key Features:
+    - Complete PopulationProfile and CohortSpecification JSON schemas
+    - Evidence-based comorbidity matrices for major chronic conditions
+    - SDOH domain indicators with ICD-10 Z-code mapping
+    - Eligibility funnel model with conversion rates
+    - Site scoring framework (density, diversity, competition, access)
+    - Enrollment curve modeling with seasonal/competition factors
+    - Integration points for PatientSim, MemberSim, and TrialSim
+
 - **[TrialSim]** Complete Canonical Data Models - 15 Entities
   - `references/data-models.md` - Full TrialSim entity schemas added
     - Subject (extends Person with USUBJID, patient_ref cross-product link)
