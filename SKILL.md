@@ -17,7 +17,7 @@ HealthSim generates realistic synthetic healthcare data through natural conversa
 | **MemberSim** | Payer/Claims | Members, professional claims, facility claims, payments, accumulators | Active |
 | **RxMemberSim** | Pharmacy/PBM | Prescriptions, pharmacy claims, formularies, DUR alerts, prior auths | Active |
 | **TrialSim** | Clinical Trials | Studies, sites, subjects, visits, adverse events, efficacy, CDISC output | In Development |
-| **PopulationSim** | Demographics/SDOH | Population cohorts, demographic distributions, SDOH factors | Planned |
+| **PopulationSim** | Demographics/SDOH | Population profiles, cohort specifications, health disparities, SVI/ADI analysis | In Development |
 | **NetworkSim** | Provider Networks | Providers, facilities, networks, coverage patterns, contracts | Planned |
 
 ## Quick Start
@@ -127,11 +127,26 @@ Load these for clinical trial data generation:
 
 See: [skills/trialsim/](skills/trialsim/) for detailed skills
 
-### PopulationSim & NetworkSim (Planned)
+### PopulationSim Scenarios (In Development)
 
-These products are in planning:
+Load these for population intelligence and cohort definition:
 
-- **PopulationSim**: Census-based demographics, SDOH factors - [skills/populationsim/](skills/populationsim/)
+| Scenario | Use When | Key Elements |
+|----------|----------|--------------|
+| **Geographic Profile** | county profile, demographics for, MSA | County/tract/metro demographics, health indicators |
+| **Health Patterns** | diabetes rate, prevalence, disparities | CDC PLACES measures, age-adjusted rates |
+| **SDOH Analysis** | SVI, ADI, social vulnerability, deprivation | SVI themes, ADI rankings, barriers |
+| **Cohort Definition** | define cohort, population segment | CohortSpecification for generation products |
+| **Trial Support** | diversity planning, site selection, feasibility | FDA diversity, site ranking, enrollment projections |
+
+**Key Differentiator**: PopulationSim analyzes real population data (Census, CDC) and outputs specifications, not synthetic records. These specs drive realistic generation in PatientSim, MemberSim, and TrialSim.
+
+See: [skills/populationsim/](skills/populationsim/) for detailed skills
+
+### NetworkSim (Planned)
+
+This product is in planning:
+
 - **NetworkSim**: Provider networks, facilities, contracts - [skills/networksim/](skills/networksim/)
 
 ## Output Formats
