@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **[PopulationSim]** Canonical Model v2.0 with Per-Field Provenance (2024-12-23)
+  - Updated `models/population-profile-schema.md` to version 2.0:
+    - Added `$defs/dataProvenance` schema for source tracking
+    - Added `provenancedNumber`, `provenancedInteger`, `provenancedRate` types
+    - Added `healthMeasure` with confidence intervals and provenance
+    - Added `sviMeasure` and `adiMeasure` composite types
+    - Added `dataSourceSummary` for metadata aggregation
+    - Every data field now tracks: source, data_year, methodology, file_reference
+  - Added comprehensive example instance with full provenance
+  - Added simplified output mode for applications not requiring provenance
+  - Added Provenance Source Reference table
+  - Completes Session 4 of PopulationSim v2.0 roadmap
+
 ### Added
 
 - **[PopulationSim]** Phase 2 - Skills Integration with Embedded Data (2024-12-23)
