@@ -158,7 +158,7 @@ healthsim-common/
 │   │   ├── domains/           # SDTM domains (DM, AE, LB, etc.)
 │   │   ├── therapeutic-areas/ # Oncology, CV, CNS, CGT
 │   │   └── rwe/               # Real-world evidence
-│   ├── populationsim/         # Demographics/SDOH (planned)
+│   ├── populationsim/         # Demographics/SDOH
 │   └── networksim/            # Provider networks (planned)
 │
 ├── formats/                    # Output transformations (12 files)

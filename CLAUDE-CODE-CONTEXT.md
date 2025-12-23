@@ -197,7 +197,7 @@ Examples:
 | MemberSim | Payer/Claims | X12 837/835/834 |
 | RxMemberSim | Pharmacy/PBM | NCPDP D.0 |
 | TrialSim | Clinical Trials | CDISC SDTM/ADaM |
-| PopulationSim | Demographics | Census, ACS (planned) |
+| PopulationSim | Demographics/SDOH | Census, ACS, SVI, ADI |
 | NetworkSim | Provider Networks | NPPES, NPI (planned) |
 
 ---

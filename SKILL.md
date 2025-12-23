@@ -17,7 +17,7 @@ HealthSim generates realistic synthetic healthcare data through natural conversa
 | **MemberSim** | Payer/Claims | Members, professional claims, facility claims, payments, accumulators | Active |
 | **RxMemberSim** | Pharmacy/PBM | Prescriptions, pharmacy claims, formularies, DUR alerts, prior auths | Active |
 | **TrialSim** | Clinical Trials | Studies, sites, subjects, visits, adverse events, efficacy, CDISC output | In Development |
-| **PopulationSim** | Demographics/SDOH | Population profiles, cohort specifications, health disparities, SVI/ADI analysis | In Development |
+| **PopulationSim** | Demographics/SDOH | Population profiles, cohort specifications, health disparities, SVI/ADI analysis | Active |
 | **NetworkSim** | Provider Networks | Providers, facilities, networks, coverage patterns, contracts | Planned |
 
 ## Quick Start
@@ -127,7 +127,7 @@ Load these for clinical trial data generation:
 
 See: [skills/trialsim/](skills/trialsim/) for detailed skills
 
-### PopulationSim Scenarios (In Development)
+### PopulationSim Scenarios
 
 Load these for population intelligence and cohort definition:
 

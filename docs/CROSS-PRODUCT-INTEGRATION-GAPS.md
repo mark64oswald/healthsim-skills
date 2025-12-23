@@ -14,7 +14,7 @@ HealthSim is designed as a unified ecosystem where products share foundational d
 
 | Gap | Description | Severity | Status |
 |-----|-------------|----------|--------|
-| #1 | Missing Foundation Products | HIGH | 🔜 Planned (PopulationSim, NetworkSim) |
+| #1 | Missing Foundation Products | MEDIUM | ⚡ Partial - PopulationSim Active, NetworkSim Planned |
 | #2 | No Cross-Product Identity Mapping | HIGH | ✅ **RESOLVED** - Added to data-models.md |
 | #3 | Incomplete Cross-References | MEDIUM | ✅ **RESOLVED** - All products linked |
 | #4 | Missing Shared Domain References | MEDIUM | ✅ **RESOLVED** - Cross-refs added; shared refs deferred |
@@ -30,7 +30,7 @@ HealthSim is designed as a unified ecosystem where products share foundational d
 **Impact**: All products generate demographics and providers ad-hoc, leading to inconsistency
 
 ### Current State
-- **PopulationSim**: Planned but not implemented - demographics generated ad-hoc per product
+- **PopulationSim**: ✅ Active - demographics, SDOH, cohort specifications available
 - **NetworkSim**: Planned but not implemented - providers/facilities generated ad-hoc per product
 
 ### Problem

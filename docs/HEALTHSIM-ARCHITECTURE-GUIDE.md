@@ -61,7 +61,7 @@ HealthSim replaces traditional programming with conversational AI. Users describ
 | **MemberSim** | Payer/Claims | X12 837/835, 834, 270/271 | Active |
 | **RxMemberSim** | Pharmacy/PBM | NCPDP D.0 | Active |
 | **TrialSim** | Clinical Trials | CDISC SDTM/ADaM | In Development |
-| **PopulationSim** | Demographics/SDOH | Census, ACS, SDOH indices | In Development |
+| **PopulationSim** | Demographics/SDOH | Census, ACS, SDOH indices | Active |
 | **NetworkSim** | Provider Networks | NPPES, NPI, taxonomy | Planned |
 
 ### 2.2 Product Relationships
@@ -149,7 +149,7 @@ healthsim-workspace/
 │   │   ├── phase3-pivotal.md
 │   │   └── therapeutic-areas/        # Subcategory (allowed)
 │   │
-│   ├── populationsim/                 # Demographics (Planned)
+│   ├── populationsim/                 # Demographics/SDOH (Active)
 │   │   ├── SKILL.md
 │   │   └── README.md
 │   │

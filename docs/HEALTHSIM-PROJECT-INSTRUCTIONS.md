@@ -28,7 +28,7 @@ healthsim-workspace/
 │   ├── membersim/              # Payer/claims scenarios
 │   ├── rxmembersim/            # Pharmacy/PBM scenarios
 │   ├── trialsim/               # Clinical trials scenarios
-│   ├── populationsim/          # Demographics/SDOH (planned)
+│   ├── populationsim/          # Demographics/SDOH
 │   └── networksim/             # Provider networks (planned)
 ├── hello-healthsim/            # Tutorials and examples
 ├── packages/                   # Python packages (infrastructure)
