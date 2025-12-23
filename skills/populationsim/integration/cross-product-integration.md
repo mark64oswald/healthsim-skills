@@ -1,3 +1,11 @@
+---
+name: cross-product-integration
+description: |
+  Master integration guide for PopulationSim across the HealthSim ecosystem. 
+  Describes how PopulationSim serves as the demographic and SDOH foundation 
+  for PatientSim, MemberSim, RxMemberSim, and TrialSim.
+---
+
 # PopulationSim Cross-Product Integration
 
 ## Overview

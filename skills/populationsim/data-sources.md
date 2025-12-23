@@ -1,3 +1,11 @@
+---
+name: populationsim-data-sources
+description: |
+  Reference documentation for PopulationSim data sources including Census ACS, 
+  CDC PLACES, SVI, ADI, and other public health data. Use this to understand 
+  data provenance, vintage, and quality characteristics.
+---
+
 # PopulationSim Data Sources
 
 ## Overview

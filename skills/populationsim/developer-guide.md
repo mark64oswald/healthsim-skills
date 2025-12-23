@@ -1,3 +1,11 @@
+---
+name: populationsim-developer-guide
+description: |
+  Developer guide for PopulationSim covering quick start, core concepts, 
+  skill reference, workflows, output formats, integration points, and best 
+  practices for working with population demographics and SDOH data.
+---
+
 # PopulationSim Developer Guide
 
 ## Overview

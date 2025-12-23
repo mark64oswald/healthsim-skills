@@ -1,3 +1,11 @@
+---
+name: populationsim-prompt-guide
+description: |
+  Example prompts for using PopulationSim skills effectively. Templates for 
+  population analysis, SDOH assessment, cohort definition, trial support, 
+  and cross-product integration scenarios.
+---
+
 # PopulationSim Prompt Guide
 
 ## Overview

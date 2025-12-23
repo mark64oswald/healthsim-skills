@@ -1,3 +1,11 @@
+---
+name: trialsim-integration
+description: |
+  Integration guide for PopulationSim to TrialSim data flow. Describes how 
+  geographic, demographic, and health data supports trial feasibility assessment, 
+  site selection, and diverse subject enrollment simulation.
+---
+
 # PopulationSim → TrialSim Integration
 
 ## Overview

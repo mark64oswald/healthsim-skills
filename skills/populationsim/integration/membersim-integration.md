@@ -1,3 +1,11 @@
+---
+name: membersim-integration
+description: |
+  Integration guide for PopulationSim to MemberSim data flow. Describes how 
+  demographic, SDOH, and healthcare access data maps to health plan enrollment, 
+  claims patterns, and risk adjustment.
+---
+
 # PopulationSim → MemberSim Integration
 
 ## Overview

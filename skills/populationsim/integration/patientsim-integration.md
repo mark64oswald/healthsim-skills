@@ -1,3 +1,11 @@
+---
+name: patientsim-integration
+description: |
+  Integration guide for PopulationSim to PatientSim data flow. Describes how 
+  demographic distributions, health indicators, SDOH Z-codes, and insurance 
+  coverage map to FHIR Patient, Condition, Coverage, and Observation resources.
+---
+
 # PopulationSim → PatientSim Integration
 
 ## Overview
