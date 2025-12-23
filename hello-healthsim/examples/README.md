@@ -49,6 +49,19 @@ Generate clinical trial data with CDISC compliance.
 
 ---
 
+### Level 2.6: Population Intelligence (15 minutes)
+
+Analyze population demographics, SDOH, and define cohorts for generation.
+
+| Scenario | Example Prompt | Guide |
+|----------|----------------|-------|
+| **County Profile** | "Generate a population profile for Maricopa County, AZ" | [PopulationSim Example 1](populationsim-examples.md#example-1-county-population-profile) |
+| **SDOH Analysis** | "Analyze social vulnerability for rural Georgia counties" | [PopulationSim Example 2](populationsim-examples.md#example-2-sdoh-vulnerability-analysis) |
+| **Cohort Definition** | "Define a cohort for a diabetes prevention study in underserved areas" | [PopulationSim Example 3](populationsim-examples.md#example-3-cohort-specification) |
+| **Trial Feasibility** | "Assess enrollment feasibility for a NASH trial in Texas" | [PopulationSim Example 4](populationsim-examples.md#example-4-trial-feasibility-analysis) |
+
+---
+
 ### Level 3: Claims & Adjudication (15 minutes)
 
 Understand healthcare payment workflows.
@@ -113,6 +126,7 @@ Create realistic end-to-end test data spanning multiple products.
 | [MemberSim Examples](membersim-examples.md) | Claims and payer data | Professional, facility, adjudication |
 | [RxMemberSim Examples](rxmembersim-examples.md) | Pharmacy data | Prescriptions, DUR alerts, copay cards |
 | [TrialSim Examples](trialsim-examples.md) | Clinical trial data | SDTM domains, AEs, efficacy, sites |
+| [PopulationSim Examples](populationsim-examples.md) | Population intelligence | Profiles, SDOH, cohorts, feasibility |
 | [Oncology Examples](oncology-examples.md) | Cancer-specific scenarios | Staging, treatment, biomarkers |
 | [Cross-Domain Examples](cross-domain-examples.md) | Multi-product scenarios | End-to-end test data |
 | [Format Examples](format-examples.md) | Output transformations | FHIR, HL7v2, X12, C-CDA, SDTM, CSV |
