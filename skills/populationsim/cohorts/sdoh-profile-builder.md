@@ -1,33 +1,34 @@
 ---
 name: sdoh-profile-builder
 description: >
-  Build SDOH profiles for cohorts with social factor rates and ICD-10 Z-code
-  assignments. Translates SVI and population characteristics into actionable
-  SDOH characteristics for synthetic patients. Triggers: "SDOH profile",
-  "social factors for cohort", "Z-code rates", "social determinants profile".
+  Build SDOH profiles for cohorts including social vulnerability factors,
+  economic barriers, and Z-code assignment rates. Translates population-level
+  SDOH data into individual patient/member characteristics. Triggers: "SDOH
+  profile", "social factors for cohort", "Z-code rates", "vulnerability profile".
 ---
 
 # SDOH Profile Builder Skill
 
 ## Overview
 
-The sdoh-profile-builder skill creates comprehensive SDOH profiles for cohorts by translating population-level indicators (SVI, economic data, community factors) into individual-level characteristics and ICD-10 Z-code assignment rates. This bridges population analysis to patient-level synthetic data generation.
+The sdoh-profile-builder skill creates comprehensive SDOH profiles for cohorts by translating population-level social determinant data into individual-level characteristics. It generates Z-code assignment rates, barrier indicators, and vulnerability scores that can be applied during synthetic patient/member generation.
 
 **Primary Use Cases**:
-- Define SDOH characteristics for cohorts
-- Set realistic Z-code assignment rates
-- Translate SVI to patient attributes
-- Support care gap analysis
+- Add realistic SDOH to patient records
+- Set Z-code assignment rates
+- Model social barriers to care
+- Support health equity analysis
+- Inform utilization patterns
 
 ---
 
 ## Trigger Phrases
 
-- "SDOH profile for [geography/cohort]"
-- "Social determinants for [population]"
-- "What Z-codes for [vulnerable population]?"
-- "Build SDOH profile from SVI"
-- "Social factors for Medicaid cohort"
+- "SDOH profile for [cohort/geography]"
+- "Social factors for diabetic cohort"
+- "Z-code rates for [population]"
+- "Build vulnerability profile for [area]"
+- "What social barriers affect [population]?"
 
 ---
 
@@ -35,92 +36,51 @@ The sdoh-profile-builder skill creates comprehensive SDOH profiles for cohorts b
 
 | Parameter | Type | Required | Default | Description |
 |-----------|------|----------|---------|-------------|
-| `geography` | string | Yes* | - | Geographic reference |
-| `svi_score` | float | Yes* | - | Overall SVI (0-1) |
-| `population_type` | string | No | "general" | "general", "medicaid", "medicare", "fqhc" |
-| `condition` | string | No | - | Primary condition context |
-
-*Either geography or svi_score required
+| `geography` | string | Yes | - | Geographic source for SDOH data |
+| `vulnerability_level` | string | No | "match_geography" | "low", "moderate", "high", "very_high" |
+| `focus_domains` | array | No | all | SDOH domains to emphasize |
+| `z_code_detail` | bool | No | true | Include specific Z-codes |
 
 ---
 
-## SDOH Framework
+## SDOH to Z-Code Mapping
 
-### Five SDOH Domains
+### Economic Stability (Z59)
+| SDOH Factor | Z-Code | Assignment Logic |
+|-------------|--------|------------------|
+| Poverty (<100% FPL) | Z59.6 | poverty_rate × 0.8 |
+| Low income (100-200% FPL) | Z59.6 | low_income_rate × 0.4 |
+| Food insecurity | Z59.41 | food_insecurity_rate |
+| Housing instability | Z59.81 | housing_burden × 0.6 |
+| Homelessness | Z59.0 | homelessness_rate |
+| Unemployment | Z56.0 | unemployment_rate × 0.5 |
 
-| Domain | Key Factors | Z-Code Range |
-|--------|-------------|--------------|
-| **Economic Stability** | Income, employment, debt, expenses | Z59.4-Z59.9 |
-| **Education Access** | Literacy, language, degree | Z55.x |
-| **Healthcare Access** | Insurance, providers, transport | Z75.x |
-| **Neighborhood** | Housing, safety, transport, food | Z59.0-Z59.3, Z59.8 |
-| **Social/Community** | Isolation, discrimination, support | Z60.x, Z63.x |
+### Education Access (Z55)
+| SDOH Factor | Z-Code | Assignment Logic |
+|-------------|--------|------------------|
+| Less than HS diploma | Z55.0 | no_hs_diploma_rate × 0.6 |
+| Illiteracy/low literacy | Z55.0 | estimate from education |
 
-### Key Z-Codes for SDOH
+### Healthcare Access (Z75)
+| SDOH Factor | Z-Code | Assignment Logic |
+|-------------|--------|------------------|
+| No health insurance | Z59.7 | uninsured_rate |
+| Inadequate insurance | Z59.7 | underinsured estimate |
+| No primary care | Z75.3 | pcp_shortage_indicator |
 
-| Code | Description | National Rate |
-|------|-------------|---------------|
-| Z59.0 | Homelessness | 0.2% |
-| Z59.1 | Inadequate housing | 2.4% |
-| Z59.41 | Food insecurity | 10.2% |
-| Z59.6 | Low income | 11.5% |
-| Z59.7 | Insufficient social insurance | 8.8% |
-| Z59.82 | Transportation insecurity | 5.8% |
-| Z60.2 | Living alone | 14.2% |
-| Z60.3 | Acculturation difficulty | 4.8% |
-| Z60.4 | Social exclusion | 3.2% |
-| Z62.810 | Personal history of abuse | 2.8% |
-| Z63.0 | Relationship problems | 4.2% |
-| Z55.0 | Illiteracy | 4.1% |
-| Z56.0 | Unemployment | 3.6% |
-| Z56.9 | Employment problem | 5.2% |
+### Social/Community (Z60, Z62, Z63)
+| SDOH Factor | Z-Code | Assignment Logic |
+|-------------|--------|------------------|
+| Limited English | Z60.3 | limited_english_rate |
+| Social isolation | Z60.4 | from SVI household comp |
+| Single parent | Z63.5 | single_parent_rate × 0.3 |
 
----
-
-## SVI to Z-Code Mapping
-
-### Translation Rules
-
-| SVI Range | Vulnerability | Z-Code Multiplier |
-|-----------|---------------|-------------------|
-| 0.00-0.25 | Low | 0.5x |
-| 0.25-0.50 | Low-Moderate | 0.8x |
-| 0.50-0.75 | Moderate-High | 1.2x |
-| 0.75-1.00 | High | 1.8x |
-
-### Theme-Specific Mapping
-
-**Socioeconomic Theme** → Economic Z-Codes
-```
-SVI_Theme1 > 0.75 →
-  Z59.6 (Low income): base × 1.8
-  Z59.41 (Food insecurity): base × 1.6
-  Z56.0 (Unemployment): base × 1.5
-```
-
-**Household Composition Theme** → Social Z-Codes
-```
-SVI_Theme2 > 0.75 →
-  Z60.2 (Living alone): base × 1.4
-  Z63.0 (Relationship problems): base × 1.3
-  Z62.810 (History of abuse): base × 1.5
-```
-
-**Minority/Language Theme** → Access Z-Codes
-```
-SVI_Theme3 > 0.75 →
-  Z60.3 (Acculturation difficulty): base × 2.0
-  Z60.4 (Social exclusion): base × 1.6
-  Z55.0 (Illiteracy): base × 1.5
-```
-
-**Housing/Transportation Theme** → Environment Z-Codes
-```
-SVI_Theme4 > 0.75 →
-  Z59.1 (Inadequate housing): base × 1.8
-  Z59.82 (Transportation): base × 1.7
-  Z59.0 (Homelessness): base × 2.0
-```
+### Neighborhood (Z59)
+| SDOH Factor | Z-Code | Assignment Logic |
+|-------------|--------|------------------|
+| Transportation barrier | Z59.82 | no_vehicle_rate |
+| Inadequate housing | Z59.1 | substandard_housing_rate |
+| Unsafe neighborhood | Z59.89 | from crime/SVI |
 
 ---
 
@@ -131,125 +91,147 @@ SVI_Theme4 > 0.75 →
   "sdoh_profile": {
     "source": {
       "geography": "Harris County, TX",
-      "geography_type": "county",
       "fips": "48201",
-      "svi_overall": 0.68,
-      "population_type": "general"
+      "svi_source": "CDC_SVI_2022",
+      "acs_source": "ACS_2022_5yr"
     },
     
-    "svi_detail": {
-      "overall": 0.68,
-      "theme1_socioeconomic": 0.62,
-      "theme2_household": 0.58,
-      "theme3_minority": 0.82,
-      "theme4_housing": 0.64
+    "vulnerability_summary": {
+      "svi_overall": 0.62,
+      "svi_percentile_interpretation": "Moderate-High vulnerability",
+      "adi_mean": 58,
+      "vulnerability_level": "moderate_high"
+    },
+    
+    "svi_themes": {
+      "socioeconomic": {
+        "score": 0.58,
+        "poverty_rate": 0.168,
+        "unemployment": 0.048,
+        "no_hs_diploma": 0.142,
+        "uninsured": 0.162
+      },
+      "household_composition": {
+        "score": 0.52,
+        "age_65_plus": 0.128,
+        "age_17_under": 0.248,
+        "disability": 0.108,
+        "single_parent": 0.142
+      },
+      "minority_language": {
+        "score": 0.78,
+        "minority": 0.72,
+        "limited_english": 0.142
+      },
+      "housing_transportation": {
+        "score": 0.58,
+        "multi_unit": 0.382,
+        "mobile_home": 0.028,
+        "crowding": 0.082,
+        "no_vehicle": 0.078,
+        "group_quarters": 0.018
+      }
     },
     
     "domain_indicators": {
       "economic_stability": {
-        "poverty_rate": 0.158,
-        "unemployment": 0.052,
-        "no_health_insurance": 0.168,
-        "food_insecurity": 0.128
+        "poverty_rate": 0.168,
+        "deep_poverty": 0.072,
+        "food_insecurity": 0.128,
+        "housing_cost_burden": 0.382,
+        "severe_housing_burden": 0.168
       },
       "education_access": {
-        "no_hs_diploma": 0.182,
-        "limited_english": 0.142,
-        "low_literacy_estimate": 0.068
+        "no_hs_diploma": 0.142,
+        "limited_literacy_est": 0.08,
+        "no_internet": 0.082
       },
       "healthcare_access": {
-        "uninsured": 0.168,
-        "no_usual_source_of_care": 0.124,
-        "delayed_care_cost": 0.108
-      },
-      "neighborhood": {
-        "housing_cost_burden": 0.382,
-        "no_vehicle": 0.082,
-        "food_desert": 0.068
+        "uninsured": 0.162,
+        "no_pcp": 0.124,
+        "pcp_shortage_area": false,
+        "no_dental_visit": 0.328
       },
       "social_community": {
-        "living_alone": 0.112,
-        "single_parent": 0.168,
-        "limited_social_support": 0.142
+        "limited_english": 0.142,
+        "lives_alone_65plus": 0.082,
+        "single_parent_household": 0.142
+      },
+      "neighborhood": {
+        "no_vehicle": 0.078,
+        "food_desert": 0.112,
+        "substandard_housing": 0.028,
+        "pre_1960_housing": 0.182
       }
     },
     
     "z_code_rates": {
       "economic": {
-        "Z59.6": { "name": "Low income", "rate": 0.158, "confidence": "high" },
-        "Z59.41": { "name": "Food insecurity", "rate": 0.128, "confidence": "high" },
-        "Z59.7": { "name": "Insufficient social insurance", "rate": 0.168, "confidence": "high" },
-        "Z56.0": { "name": "Unemployment", "rate": 0.052, "confidence": "high" }
+        "Z59.6": { "name": "Low income", "rate": 0.168, "assignment": 0.134 },
+        "Z59.41": { "name": "Food insecurity", "rate": 0.128 },
+        "Z59.81": { "name": "Housing instability", "rate": 0.101 },
+        "Z59.0": { "name": "Homelessness", "rate": 0.008 }
+      },
+      "employment": {
+        "Z56.0": { "name": "Unemployment", "rate": 0.024 },
+        "Z56.9": { "name": "Work problem, unspecified", "rate": 0.015 }
       },
       "education": {
-        "Z55.0": { "name": "Illiteracy", "rate": 0.068, "confidence": "moderate" },
-        "Z55.9": { "name": "Education problem", "rate": 0.182, "confidence": "high" }
-      },
-      "housing": {
-        "Z59.0": { "name": "Homelessness", "rate": 0.008, "confidence": "moderate" },
-        "Z59.1": { "name": "Inadequate housing", "rate": 0.042, "confidence": "moderate" },
-        "Z59.82": { "name": "Transportation", "rate": 0.082, "confidence": "high" }
+        "Z55.0": { "name": "Illiteracy/low-level literacy", "rate": 0.048 },
+        "Z55.9": { "name": "Education problem, unspecified", "rate": 0.028 }
       },
       "social": {
-        "Z60.2": { "name": "Living alone", "rate": 0.112, "confidence": "high" },
-        "Z60.3": { "name": "Acculturation difficulty", "rate": 0.142, "confidence": "high" },
-        "Z60.4": { "name": "Social exclusion", "rate": 0.048, "confidence": "moderate" }
+        "Z60.3": { "name": "Acculturation difficulty", "rate": 0.142 },
+        "Z60.4": { "name": "Social exclusion", "rate": 0.042 },
+        "Z60.5": { "name": "Target of discrimination", "rate": 0.025 }
+      },
+      "housing_transportation": {
+        "Z59.1": { "name": "Inadequate housing", "rate": 0.028 },
+        "Z59.82": { "name": "Transportation insecurity", "rate": 0.078 }
+      },
+      "healthcare_access": {
+        "Z59.7": { "name": "Insufficient social insurance", "rate": 0.162 },
+        "Z75.3": { "name": "Unavailability of health care", "rate": 0.062 }
       }
     },
     
-    "z_code_summary": {
-      "any_sdoh_z_code": 0.42,
-      "multiple_z_codes": 0.18,
-      "high_burden_3_plus": 0.08
+    "composite_z_code_summary": {
+      "any_z_code": 0.342,
+      "multiple_z_codes": 0.148,
+      "mean_z_codes_if_any": 1.6
     },
     
-    "condition_interaction": {
-      "condition": "E11",
-      "sdoh_impact": {
-        "medication_nonadherence": {
-          "rate": 0.182,
-          "z_code": "Z91.120",
-          "drivers": ["cost", "transportation", "food_insecurity"]
-        },
-        "missed_appointments": {
-          "rate": 0.148,
-          "drivers": ["transportation", "work_schedule"]
-        },
-        "poor_glycemic_control": {
-          "rate": 0.282,
-          "drivers": ["food_insecurity", "stress", "cost"]
-        }
-      }
+    "health_impact_estimates": {
+      "cost_barrier_to_care": 0.142,
+      "medication_cost_barrier": 0.108,
+      "missed_appointments_barrier": 0.128,
+      "delayed_care_30_days": 0.168
     },
     
-    "population_type_adjustments": {
-      "population_type": "medicaid",
-      "adjustment_notes": "Medicaid population has 1.5x SDOH burden",
-      "adjusted_rates": {
-        "Z59.6": 0.85,
-        "Z59.41": 0.28,
-        "Z59.82": 0.15
-      }
-    },
-    
-    "care_gap_implications": {
-      "expected_barriers": [
-        { "barrier": "Cost of medications", "rate": 0.18, "intervention": "PAP referral" },
-        { "barrier": "Transportation", "rate": 0.08, "intervention": "NEMT" },
-        { "barrier": "Food insecurity", "rate": 0.13, "intervention": "Food pharmacy" },
-        { "barrier": "Health literacy", "rate": 0.12, "intervention": "Teach-back" }
-      ]
+    "utilization_adjustments": {
+      "ed_utilization_multiplier": 1.18,
+      "preventive_care_reduction": 0.88,
+      "medication_adherence_reduction": 0.92,
+      "no_show_rate_multiplier": 1.24
     }
   },
   
-  "validation": {
-    "sources": [
-      "CDC_SVI_2022",
-      "ACS_2022_5yr",
-      "USDA_Food_Atlas"
-    ],
-    "confidence": "high",
-    "notes": "Large county with reliable estimates"
+  "cohort_application": {
+    "target_cohort": "Houston Diabetics",
+    "sdoh_prevalence_in_cohort": 0.38,
+    "high_sdoh_segment": {
+      "size": 0.22,
+      "characteristics": {
+        "svi_quartile": 4,
+        "mean_z_codes": 2.4,
+        "expected_utilization": "high_ed_low_preventive"
+      }
+    }
+  },
+  
+  "metadata": {
+    "generated_at": "2024-12-23T10:00:00Z",
+    "methodology": "SVI_ACS_derived"
   }
 }
 ```
@@ -258,162 +240,158 @@ SVI_Theme4 > 0.75 →
 
 ## Examples
 
-### Example 1: High-Vulnerability Population
+### Example 1: High-Vulnerability Cohort
 
-**Request**: "SDOH profile for FQHC population in South Bronx"
+**Request**: "SDOH profile for Medicaid population in Bronx County"
 
 **Response**:
 
-**South Bronx FQHC SDOH Profile**
+**Bronx County Medicaid SDOH Profile**
 
-**Source**: Bronx County, NY (tracts with SVI > 0.80)
-**SVI Overall**: 0.92 (Very High)
+**Vulnerability Summary**:
+- SVI Overall: 0.94 (Very High)
+- Population: Medicaid beneficiaries
+- Expected SDOH prevalence: 62%
 
-**SVI Themes**:
-| Theme | Score | Interpretation |
-|-------|-------|----------------|
-| Socioeconomic | 0.94 | Very High |
-| Household Composition | 0.86 | High |
-| Minority/Language | 0.96 | Very High |
-| Housing/Transportation | 0.88 | High |
+**Domain Indicators**:
+| Domain | Score | Key Factors |
+|--------|-------|-------------|
+| Economic | 0.92 | Poverty 28%, Food insecurity 22% |
+| Education | 0.78 | No HS diploma 21% |
+| Healthcare | 0.62 | N/A (Medicaid covered) |
+| Social | 0.88 | Limited English 24%, Single parent 28% |
+| Neighborhood | 0.82 | No vehicle 42%, Crowding 14% |
 
 **Z-Code Assignment Rates**:
-
-*Economic Domain*:
-| Code | Description | Rate |
-|------|-------------|------|
+| Z-Code | Name | Rate |
+|--------|------|------|
 | Z59.6 | Low income | 42% |
-| Z59.41 | Food insecurity | 32% |
-| Z59.7 | Insufficient insurance | 24% |
-| Z56.0 | Unemployment | 12% |
+| Z59.41 | Food insecurity | 22% |
+| Z60.3 | Acculturation difficulty | 24% |
+| Z59.82 | Transportation insecurity | 42% |
+| Z59.1 | Inadequate housing | 14% |
+| Z63.5 | Disrupted family | 18% |
 
-*Housing/Environment Domain*:
-| Code | Description | Rate |
-|------|-------------|------|
-| Z59.0 | Homelessness | 2.4% |
-| Z59.1 | Inadequate housing | 8.2% |
-| Z59.82 | Transportation insecurity | 14% |
-
-*Social Domain*:
-| Code | Description | Rate |
-|------|-------------|------|
-| Z60.3 | Acculturation difficulty | 28% |
-| Z60.4 | Social exclusion | 8% |
-| Z60.2 | Living alone | 18% |
-
-**SDOH Burden**:
-- Any SDOH Z-code: 68%
-- 2+ Z-codes: 42%
-- 3+ Z-codes: 24%
-
----
-
-### Example 2: Medicare Population
-
-**Request**: "Social determinants profile for Medicare population in rural Kentucky"
-
-**Response**:
-
-**Rural Kentucky Medicare SDOH Profile**
-
-**Geography**: Eastern Kentucky (Appalachian counties)
-**Population**: Medicare beneficiaries 65+
-**SVI Average**: 0.78
-
-**Key SDOH Factors**:
-| Factor | Rate | vs National Medicare |
-|--------|------|---------------------|
-| Low income | 28% | +12% |
-| Transportation barrier | 18% | +10% |
-| Living alone | 32% | +8% |
-| Limited internet | 42% | +22% |
-| Food insecurity | 18% | +6% |
-
-**Z-Code Rates for Cohort**:
-| Code | Description | Rate |
-|------|-------------|------|
-| Z59.6 | Low income | 28% |
-| Z59.82 | Transportation | 18% |
-| Z60.2 | Living alone | 32% |
-| Z59.41 | Food insecurity | 18% |
-| Z60.4 | Social exclusion | 12% |
-| Z63.4 | Disappearance of family member | 8% |
+**Expected Multiple Z-Codes**: 48% of cohort
 
 **Health Impact**:
-| SDOH Factor | Health Outcome | Correlation |
-|-------------|----------------|-------------|
-| Transportation | Missed dialysis | +42% |
-| Food insecurity | Hypoglycemia | +28% |
-| Living alone | ED utilization | +35% |
-| Low income | Rx nonadherence | +48% |
+| Barrier | Prevalence | Effect |
+|---------|------------|--------|
+| Missed appointments | 28% | +1.4x |
+| Medication non-adherence | 24% | +1.3x |
+| ED utilization | +45% | vs low-SDOH |
+| Preventive care gap | 32% | below target |
 
 ---
 
-### Example 3: Condition-Specific SDOH
+### Example 2: Clinical Trial SDOH
 
-**Request**: "SDOH profile for heart failure patients in urban areas"
+**Request**: "SDOH considerations for diabetes trial in Atlanta"
 
 **Response**:
 
-**Heart Failure Urban SDOH Profile**
+**Atlanta Diabetes Trial SDOH Profile**
 
-**Context**: I50 patients in metro areas with SVI > 0.60
+**Site Context**: Atlanta Metro (CBSA 12060)
+- Overall SVI: 0.58 (Moderate)
+- High variation by neighborhood
 
-**Condition-Specific SDOH Impact**:
+**Trial Implications**:
 
-**Medication Adherence Barriers**:
-| Barrier | Rate | Z-Code |
-|---------|------|--------|
-| Cost | 24% | Z59.6 |
-| Complex regimen | 18% | Z91.120 |
-| Cognitive | 12% | Z91.19 |
+**Recruitment Barriers**:
+| SDOH Factor | Rate | Impact on Enrollment |
+|-------------|------|---------------------|
+| Transportation | 18% | May miss visits |
+| Limited English | 8% | Need interpreters |
+| Low income | 22% | Competing priorities |
+| Food insecurity | 14% | Affects glycemic control |
 
-**Diet Adherence Barriers**:
-| Barrier | Rate | Z-Code |
-|---------|------|--------|
-| Food insecurity | 18% | Z59.41 |
-| Limited cooking | 14% | Z59.1 |
-| Cultural factors | 8% | Z60.3 |
+**Stratification Consideration**:
+| SDOH Level | % of Population | Enrollment Target |
+|------------|-----------------|-------------------|
+| Low SDOH | 42% | 35% |
+| Moderate SDOH | 36% | 35% |
+| High SDOH | 22% | 30% |
 
-**Care Access Barriers**:
-| Barrier | Rate | Z-Code |
-|---------|------|--------|
-| Transportation | 15% | Z59.82 |
-| Work schedule | 12% | Z56.9 |
-| Caregiver burden | 18% | Z63.6 |
+**Z-Codes to Capture**:
+- Z59.6 (Low income) - affects adherence
+- Z59.82 (Transportation) - affects visit completion
+- Z59.41 (Food insecurity) - affects outcomes
 
-**Readmission Risk by SDOH**:
-| SDOH Factor | Readmission RR |
-|-------------|----------------|
-| 0 SDOH factors | 1.0 (ref) |
-| 1-2 factors | 1.4x |
-| 3+ factors | 2.2x |
+**Retention Risk by SDOH**:
+| SDOH Level | Expected Dropout |
+|------------|-----------------|
+| Low | 12% |
+| Moderate | 18% |
+| High | 28% ⚠️ |
 
-**Recommended Interventions**:
-- CHW home visits for high-SDOH patients
-- Transition care management
-- NEMT for follow-up
-- Medically-tailored meals
+---
+
+### Example 3: Health Plan Population
+
+**Request**: "SDOH profile for Medicare Advantage population in South Florida"
+
+**Response**:
+
+**South Florida Medicare Advantage SDOH**
+
+**Geography**: Miami-Dade, Broward, Palm Beach counties
+**Population**: 65+ Medicare Advantage members
+
+**Age-Adjusted SDOH**:
+| Factor | General Pop | Age 65+ Adjusted |
+|--------|-------------|------------------|
+| Limited English | 28% | 32% |
+| Lives alone | 12% | 28% |
+| Low income | 18% | 22% |
+| No vehicle | 8% | 18% |
+| Food insecurity | 12% | 14% |
+
+**Social Isolation Risk**:
+- Lives alone 65+: 28%
+- No nearby family: 18%
+- Limited mobility: 24%
+- Z60.4 (Social exclusion): 12%
+
+**Z-Code Profile for MA Population**:
+| Z-Code | Prevalence |
+|--------|------------|
+| Z60.2 | Living alone - 28% |
+| Z59.6 | Low income - 22% |
+| Z59.82 | Transportation - 18% |
+| Z60.3 | Language barrier - 32% |
+| Z73.6 | Physical limitations - 24% |
+
+**Care Management Implications**:
+- Home visit candidates: 34%
+- Transportation assistance need: 18%
+- Language services: 32% (Spanish 28%, Creole 4%)
+- Social work referral: 22%
 
 ---
 
 ## Validation Rules
 
-### Input Validation
-- [ ] Geography valid or SVI provided
-- [ ] SVI between 0 and 1
-- [ ] Population type valid
-
-### Output Validation
+### Distribution Checks
 - [ ] Z-code rates ≤ 1.0
-- [ ] Rates consistent with SVI level
-- [ ] Domain indicators sum appropriately
+- [ ] Z-code rates sum plausibly (<1.5)
+- [ ] SVI scores 0-1
+
+### Source Validation
+- [ ] Geography valid for SVI lookup
+- [ ] ACS data available
+- [ ] ADI coverage if used
+
+### Clinical Plausibility
+- [ ] Z-code rates match SVI level
+- [ ] Health impacts directionally correct
 
 ---
 
 ## Related Skills
 
-- [svi-analysis.md](../sdoh/svi-analysis.md) - SVI source
-- [economic-indicators.md](../sdoh/economic-indicators.md) - Economic detail
-- [community-factors.md](../sdoh/community-factors.md) - Environment detail
 - [cohort-specification.md](cohort-specification.md) - Full cohort
+- [svi-analysis.md](../sdoh/svi-analysis.md) - SVI source data
+- [adi-analysis.md](../sdoh/adi-analysis.md) - ADI source data
+- [economic-indicators.md](../sdoh/economic-indicators.md) - Economic detail
+- [community-factors.md](../sdoh/community-factors.md) - Community factors
