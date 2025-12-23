@@ -414,6 +414,35 @@ Medical and pharmacy benefits are often coordinated:
 
 > **Integration Pattern:** For integrated medical+Rx benefits, ensure accumulators are synchronized and coverage dates match. Some specialty drugs are covered under medical benefit (infused) vs. pharmacy benefit (oral).
 
+### Cross-Product: PopulationSim (Demographics & Market Intelligence)
+
+PopulationSim provides population-level intelligence for member generation and plan design:
+
+| PopulationSim Skill | MemberSim Application | Integration |
+|---------------------|----------------------|-------------|
+| [../populationsim/geographic/county-profile.md](../populationsim/geographic/county-profile.md) | Service area definition | Geographic member distribution |
+| [../populationsim/health-patterns/chronic-disease-prevalence.md](../populationsim/health-patterns/chronic-disease-prevalence.md) | Expected utilization patterns | Risk-adjusted pricing |
+| [../populationsim/sdoh/economic-indicators.md](../populationsim/sdoh/economic-indicators.md) | Income levels, employment | Plan tier selection |
+| [../populationsim/cohorts/demographic-distribution.md](../populationsim/cohorts/demographic-distribution.md) | Age/gender mix | Member panel composition |
+
+> **Integration Pattern:** Use PopulationSim to define a service area population, then generate MemberSim members with realistic demographic and health characteristics. This enables actuarially sound synthetic member panels for testing.
+
+**Example:** "Generate 1,000 members for a Medicare Advantage plan in Maricopa County, AZ"
+1. PopulationSim: 65+ population profile with chronic disease prevalence, income distribution
+2. MemberSim: Generate members with appropriate age distribution, plan selection, expected HCC risk scores
+
+### Cross-Product: TrialSim (Clinical Trials)
+
+Members may participate in clinical trials with claims integration:
+
+| MemberSim Context | TrialSim Integration | Claims Impact |
+|-------------------|---------------------|---------------|
+| Specialty drug coverage | Trial drug provided free | Reduced Rx claims during trial |
+| Standard of care | SOC claims continue | Normal claim adjudication |
+| Trial-related AEs | May generate medical claims | AE → ED/inpatient claims |
+
+> **Integration Pattern:** When a member enrolls in a trial, standard of care claims continue through MemberSim while trial-specific treatments are tracked in TrialSim. Trial-related adverse events may generate claims.
+
 ### Output Formats
 - [../../formats/x12-834.md](../../formats/x12-834.md) - X12 enrollment format
 - [../../formats/x12-270-271.md](../../formats/x12-270-271.md) - X12 eligibility format

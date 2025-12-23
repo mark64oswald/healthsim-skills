@@ -423,6 +423,23 @@ Pharmacy and medical benefits are often coordinated:
 
 > **Integration Pattern:** For integrated medical+Rx plans, pharmacy costs count toward combined OOP maximum. Ensure coverage dates and accumulator totals are synchronized.
 
+### Cross-Product: PopulationSim (Medication Patterns)
+
+PopulationSim provides population-level intelligence for medication utilization patterns:
+
+| PopulationSim Skill | RxMemberSim Application | Integration |
+|---------------------|------------------------|-------------|
+| [../populationsim/health-patterns/chronic-disease-prevalence.md](../populationsim/health-patterns/chronic-disease-prevalence.md) | Drug class utilization rates | Expected fill volumes |
+| [../populationsim/sdoh/economic-indicators.md](../populationsim/sdoh/economic-indicators.md) | Generic vs. brand preference | Tier utilization patterns |
+| [../populationsim/geographic/county-profile.md](../populationsim/geographic/county-profile.md) | Pharmacy access patterns | Mail-order vs. retail mix |
+| [../populationsim/cohorts/cohort-specification.md](../populationsim/cohorts/cohort-specification.md) | Target population medications | Therapy class distribution |
+
+> **Integration Pattern:** Use PopulationSim to understand medication utilization patterns in a target population, then generate RxMemberSim claims that reflect realistic prescribing patterns, generic utilization rates, and adherence behaviors.
+
+**Example:** "Generate pharmacy claims for a diabetic population in a rural county"
+1. PopulationSim: Diabetes prevalence, income levels, pharmacy access (fewer retail, more mail-order)
+2. RxMemberSim: Generate claims with appropriate drug mix (metformin, sulfonylureas, GLP-1s), higher generic rates, 90-day mail-order fills
+
 ### Output Formats
 - [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) - NCPDP D.0 format
 - [../../formats/csv.md](../../formats/csv.md) - CSV export

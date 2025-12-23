@@ -258,6 +258,23 @@ PatientSim medication orders generate prescription fills in RxMemberSim:
 
 > **Integration Pattern:** Generate medication orders in PatientSim, then use RxMemberSim to model pharmacy fills with matching NDCs and appropriate fill timing.
 
+### Cross-Product: PopulationSim (Demographics & SDOH)
+
+PopulationSim provides statistically accurate demographic and social determinants of health (SDOH) foundations for patient generation:
+
+| PopulationSim Skill | PatientSim Application | Integration |
+|---------------------|------------------------|-------------|
+| [../populationsim/geographic/county-profile.md](../populationsim/geographic/county-profile.md) | Patient address, local health patterns | Geographic distribution |
+| [../populationsim/health-patterns/chronic-disease-prevalence.md](../populationsim/health-patterns/chronic-disease-prevalence.md) | Condition likelihood by demographics | Realistic disease rates |
+| [../populationsim/sdoh/svi-analysis.md](../populationsim/sdoh/svi-analysis.md) | Social vulnerability factors | SDOH-informed scenarios |
+| [../populationsim/cohorts/cohort-specification.md](../populationsim/cohorts/cohort-specification.md) | Target population definition | Cohort-based generation |
+
+> **Integration Pattern:** Use PopulationSim to define a target population (demographics, geography, health patterns), then generate PatientSim patients that match those population characteristics. This ensures patients reflect realistic community health profiles.
+
+**Example:** "Generate 50 patients matching the diabetes population profile for Harris County, TX"
+1. PopulationSim: County profile with diabetes prevalence, demographics, SDOH factors
+2. PatientSim: Generate patients with appropriate age/race/gender distribution, comorbidity patterns, and social factors
+
 ### Cross-Product: TrialSim (Clinical Trials)
 
 For patients enrolled in clinical trials:

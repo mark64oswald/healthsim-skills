@@ -195,6 +195,23 @@ Trial subjects are patients with additional trial-specific data:
 
 > **Integration Pattern:** Use PatientSim for baseline clinical characteristics. TrialSim adds protocol-specific assessments (RECIST, NYHA class changes), randomization, and SDTM-formatted data.
 
+### Cross-Product: PopulationSim (Feasibility & Diversity)
+
+PopulationSim provides population intelligence for trial planning, site selection, and diversity requirements:
+
+| PopulationSim Skill | TrialSim Application | Integration |
+|---------------------|---------------------|-------------|
+| [../populationsim/trial-support/feasibility-estimation.md](../populationsim/trial-support/feasibility-estimation.md) | Enrollment projections | Site-level feasibility |
+| [../populationsim/trial-support/diversity-planning.md](../populationsim/trial-support/diversity-planning.md) | FDA diversity requirements | Representative enrollment |
+| [../populationsim/trial-support/site-selection-support.md](../populationsim/trial-support/site-selection-support.md) | Geographic optimization | Site network design |
+| [../populationsim/health-patterns/chronic-disease-prevalence.md](../populationsim/health-patterns/chronic-disease-prevalence.md) | Eligible population sizing | Catchment analysis |
+
+> **Integration Pattern:** Use PopulationSim for protocol feasibility analysis and site selection, then TrialSim to generate subjects that reflect the predicted enrollment patterns and demographic distribution.
+
+**Example:** "Plan a Phase 3 NSCLC trial with FDA diversity requirements across 20 US sites"
+1. PopulationSim: Identify optimal site locations based on NSCLC prevalence, demographic diversity, healthcare access
+2. TrialSim: Generate 400 subjects with enrollment distribution reflecting feasibility estimates and diversity targets
+
 ## Development Status
 
 | Component | Status |
