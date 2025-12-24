@@ -207,15 +207,15 @@ skills/networksim/
 
 ## 5. Implementation Phases
 
-### Phase 1: Foundation + Reference Knowledge
-**Duration**: 1-2 sessions  
-**Goal**: Establish structure and educational content
+### Phase 1: Foundation + Reference Knowledge + Core Docs
+**Duration**: 2 sessions  
+**Goal**: Establish structure, educational content, and documentation foundation
 
 | ID | Task | Type | Priority | Status |
 |----|------|------|----------|--------|
 | 1.1 | Create directory structure | Setup | Must | ⬜ Not Started |
 | 1.2 | Update SKILL.md (master router) | Skill | Must | ⬜ Not Started |
-| 1.3 | Update README.md | Doc | Must | ⬜ Not Started |
+| 1.3 | Update README.md (comprehensive - 400+ lines) | Doc | Must | ⬜ Not Started |
 | 1.4 | Write network-types.md | Reference | Must | ⬜ Not Started |
 | 1.5 | Write plan-structures.md | Reference | Must | ⬜ Not Started |
 | 1.6 | Write pharmacy-benefit-concepts.md | Reference | Must | ⬜ Not Started |
@@ -223,6 +223,8 @@ skills/networksim/
 | 1.8 | Write utilization-management.md | Reference | Should | ⬜ Not Started |
 | 1.9 | Write specialty-pharmacy.md | Reference | Should | ⬜ Not Started |
 | 1.10 | Write network-adequacy.md | Reference | Could | ⬜ Not Started |
+| 1.11 | Create developer-guide.md (shell + Quick Start) | Doc | Must | ⬜ Not Started |
+| 1.12 | Create prompt-guide.md (shell + Reference section) | Doc | Must | ⬜ Not Started |
 
 ### Phase 2: Synthetic Generation
 **Duration**: 1-2 sessions  
@@ -264,18 +266,44 @@ skills/networksim/
 | 4.7 | Update MemberSim cross-references | Integration | Must | ⬜ Not Started |
 | 4.8 | Update RxMemberSim cross-references | Integration | Must | ⬜ Not Started |
 
-### Phase 5: Documentation + Testing
-**Duration**: 1 session  
-**Goal**: Polish and verify
+### Phase 5: Documentation Excellence + Testing + Polish
+**Duration**: 2-3 sessions  
+**Goal**: Complete documentation to excellence standard, verify, and polish
 
+#### 5A: Core Documentation Completion
 | ID | Task | Type | Priority | Status |
 |----|------|------|----------|--------|
-| 5.1 | Write data-sources-reference.md | Doc | Should | ⬜ Not Started |
-| 5.2 | Add hello-healthsim examples | Doc | Must | ⬜ Not Started |
-| 5.3 | Update HEALTHSIM-ARCHITECTURE-GUIDE.md | Doc | Must | ⬜ Not Started |
-| 5.4 | Update master SKILL.md cross-references | Doc | Must | ⬜ Not Started |
-| 5.5 | Verify all skill frontmatter | QA | Must | ⬜ Not Started |
-| 5.6 | Test sample generation requests | QA | Must | ⬜ Not Started |
+| 5.1 | Complete developer-guide.md (600+ lines) | Doc | Must | ⬜ Not Started |
+| 5.2 | Complete prompt-guide.md (400+ lines, 50+ examples) | Doc | Must | ⬜ Not Started |
+| 5.3 | Write data-sources-reference.md | Doc | Should | ⬜ Not Started |
+
+#### 5B: Hello-HealthSim Examples
+| ID | Task | Type | Priority | Status |
+|----|------|------|----------|--------|
+| 5.4 | Create networksim-examples.md (800+ lines) | Doc | Must | ⬜ Not Started |
+| 5.5 | Update cross-domain-examples.md (+300 lines) | Doc | Must | ⬜ Not Started |
+| 5.6 | Update CLAUDE-DESKTOP.md tutorial | Doc | Should | ⬜ Not Started |
+| 5.7 | Update CLAUDE-CODE.md tutorial | Doc | Should | ⬜ Not Started |
+
+#### 5C: Cross-Reference Updates
+| ID | Task | Type | Priority | Status |
+|----|------|------|----------|--------|
+| 5.8 | Update patientsim/SKILL.md | Cross-Ref | Must | ⬜ Not Started |
+| 5.9 | Update membersim/SKILL.md | Cross-Ref | Must | ⬜ Not Started |
+| 5.10 | Update rxmembersim/SKILL.md | Cross-Ref | Must | ⬜ Not Started |
+| 5.11 | Update trialsim/SKILL.md | Cross-Ref | Must | ⬜ Not Started |
+| 5.12 | Update populationsim/SKILL.md | Cross-Ref | Must | ⬜ Not Started |
+| 5.13 | Update master SKILL.md | Cross-Ref | Must | ⬜ Not Started |
+| 5.14 | Update HEALTHSIM-ARCHITECTURE-GUIDE.md | Cross-Ref | Must | ⬜ Not Started |
+
+#### 5D: Final Polish + Testing
+| ID | Task | Type | Priority | Status |
+|----|------|------|----------|--------|
+| 5.15 | Verify all skill YAML frontmatter | QA | Must | ⬜ Not Started |
+| 5.16 | Test all example prompts in prompt-guide.md | QA | Must | ⬜ Not Started |
+| 5.17 | Verify all documentation links | QA | Must | ⬜ Not Started |
+| 5.18 | Update CHANGELOG.md | Doc | Must | ⬜ Not Started |
+| 5.19 | Final review against excellence criteria | QA | Must | ⬜ Not Started |
 
 ---
 
@@ -410,21 +438,121 @@ PatientSim: Uses provider in encounter
 
 ---
 
-## 9. Success Metrics
+## 9. Documentation Excellence Standards
 
+> **Full documentation plan**: See [NETWORKSIM-DOCUMENTATION-PLAN.md](NETWORKSIM-DOCUMENTATION-PLAN.md)
+
+### 9.1 What "Excellent" Means
+
+Based on analysis of PopulationSim and TrialSim documentation, "excellent" requires:
+
+| Component | Quality Standard | Line Target |
+|-----------|-----------------|-------------|
+| **README.md** | Comprehensive product overview with Quick Start | 400-500 lines |
+| **developer-guide.md** | Core concepts, workflows, output formats, troubleshooting | 600-800 lines |
+| **prompt-guide.md** | 50+ categorized example prompts | 400-500 lines |
+| **networksim-examples.md** | Complete outputs, not snippets | 800-1000 lines |
+| **cross-domain updates** | NetworkSim integration examples | +300-400 lines |
+
+### 9.2 Documentation Principles
+
+1. **Show, Don't Just Tell** - Every concept has a working example
+2. **Complete Outputs** - Full JSON responses, not truncated snippets
+3. **Progressive Complexity** - Start simple, build to advanced
+4. **Copy-Paste Ready** - Prompts work exactly as shown
+5. **Bidirectional Links** - Every doc links to related content
+
+### 9.3 Required Documentation Deliverables
+
+#### Product-Level (skills/networksim/)
+- [ ] README.md - Comprehensive product overview (400+ lines)
+- [ ] developer-guide.md - Technical reference (600+ lines)
+- [ ] prompt-guide.md - Example prompts by category (400+ lines)
+
+#### Hello-HealthSim (hello-healthsim/)
+- [ ] examples/networksim-examples.md - Full examples (800+ lines)
+- [ ] examples/cross-domain-examples.md - +4 NetworkSim integration examples
+- [ ] CLAUDE-DESKTOP.md - NetworkSim quick start section
+- [ ] CLAUDE-CODE.md - NetworkSim MCP section
+
+#### Cross-References (Bidirectional)
+- [ ] patientsim/SKILL.md → NetworkSim integration
+- [ ] membersim/SKILL.md → NetworkSim integration
+- [ ] rxmembersim/SKILL.md → NetworkSim integration
+- [ ] trialsim/SKILL.md → NetworkSim integration
+- [ ] populationsim/SKILL.md → NetworkSim integration
+- [ ] Root SKILL.md → NetworkSim routing
+- [ ] HEALTHSIM-ARCHITECTURE-GUIDE.md → NetworkSim as Active product
+
+### 9.4 Documentation Quality Checklist
+
+**Per-Document**:
+- [ ] YAML frontmatter with name and description
+- [ ] Clear section headers with logical flow
+- [ ] At least 2 complete examples per major concept
+- [ ] Full JSON/output shown (not snippets)
+- [ ] Copy-paste ready prompts
+- [ ] Links to related documentation
+
+**Cross-Reference**:
+- [ ] All 5 product SKILL.md files updated
+- [ ] Master SKILL.md routes to NetworkSim
+- [ ] Architecture guide shows NetworkSim as Active
+- [ ] All links verified working
+
+**Excellence Criteria**:
+- [ ] New user can get started in <5 minutes with Quick Start
+- [ ] Developer guide matches PopulationSim quality
+- [ ] Prompt guide has 50+ categorized examples
+- [ ] Examples file shows complete workflows with full outputs
+
+### 9.5 Total Documentation Estimates
+
+| Category | Est. Lines |
+|----------|------------|
+| Product docs (README, dev guide, prompt guide) | 1,400-1,800 |
+| Examples (networksim-examples, cross-domain) | 1,100-1,400 |
+| Tutorials (CLAUDE-DESKTOP, CLAUDE-CODE) | 100-200 |
+| Cross-references (all SKILL.md updates) | 200-350 |
+| **Total New/Updated Documentation** | **2,800-3,750 lines** |
+
+---
+
+## 10. Success Metrics
+
+### Skill Metrics
 | Metric | Target |
 |--------|--------|
 | Reference skills complete | 7 skills |
 | Synthetic generation skills | 6 skills |
 | Pattern skills | 5 skills |
 | Integration skills | 5 skills |
-| Cross-product references updated | 3 products |
-| Hello-healthsim examples | ≥3 examples |
 | All skill frontmatter valid | 100% |
+
+### Documentation Metrics
+| Metric | Target |
+|--------|--------|
+| README.md | 400+ lines |
+| developer-guide.md | 600+ lines |
+| prompt-guide.md | 400+ lines, 50+ examples |
+| networksim-examples.md | 800+ lines |
+| Cross-product SKILL.md updates | 5 products |
+| Tutorial updates | 2 files |
+| Total new documentation | 2,800+ lines |
+
+### Integration Metrics
+| Metric | Target |
+|--------|--------|
+| Cross-product references updated | 5 products |
+| Hello-healthsim examples added | ≥4 examples |
+| Architecture guide updated | Yes |
+| CHANGELOG.md updated | Yes |
 
 ---
 
-## 10. Next Steps
+---
+
+## 11. Next Steps
 
 1. **Review this plan** - Confirm scope and boundaries
 2. **Create super-prompt** - Detailed implementation instructions for Phase 1
