@@ -27,6 +27,50 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated master `SKILL.md` with NetworkSim scenarios table (status: Active)
   - Total Phase 1: ~3,450 lines of content
 
+- **[NetworkSim]** Phase 2 Complete - Synthetic Generation Skills (2024-12-24)
+  - Created `skills/networksim/synthetic/` directory with 6 generation skills:
+    - `synthetic-provider.md` (~480 lines) - Provider entities with NPI, credentials, taxonomy
+      - Canonical JSON schema for individual and organizational providers
+      - Common taxonomy codes by specialty (Primary Care, Cardiology, Orthopedics, Oncology, Mental Health, Emergency)
+      - NPI generation with Luhn algorithm validation
+      - 4 examples: basic cardiologist, interventional specialist, nurse practitioner, group practice
+      - Cross-product integration patterns for PatientSim, MemberSim, RxMemberSim, TrialSim
+    - `synthetic-facility.md` (~500 lines) - Facility entities with CCN, beds, services
+      - Facility types: Acute Care, Critical Access, Psychiatric, SNF, ASC, ESRD, RHC/FQHC
+      - CCN generation rules by state and facility type
+      - 4 examples: urban teaching hospital, critical access, ASC, skilled nursing facility
+      - Hospital characteristics: ownership, teaching status, trauma level, accreditation
+    - `synthetic-pharmacy.md` (~520 lines) - Pharmacy entities with NCPDP, DEA, services
+      - Pharmacy types: Retail (chain, grocery, mass merchant, independent), Specialty, Mail-Order, Institutional
+      - NCPDP Provider ID and DEA number generation with validation
+      - 4 examples: retail chain (CVS), oncology specialty, independent rural, PBM mail-order
+      - Specialty pharmacy services: clinical management, hub services, REMS certification
+    - `synthetic-network.md` (~400 lines) - Network configurations with rosters
+      - Network types by access model (HMO, PPO, EPO, POS) and breadth (Broad, Standard, Narrow)
+      - Tier structure configuration (1-4 tiers with quality/cost criteria)
+      - 4 examples: standard PPO, tiered HMO, narrow ACA Exchange, Medicare Advantage
+      - Adequacy standards and provider count tracking
+    - `synthetic-plan.md` (~550 lines) - Plan benefit structures
+      - Market segments: Commercial, Exchange (metal tiers), Medicare, Medicaid
+      - Complete cost sharing schemas (deductibles, copays, coinsurance, OOP max)
+      - Medical benefits by service type with cost sharing rules
+      - 4 examples: commercial PPO, HDHP with HSA, ACA Silver, Medicare Advantage
+      - HSA/HRA eligibility, CSR variants, Part D benefit phases
+    - `synthetic-pharmacy-benefit.md` (~550 lines) - Pharmacy benefit designs
+      - Tier structures (2-6 tier configurations with cost sharing models)
+      - Clinical programs: Prior Authorization, Step Therapy, Quantity Limits, DUR
+      - Specialty programs: biosimilar, copay assistance, site of care
+      - Part D specific schema with benefit phases and LIS status
+      - 4 examples: standard 4-tier, Part D, HDHP-compatible, specialty-focused
+  - All skills include:
+    - YAML frontmatter with name, description, trigger phrases, cross-product references
+    - Canonical JSON schemas with field definitions
+    - Generation parameters (required and optional)
+    - 4+ comprehensive examples at varying complexity levels
+    - Cross-product integration patterns
+    - Validation rules tables
+  - Total Phase 2: ~3,000 lines of content
+
 - **[NetworkSim-Local]** Planning Documentation Complete (2024-12-24)
   - Created `docs/networksim-local/` directory with comprehensive planning:
     - `README.md` - Overview and document index
