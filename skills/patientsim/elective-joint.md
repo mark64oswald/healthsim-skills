@@ -258,6 +258,51 @@ medications_to_stop_before_surgery = {
 
 **Why this matters for generation**: Complications should be realistic. DVT presents POD 5-14 at home (not POD 1 in hospital). PJI presents with systemic signs (fever, elevated WBC/ESR/CRP). Delirium happens POD 2-3 in elderly patients on opioids.
 
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, joint replacement scenarios use real population data:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Key columns for orthopedics:
+  - OBESITY_CrudePrev: Obesity rate (complication risk factor)
+  - DIABETES_CrudePrev: Diabetes (wound healing, infection risk)
+  - ARTHRITIS_CrudePrev: Arthritis prevalence (joint replacement candidates)
+
+File: skills/populationsim/data/county/svi_county_2022.csv
+Key columns:
+  - EP_AGE65: Age 65+ percentage (joint replacement population)
+  - RPL_THEMES: Vulnerability (affects discharge disposition)
+```
+
+### Data-Driven Comorbidity and Disposition Rates
+
+| Factor | Generic Default | Data-Driven Adjustment |
+|--------|-----------------|------------------------|
+| Obesity | 60% | OBESITY_CrudePrev × 1.5 (ortho population higher) |
+| Diabetes | 25% | DIABETES_CrudePrev × 2 |
+| Discharge to SNF | 25% | Higher if SVI > 0.6 and age > 75 |
+| DVT risk | 2% (with prophylaxis) | Higher if BMI > 35 and OBESITY > 35% |
+
+### Example: Miami-Dade County, FL (FIPS 12086)
+```
+From places_county_2024.csv:
+  ARTHRITIS_CrudePrev: 24.8%
+  OBESITY_CrudePrev: 28.1%
+  DIABETES_CrudePrev: 12.3%
+
+From svi_county_2022.csv:
+  EP_AGE65: 17.2%
+  RPL_THEMES: 0.72
+
+Apply to generation:
+  - High arthritis prevalence → reasonable joint replacement demand
+  - Obesity comorbidity: ~42% (28.1% × 1.5)
+  - Higher SNF discharge rate (high SVI, older population)
+```
+
 ## Generation Guidelines
 
 ### How to Apply This Knowledge

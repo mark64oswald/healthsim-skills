@@ -79,6 +79,49 @@ Apply this skill when the user's request involves:
 | admission_type | string | E | E (Emergency), R (Routine), U (Urgent), C (Elective) |
 | length_of_stay | range | 1-7 | Days for inpatient stay |
 | include_preadmit | bool | false | Include prior outpatient registration |
+| geography | string | null | County/tract FIPS for data-driven demographics |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, ADT scenarios use real population data for demographics and utilization patterns:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Key columns for utilization:
+  - TotalPopulation: Population for scaling
+  - ACCESS2_CrudePrev: Uninsured rate (affects admission patterns)
+  - CHECKUP_CrudePrev: Preventive care access
+
+File: skills/populationsim/data/county/svi_county_2022.csv
+Key columns:
+  - RPL_THEMES: Overall vulnerability (affects ED utilization)
+  - EP_AGE65: Age 65+ percentage (Medicare population)
+  - EP_UNINSUR: Uninsured rate
+```
+
+### Data-Driven Patterns
+
+| Pattern | Generic Default | Data-Driven Adjustment |
+|---------|-----------------|------------------------|
+| ED admission rate | 15% | Higher if SVI > 0.75 |
+| Payer mix | 40% commercial | Based on EP_UNINSUR, EP_AGE65 |
+| LOS | 4.5 days avg | Longer if high vulnerability |
+| Readmit risk | 15% | Higher if ACCESS2 > 20% |
+
+### Example: Harris County, TX (FIPS 48201)
+```
+From svi_county_2022.csv:
+  RPL_THEMES: 0.68 (high vulnerability)
+  EP_AGE65: 10.8%
+  EP_UNINSUR: 22.1%
+  
+Apply to ADT generation:
+  - Higher ED-to-admit conversion (RPL > 0.5)
+  - Medicare: ~11%, Uninsured: ~22%, Commercial: ~45%, Medicaid: ~22%
+  - Increased readmission probability
+```
 
 ## ADT Event Types
 

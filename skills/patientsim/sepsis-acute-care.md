@@ -76,6 +76,40 @@ Apply this skill when the user's request involves:
 | source | string | pneumonia | pneumonia, urinary, abdominal, skin_soft_tissue, unknown |
 | organism | string | unspecified | gram_positive, gram_negative, mixed, fungal, unspecified |
 | icu_required | bool | false | Based on severity |
+| geography | string | null | County/tract FIPS for data-driven rates |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, sepsis scenarios use real population health data:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Relevant columns for sepsis/acute care:
+  - ACCESS2_CrudePrev: Lack of insurance (delayed care → ED presentation)
+  - KIDNEY_CrudePrev: CKD prevalence (sepsis risk factor)
+  - DIABETES_CrudePrev: Diabetes (infection risk)
+  - COPD_CrudePrev: COPD (respiratory infection source)
+```
+
+### Data-Driven Patterns
+
+| Factor | PLACES Source | Impact on Sepsis |
+|--------|---------------|------------------|
+| ED Presentation | ACCESS2_CrudePrev | Higher uninsured → more ED sepsis |
+| Comorbidities | DIABETES, KIDNEY, COPD | Higher rates → worse outcomes |
+| Infection Source | COPD_CrudePrev | Higher COPD → more pneumonia source |
+
+### SDOH Impact on Outcomes
+
+```
+File: skills/populationsim/data/county/svi_county_2022.csv
+Impact on sepsis outcomes:
+  - RPL_THEMES > 0.75: Delayed presentation, higher mortality
+  - EP_UNINSUR > 20%: ED-dominant care pattern
+  - EP_AGE65 high: More sepsis cases from nursing facilities
+```
 
 ## Sepsis Definitions
 

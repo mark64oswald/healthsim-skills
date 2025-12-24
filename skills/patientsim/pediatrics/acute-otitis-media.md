@@ -61,6 +61,45 @@ Apply this skill when the user's request involves:
 | laterality | enum | unilateral | unilateral, bilateral |
 | recurrent | boolean | false | History of recurrent AOM |
 | treatment_failure | boolean | false | Failed initial antibiotic |
+| geography | string | null | County/tract FIPS for local patterns |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, AOM scenarios reflect local demographic and healthcare access patterns:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/svi_county_2022.csv
+Key columns for pediatric patterns:
+  - EP_AGE17: Percentage under 18 (pediatric population)
+  - EP_UNINSUR: Uninsured rate (access to care)
+  - RPL_THEMES: Overall vulnerability
+  - EP_POV150: Poverty rate (daycare exposure proxy)
+```
+
+### Data-Driven Patterns
+
+| Factor | Generic Default | Data-Driven Adjustment |
+|--------|-----------------|------------------------|
+| Daycare exposure | 50% | Higher if EP_POV150 < 30% (working families) |
+| Antibiotic access delay | Low | Higher if EP_UNINSUR > 15% |
+| Recurrence rate | 20% | Higher in high-vulnerability areas |
+| ENT referral timing | Prompt | Delayed if SVI > 0.7 |
+
+### Example: Jefferson County, AL (FIPS 01073)
+```
+From svi_county_2022.csv:
+  EP_AGE17: 21.8%
+  EP_UNINSUR: 11.2%
+  RPL_THEMES: 0.58
+  EP_POV150: 24.6%
+
+Apply to generation:
+  - Moderate pediatric population
+  - Some delay in antibiotic initiation patterns
+  - Standard recurrence rates
+```
 
 ## Generation Rules
 

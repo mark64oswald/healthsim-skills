@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **[MemberSim]** PopulationSim v2.0 Data Integration (2024-12-23)
+  - Updated SKILL.md with comprehensive "Cross-Product: PopulationSim v2.0" section
+  - Added data-driven generation pattern with embedded data lookup
+  - Added SDOH impact on member generation (plan selection, adherence)
+  - Added example: Medicare Advantage panel generation for Maricopa County, AZ
+  - Added provenance tracking for actuarial realism
+
+- **[RxMemberSim]** PopulationSim v2.0 Data Integration (2024-12-23)
+  - Updated SKILL.md with comprehensive "Cross-Product: PopulationSim v2.0" section
+  - Added data-driven pharmacy pattern with real prevalence rates
+  - Added SDOH impact on adherence and generic utilization
+  - Added example: Diabetic pharmacy claims for rural Appalachian county
+  - Added provenance tracking for medication patterns
+
+- **[TrialSim]** PopulationSim v2.0 Data Integration (2024-12-23)
+  - Updated SKILL.md with comprehensive "Cross-Product: PopulationSim v2.0" section
+  - Added data-driven trial planning pattern with site feasibility
+  - Added embedded data sources for trial planning
+  - Added example: Phase III site selection with real prevalence data
+  - Linked to trial-support skills with v2.0 data references
+
 - **[PopulationSim]** Canonical Model v2.0 with Per-Field Provenance (2024-12-23)
   - Updated `models/population-profile-schema.md` to version 2.0:
     - Added `$defs/dataProvenance` schema for source tracking

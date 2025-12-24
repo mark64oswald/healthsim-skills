@@ -72,6 +72,96 @@ When generating diabetic patients:
 | diabetes_duration | range | 0-20 | Years since diagnosis |
 | control_level | enum | moderate | well-controlled, moderate, poorly-controlled |
 | has_complications | boolean | false | Whether to include complications |
+| geography | string | null | County/tract FIPS for data-driven rates |
+
+## Data Sources (PopulationSim v2.0)
+
+When a geography is specified, diabetes scenarios are grounded in real CDC PLACES data:
+
+### Embedded Data Lookup
+
+**County-Level Diabetes Data:**
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Columns:
+  - DIABETES_CrudePrev: Crude diabetes prevalence (%)
+  - DIABETES_AdjPrev: Age-adjusted prevalence (%)
+  - OBESITY_CrudePrev: Obesity rate (comorbidity weighting)
+  - KIDNEY_CrudePrev: CKD rate (complication probability)
+```
+
+**Tract-Level Diabetes Data:**
+```
+File: skills/populationsim/data/tract/places_tract_2024.csv
+Same columns as county, for neighborhood-level precision
+```
+
+### Data-Driven Comorbidity Rates
+
+Instead of using generic defaults, look up actual rates for the specified geography:
+
+| Comorbidity | Generic Default | Data-Driven Source |
+|-------------|-----------------|-------------------|
+| Hypertension | 75% | BPHIGH_CrudePrev from PLACES |
+| Obesity | 85% | OBESITY_CrudePrev from PLACES |
+| CKD | 15% (after 10yr) | KIDNEY_CrudePrev from PLACES |
+| Depression | 20% | DEPRESSION_CrudePrev from PLACES |
+
+**Example: Harris County, TX (FIPS 48201)**
+```
+From places_county_2024.csv:
+  DIABETES_CrudePrev: 12.1%
+  OBESITY_CrudePrev: 32.8%
+  BPHIGH_CrudePrev: 32.4%
+  KIDNEY_CrudePrev: 3.2%
+  DEPRESSION_CrudePrev: 17.8%
+
+Apply to generation:
+  - Base diabetes rate: 12.1% (vs national 10.1%)
+  - Obesity comorbidity: Scale from 32.8% baseline
+  - Hypertension comorbidity: Scale from 32.4% baseline
+```
+
+### SDOH Context for Diabetes
+
+For diabetes patients, SVI and ADI affect:
+- **Medication adherence**: Higher vulnerability → lower adherence probability
+- **A1C control**: Higher ADI → worse average control
+- **Complication rates**: Higher SVI → earlier complication onset
+
+```
+File: skills/populationsim/data/county/svi_county_2022.csv
+Key columns:
+  - RPL_THEMES: Overall vulnerability (0-1)
+  - EP_UNINSUR: Uninsured percentage (access barriers)
+  - EP_POV150: Poverty rate (medication affordability)
+```
+
+### Provenance in Output
+
+When using data-driven generation, include provenance:
+
+```json
+{
+  "patient": { "...": "..." },
+  "diabetes_context": {
+    "local_prevalence": 0.121,
+    "comorbidity_weights": {
+      "obesity": 0.328,
+      "hypertension": 0.324
+    },
+    "sdoh_factors": {
+      "svi_overall": 0.68,
+      "uninsured_rate": 0.181
+    },
+    "provenance": {
+      "source": "CDC_PLACES_2024",
+      "geography": "Harris County, TX (48201)",
+      "data_year": 2022
+    }
+  }
+}
+```
 
 ## Generation Rules
 

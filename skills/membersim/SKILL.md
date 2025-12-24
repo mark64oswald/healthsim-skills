@@ -414,22 +414,119 @@ Medical and pharmacy benefits are often coordinated:
 
 > **Integration Pattern:** For integrated medical+Rx benefits, ensure accumulators are synchronized and coverage dates match. Some specialty drugs are covered under medical benefit (infused) vs. pharmacy benefit (oral).
 
-### Cross-Product: PopulationSim (Demographics & Market Intelligence)
+### Cross-Product: PopulationSim (Demographics & SDOH) - v2.0 Data Integration
 
-PopulationSim provides population-level intelligence for member generation and plan design:
+PopulationSim v2.0 provides **embedded real-world data** for actuarially realistic member generation. When a geography is specified, MemberSim uses actual CDC PLACES, SVI, and ADI data to ground demographics, health patterns, and expected utilization.
 
-| PopulationSim Skill | MemberSim Application | Integration |
-|---------------------|----------------------|-------------|
-| [../populationsim/geographic/county-profile.md](../populationsim/geographic/county-profile.md) | Service area definition | Geographic member distribution |
-| [../populationsim/health-patterns/chronic-disease-prevalence.md](../populationsim/health-patterns/chronic-disease-prevalence.md) | Expected utilization patterns | Risk-adjusted pricing |
-| [../populationsim/sdoh/economic-indicators.md](../populationsim/sdoh/economic-indicators.md) | Income levels, employment | Plan tier selection |
-| [../populationsim/cohorts/demographic-distribution.md](../populationsim/cohorts/demographic-distribution.md) | Age/gender mix | Member panel composition |
+#### Data-Driven Generation Pattern
 
-> **Integration Pattern:** Use PopulationSim to define a service area population, then generate MemberSim members with realistic demographic and health characteristics. This enables actuarially sound synthetic member panels for testing.
+**Step 1: Look up real population data**
+```
+# For Maricopa County, AZ (FIPS: 04013)
+Read from: skills/populationsim/data/county/places_county_2024.csv
+→ DIABETES_CrudePrev: 10.2%
+→ OBESITY_CrudePrev: 29.8%
+→ BPHIGH_CrudePrev: 29.1%
+→ ACCESS2_CrudePrev: 12.8% (uninsured rate)
 
-**Example:** "Generate 1,000 members for a Medicare Advantage plan in Maricopa County, AZ"
-1. PopulationSim: 65+ population profile with chronic disease prevalence, income distribution
-2. MemberSim: Generate members with appropriate age distribution, plan selection, expected HCC risk scores
+Read from: skills/populationsim/data/county/svi_county_2022.csv
+→ RPL_THEMES (overall SVI): 0.52
+→ EP_POV150: 18.1% (below 150% poverty)
+→ EP_AGE65: 17.2% (65+ population)
+```
+
+**Step 2: Apply rates to member generation**
+```json
+{
+  "cohort_parameters": {
+    "geography": { "county_fips": "04013", "name": "Maricopa County, AZ" },
+    "expected_prevalence": {
+      "diabetes": 0.102,
+      "obesity": 0.298,
+      "hypertension": 0.291
+    },
+    "demographic_context": {
+      "age_65_plus": 0.172,
+      "poverty_rate": 0.181
+    },
+    "data_provenance": {
+      "source": "CDC_PLACES_2024",
+      "data_year": 2022
+    }
+  }
+}
+```
+
+**Step 3: Generate members matching real rates**
+- Age distribution mirrors county demographics
+- Expected chronic conditions match PLACES prevalence
+- Risk scores (HCC) calibrated to population health
+- Plan tier selection reflects income distribution
+
+#### Embedded Data Sources
+
+| Source | File | Use in MemberSim |
+|--------|------|------------------|
+| CDC PLACES County | `populationsim/data/county/places_county_2024.csv` | Expected utilization rates, risk adjustment |
+| CDC PLACES Tract | `populationsim/data/tract/places_tract_2024.csv` | Neighborhood-level health patterns |
+| SVI County | `populationsim/data/county/svi_county_2022.csv` | SDOH factors, plan selection patterns |
+| SVI Tract | `populationsim/data/tract/svi_tract_2022.csv` | Tract-level vulnerability |
+| ADI Block Group | `populationsim/data/block_group/adi_blockgroup_2023.csv` | Deprivation-based adherence modeling |
+
+#### PopulationSim Integration Skills
+
+| PopulationSim Skill | MemberSim Application |
+|---------------------|----------------------|
+| [data-lookup.md](../populationsim/data-access/data-lookup.md) | Exact prevalence rates for risk adjustment |
+| [county-profile.md](../populationsim/geographic/county-profile.md) | Service area demographics, health patterns |
+| [svi-analysis.md](../populationsim/sdoh/svi-analysis.md) | Social vulnerability → plan tier, adherence |
+| [adi-analysis.md](../populationsim/sdoh/adi-analysis.md) | Area deprivation → utilization patterns |
+| [cohort-specification.md](../populationsim/cohorts/cohort-specification.md) | Data-driven member panel definition |
+
+#### Example: Data-Grounded Medicare Advantage Panel
+
+**Request:** "Generate 1,000 members for a Medicare Advantage plan in Maricopa County, AZ"
+
+**Data Lookup:**
+```
+From places_county_2024.csv (FIPS 04013):
+  DIABETES_CrudePrev: 10.2%
+  CHD_CrudePrev: 6.1%
+  COPD_CrudePrev: 6.8%
+  KIDNEY_CrudePrev: 2.9%
+
+From svi_county_2022.csv (FIPS 04013):
+  RPL_THEMES: 0.52 (moderate vulnerability)
+  EP_AGE65: 17.2%
+  EP_DISABL: 13.1%
+```
+
+**Applied to Generation:**
+- ~17% of members are 65+ (matches county rate)
+- ~10% have diabetes diagnosis (expected chronic conditions)
+- ~6% have CHD (drives HCC scoring)
+- SVI 0.52 → moderate plan selection diversity
+- Output includes provenance tracking
+
+**Output with Provenance:**
+```json
+{
+  "member_panel": {
+    "total_members": 1000,
+    "geography": "Maricopa County, AZ (04013)",
+    "generation_context": {
+      "data_sources": ["CDC_PLACES_2024", "CDC_SVI_2022"],
+      "rates_applied": {
+        "diabetes": 0.102,
+        "chd": 0.061,
+        "age_65_plus": 0.172
+      }
+    }
+  }
+}
+```
+
+> **Key Principle:** When geography is specified, always ground member generation in real PopulationSim data. This enables actuarially realistic synthetic member panels for testing claims systems, risk adjustment, and care management.
 
 ### Cross-Product: TrialSim (Clinical Trials)
 

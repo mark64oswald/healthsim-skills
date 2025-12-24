@@ -4,6 +4,8 @@ description: |
   Integration guide for PopulationSim to PatientSim data flow. Describes how 
   demographic distributions, health indicators, SDOH Z-codes, and insurance 
   coverage map to FHIR Patient, Condition, Coverage, and Observation resources.
+  Updated for PopulationSim v2.0 Embedded Data Package.
+version: "2.0"
 ---
 
 # PopulationSim → PatientSim Integration
@@ -11,6 +13,22 @@ description: |
 ## Overview
 
 This document describes how PopulationSim demographic and SDOH data flows into PatientSim to generate clinically realistic synthetic patients.
+
+**Version 2.0 Update:** This integration now uses PopulationSim's embedded data package with real CDC PLACES, SVI, and ADI data, providing 100% US geographic coverage with provenance tracking.
+
+---
+
+## Embedded Data Files (v2.0)
+
+PatientSim accesses these files directly for data-driven generation:
+
+| Data Source | File Path | Records | Key Columns |
+|-------------|-----------|---------|-------------|
+| CDC PLACES (County) | `populationsim/data/county/places_county_2024.csv` | 3,144 | CountyFIPS, DIABETES_CrudePrev, OBESITY_CrudePrev, etc. |
+| CDC PLACES (Tract) | `populationsim/data/tract/places_tract_2024.csv` | 83,522 | TractFIPS, all health measures |
+| CDC SVI (County) | `populationsim/data/county/svi_county_2022.csv` | 3,144 | FIPS, RPL_THEMES, EP_UNINSUR, etc. |
+| CDC SVI (Tract) | `populationsim/data/tract/svi_tract_2022.csv` | 84,120 | FIPS, all SVI themes |
+| ADI (Block Group) | `populationsim/data/block_group/adi_blockgroup_2023.csv` | 242,335 | FIPS, ADI_NATRANK, ADI_STAESSION |
 
 ---
 
@@ -433,9 +451,66 @@ PopulationSim utilization patterns inform encounter generation:
 
 ---
 
+## Provenance Tracking (v2.0)
+
+Data-driven generation includes complete provenance in output metadata:
+
+```json
+{
+  "resourceType": "Bundle",
+  "meta": {
+    "extension": [{
+      "url": "http://healthsim.io/fhir/StructureDefinition/generation-provenance",
+      "extension": [
+        {
+          "url": "generationMode",
+          "valueCode": "data_driven"
+        },
+        {
+          "url": "geography",
+          "valueReference": {
+            "display": "Harris County, TX (FIPS: 48201)"
+          }
+        },
+        {
+          "url": "dataSource",
+          "extension": [
+            {"url": "source", "valueCode": "CDC_PLACES_2024"},
+            {"url": "dataYear", "valueInteger": 2022},
+            {"url": "file", "valueString": "populationsim/data/county/places_county_2024.csv"},
+            {"url": "fieldsUsed", "valueString": "DIABETES_CrudePrev,OBESITY_CrudePrev"}
+          ]
+        },
+        {
+          "url": "dataSource",
+          "extension": [
+            {"url": "source", "valueCode": "CDC_SVI_2022"},
+            {"url": "dataYear", "valueInteger": 2022},
+            {"url": "file", "valueString": "populationsim/data/county/svi_county_2022.csv"},
+            {"url": "fieldsUsed", "valueString": "RPL_THEMES,EP_UNINSUR"}
+          ]
+        }
+      ]
+    }]
+  },
+  "entry": [...]
+}
+```
+
+### Provenance Source Registry
+
+| Source Code | Full Name | Data Year | Methodology |
+|-------------|-----------|-----------|-------------|
+| CDC_PLACES_2024 | CDC PLACES 2024 Release | 2022 BRFSS | Model-based small area estimates |
+| CDC_SVI_2022 | CDC/ATSDR Social Vulnerability Index | 2018-2022 ACS | Percentile ranking |
+| ADI_2023 | Area Deprivation Index v4.0.1 | 2019-2023 ACS | Factor analysis composite |
+| CENSUS_ACS_2022 | American Community Survey | 2022 | Survey estimates |
+
+---
+
 ## Related Skills
 
-- [Geographic Intelligence](../skills/geographic-intelligence.md)
-- [Health Patterns](../skills/health-patterns.md)
-- [Cohort Definition](../skills/cohort-definition.md)
-- [PatientSim Patient Panel](../../scenarios/patientsim/skills/patient-panel.md)
+- [PopulationSim Data Integration](../../patientsim/data-integration.md) - PatientSim lookup patterns
+- [Geographic Intelligence](../geographic/county-profile.md)
+- [Health Patterns](../health-patterns/chronic-disease-prevalence.md)
+- [Cohort Definition](../cohorts/cohort-specification.md)

@@ -78,6 +78,47 @@ Apply this skill when the user's request involves:
 | nyha_class | int | 2 | 1, 2, 3, 4 |
 | etiology | string | ischemic | ischemic, hypertensive, idiopathic, valvular |
 | acuity | string | stable | stable, decompensated |
+| geography | string | null | County/tract FIPS for data-driven rates |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, heart failure scenarios use real CDC PLACES data:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Key columns for cardiovascular:
+  - CHD_CrudePrev: Coronary heart disease prevalence
+  - STROKE_CrudePrev: Stroke prevalence  
+  - BPHIGH_CrudePrev: Hypertension (HF risk factor)
+  - OBESITY_CrudePrev: Obesity (HF risk factor)
+  - (Note: CKD not in PLACES - use national estimate ~3%)
+```
+
+### Data-Driven Comorbidity Rates
+
+| Comorbidity | Generic Default | PLACES Column |
+|-------------|-----------------|---------------|
+| Hypertension | 80% | BPHIGH_CrudePrev |
+| Diabetes | 40% | DIABETES_CrudePrev |
+| CKD | 50% | (not in PLACES - use default) |
+| Atrial fibrillation | 30% | (not in PLACES - use default) |
+| COPD | 30% | COPD_CrudePrev |
+
+### Example: Cook County, IL (FIPS 17031)
+```
+From places_county_2024.csv:
+  CHD_CrudePrev: 5.8%
+  BPHIGH_CrudePrev: 33.2%
+  DIABETES_CrudePrev: 11.4%
+  KIDNEY_CrudePrev: 3.4%
+  
+Apply to HF generation:
+  - Hypertensive etiology weight: Higher if BPHIGH > 35%
+  - Diabetes comorbidity: 11.4% baseline (scale for HF population)
+  - CKD comorbidity: 3.4% baseline (scale for HF population)
+```
 
 ## Classification
 

@@ -61,6 +61,51 @@ Apply this skill when the user's request involves:
 | scenario_type | enum | routine | routine, exacerbation, ED-visit, hospitalization |
 | has_allergies | boolean | true | Include allergic triggers |
 | controller_compliant | boolean | true | Good controller medication adherence |
+| geography | string | null | County/tract FIPS for local asthma prevalence |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, pediatric asthma scenarios reflect local prevalence patterns:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Key columns:
+  - CASTHMA_CrudePrev: Current asthma prevalence (all ages)
+  - CSMOKING_CrudePrev: Smoking rate (environmental trigger)
+
+File: skills/populationsim/data/county/svi_county_2022.csv
+Key columns:
+  - RPL_THEMES: Vulnerability (affects control, ED utilization)
+  - EP_POV150: Poverty rate (medication access)
+```
+
+### Data-Driven Patterns
+
+| Factor | Generic Default | Data-Driven Adjustment |
+|--------|-----------------|------------------------|
+| Asthma prevalence | 8% | CASTHMA_CrudePrev (ranges 6-15%) |
+| Poorly controlled | 40% | Higher if SVI > 0.6 |
+| ED visits/year | 0.5 | Higher if EP_POV150 > 25% |
+| Smoke exposure | 15% | CSMOKING_CrudePrev |
+
+### Example: Bronx County, NY (FIPS 36005)
+```
+From places_county_2024.csv:
+  CASTHMA_CrudePrev: 11.2% (high)
+  CSMOKING_CrudePrev: 14.1%
+
+From svi_county_2022.csv:
+  RPL_THEMES: 0.94 (very high vulnerability)
+  EP_POV150: 38.2%
+
+Apply to generation:
+  - Higher baseline asthma prevalence
+  - More moderate-to-severe classifications
+  - Higher ED utilization patterns
+  - More missed controller doses (access barriers)
+```
 
 ## Generation Rules
 

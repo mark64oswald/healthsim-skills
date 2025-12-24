@@ -76,6 +76,53 @@ Apply this skill when the user's request involves:
 | etiology | string | diabetic | diabetic, hypertensive, glomerular, polycystic, unknown |
 | dialysis_status | string | none | none, hemodialysis, peritoneal |
 | progression | string | stable | stable, progressing, acute_on_chronic |
+| geography | string | null | County/tract FIPS for data-driven rates |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, CKD scenarios use real CDC PLACES data:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+CKD-related columns:
+  - KIDNEY_CrudePrev: Chronic kidney disease prevalence (%)
+  - DIABETES_CrudePrev: Diabetes (primary CKD cause)
+  - BPHIGH_CrudePrev: Hypertension (primary CKD cause)
+```
+
+### Data-Driven Etiology Weighting
+
+CDC PLACES provides underlying condition rates that inform CKD etiology distribution:
+
+| Etiology | Default Weight | Data-Driven Adjustment |
+|----------|---------------|------------------------|
+| Diabetic nephropathy | 45% | Higher if DIABETES > national avg (10.1%) |
+| Hypertensive | 30% | Higher if BPHIGH > national avg (32.4%) |
+| Glomerular | 10% | Static |
+| Other | 15% | Static |
+
+**Example: Hidalgo County, TX (FIPS 48215)**
+```
+From places_county_2024.csv:
+  KIDNEY_CrudePrev: 3.8%
+  DIABETES_CrudePrev: 16.2%  (60% above national)
+  BPHIGH_CrudePrev: 31.8%
+  
+Adjusted etiology weights:
+  - Diabetic: 55% (increased due to high diabetes)
+  - Hypertensive: 25%
+  - Other: 20%
+```
+
+### SDOH Context for CKD
+
+Higher SVI areas have:
+- Later stage at diagnosis (worse access to screening)
+- Lower rates of nephrology referral
+- Higher ESKD initiation rates
+- More emergent dialysis starts
 
 ## CKD Staging
 

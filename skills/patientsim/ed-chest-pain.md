@@ -108,6 +108,40 @@ Apply this skill when the user's request involves:
 | final_diagnosis | enum | rule-out | Outcome: rule-out, unstable-angina, nstemi, stemi, non-cardiac |
 | has_risk_factors | boolean | true | Whether patient has cardiac risk factors |
 | presentation_severity | enum | moderate | Initial severity: mild, moderate, severe |
+| geography | string | null | County/tract FIPS for data-driven rates |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, ED chest pain scenarios use real population data:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Relevant columns for cardiac:
+  - CHD_CrudePrev: Coronary heart disease prevalence
+  - STROKE_CrudePrev: Stroke prevalence
+  - BPHIGH_CrudePrev: Hypertension (CAD risk factor)
+  - DIABETES_CrudePrev: Diabetes (CAD risk factor)
+  - CSMOKING_CrudePrev: Smoking (major CAD risk)
+  - HIGHCHOL_CrudePrev: High cholesterol
+```
+
+### Data-Driven Risk Stratification
+
+| Risk Factor | PLACES Column | Impact |
+|-------------|---------------|--------|
+| Baseline CAD | CHD_CrudePrev | Higher → more true ACS |
+| Hypertension | BPHIGH_CrudePrev | Comorbidity weighting |
+| Diabetes | DIABETES_CrudePrev | Atypical presentations |
+| Smoking | CSMOKING_CrudePrev | Risk factor presence |
+
+### Geographic Variation in Outcomes
+
+Areas with higher CHD prevalence have:
+- Higher proportion of true-positive chest pain workups
+- More STEMI/NSTEMI diagnoses relative to rule-outs
+- Higher comorbidity burden in presentations
 
 ## Domain Knowledge
 

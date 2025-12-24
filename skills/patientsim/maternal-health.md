@@ -82,6 +82,40 @@ Apply this skill when the user's request involves:
 | phase | string | antepartum | antepartum, intrapartum, postpartum |
 | gravida | int | 1 | Number of pregnancies |
 | para | int | 0 | Number of deliveries |
+| geography | string | null | County/tract FIPS for data-driven rates |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, maternal health scenarios use real population data:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Relevant columns for maternal health:
+  - DIABETES_CrudePrev: Baseline diabetes (GDM risk proxy)
+  - OBESITY_CrudePrev: Obesity (GDM, preeclampsia risk)
+  - BPHIGH_CrudePrev: Hypertension (preeclampsia risk)
+  - ACCESS2_CrudePrev: Uninsured (prenatal access)
+```
+
+### Data-Driven Risk Factors
+
+| Condition | Risk Factors | PLACES Source |
+|-----------|-------------|---------------|
+| Gestational Diabetes | Obesity, age, ethnicity | OBESITY_CrudePrev, DIABETES_CrudePrev |
+| Preeclampsia | Obesity, hypertension | OBESITY_CrudePrev, BPHIGH_CrudePrev |
+| Preterm Birth | SDOH factors, stress | SVI RPL_THEMES |
+
+### SDOH Impact on Maternal Outcomes
+
+```
+File: skills/populationsim/data/county/svi_county_2022.csv
+Impact on maternal health:
+  - EP_UNINSUR: Delayed prenatal care, late initiation
+  - RPL_THEME1 (socioeconomic): Maternal mortality disparities
+  - EP_MINRTY: Racial disparities in outcomes
+```
 
 ## Diagnosis Codes
 

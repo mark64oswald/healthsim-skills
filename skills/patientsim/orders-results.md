@@ -83,6 +83,43 @@ This scenario generates clinical orders (laboratory, radiology, medication) and 
 | status | string | completed | new, accepted, scheduled, in_progress, completed, cancelled |
 | result_type | string | normal | normal, abnormal, critical, mixed |
 | output_format | string | json | json, hl7v2_orm, hl7v2_oru, fhir |
+| geography | string | null | County/tract FIPS for population-based abnormality rates |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, result distributions reflect local population health patterns:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Key columns for lab patterns:
+  - DIABETES_CrudePrev: Affects glucose, HbA1c distributions
+  - KIDNEY_CrudePrev: Affects BUN, creatinine, eGFR
+  - HIGHCHOL_CrudePrev: Affects lipid panel distributions
+  - BPHIGH_CrudePrev: Cardiovascular panel context
+```
+
+### Data-Driven Result Distributions
+
+| Condition | Affected Labs | Data-Driven Adjustment |
+|-----------|---------------|------------------------|
+| High diabetes area | Glucose, HbA1c | More elevated values in "random" panels |
+| High CKD area | BUN, Creatinine | More abnormal renal function |
+| High cholesterol area | LDL, Total Cholesterol | Higher baseline lipids |
+
+### Example: Hidalgo County, TX (FIPS 48215)
+```
+From places_county_2024.csv:
+  DIABETES_CrudePrev: 18.2% (very high)
+  KIDNEY_CrudePrev: 4.1%
+  HIGHCHOL_CrudePrev: 30.5%
+
+Apply to generation:
+  - Random CMP: 18% chance of elevated glucose (vs 10% generic)
+  - HbA1c orders: Higher proportion >6.5%
+  - Lipid panels: Shift distribution toward elevated LDL
+```
 
 ## Order Types
 

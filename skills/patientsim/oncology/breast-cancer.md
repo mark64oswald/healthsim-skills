@@ -117,6 +117,36 @@ Apply this skill when the user's request involves:
 | treatment_phase | enum | active | newly_diagnosed, active_treatment, surveillance, recurrence, metastatic |
 | surgical_approach | enum | any | lumpectomy, mastectomy, bilateral_mastectomy, none |
 | has_reconstruction | boolean | false | Whether breast reconstruction is performed |
+| geography | string | null | County/tract FIPS for data-driven context |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, breast cancer scenarios can reference population context:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Cancer-related columns:
+  - CANCER_CrudePrev: Any cancer prevalence (%)
+  - MAMMOUSE_CrudePrev: Mammography utilization (screening context)
+```
+
+### Screening Context by Geography
+
+Mammography rates vary significantly by geography and affect stage at diagnosis:
+
+| Mammography Rate | Typical Stage Distribution |
+|------------------|---------------------------|
+| > 80% | More Stage 0-I at diagnosis |
+| 70-80% | National average distribution |
+| < 70% | More Stage II-III at diagnosis |
+
+### SDOH Impact on Oncology
+
+SVI affects breast cancer outcomes:
+- **Higher SVI**: Later stage at diagnosis, treatment delays, lower clinical trial enrollment
+- **Uninsured**: More locally advanced disease, less access to targeted therapies
 
 ## Domain Knowledge
 

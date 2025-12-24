@@ -75,6 +75,49 @@ When generating behavioral health patients:
 | has_comorbidity | boolean | false | Include psychiatric comorbidities |
 | treatment_phase | enum | active | new-diagnosis, active, maintenance, remission |
 | substance_type | enum | none | none, alcohol, opioid, cannabis, stimulant |
+| geography | string | null | County/tract FIPS for data-driven rates |
+
+## Data Sources (PopulationSim v2.0)
+
+When geography is specified, behavioral health scenarios use real CDC PLACES data:
+
+### Embedded Data Lookup
+
+```
+File: skills/populationsim/data/county/places_county_2024.csv
+Behavioral health columns:
+  - DEPRESSION_CrudePrev: Depression prevalence (%)
+  - BINGE_CrudePrev: Binge drinking (proxy for alcohol use)
+  - SLEEP_CrudePrev: Short sleep (<7 hrs, correlates with MH)
+  - GHLTH_CrudePrev: Fair/poor general health
+```
+
+### Data-Driven Rates
+
+| Measure | PLACES Column | National Avg |
+|---------|---------------|--------------|
+| Depression | DEPRESSION_CrudePrev | 18.6% |
+| Binge drinking | BINGE_CrudePrev | 16.8% |
+| Poor mental health days | (not in PLACES) | Use SVI proxy |
+
+### SDOH Context for Behavioral Health
+
+SVI factors significantly affect behavioral health outcomes:
+
+```
+File: skills/populationsim/data/county/svi_county_2022.csv
+Relevant columns:
+  - RPL_THEMES: Overall vulnerability
+  - EP_POV150: Poverty (access barriers)
+  - EP_UNINSUR: Uninsured (treatment access)
+  - EP_SNGPNT: Single-parent households (support systems)
+```
+
+**Higher SVI correlates with:**
+- Lower treatment engagement
+- Higher severity at presentation
+- More ED utilization for MH crises
+- Lower medication adherence
 
 ## Generation Rules
 
