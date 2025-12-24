@@ -16,6 +16,7 @@ Start here to verify your setup and learn the basics.
 | Office Visit Claim | "Generate a professional claim for an office visit" | Basic MemberSim output |
 | Prescription Fill | "Generate a pharmacy claim for lisinopril" | Basic RxMemberSim output |
 | Phase 3 Trial | "Generate a Phase 3 oncology trial with 20 subjects" | Basic TrialSim output |
+| Provider Generation | "Generate a cardiologist in Houston" | Basic NetworkSim output |
 
 See: [PatientSim Example 1](patientsim-examples.md#example-1-simple-patient), [MemberSim Example 1](membersim-examples.md#example-1-simple-office-visit-claim), [RxMemberSim Example 1](rxmembersim-examples.md#example-1-simple-generic-prescription), [TrialSim Quick Start](trialsim-examples.md#quick-start-examples)
 
@@ -59,6 +60,19 @@ Analyze population demographics, SDOH, and define cohorts for generation.
 | **SDOH Analysis** | "Analyze social vulnerability for rural Georgia counties" | [PopulationSim Example 2](populationsim-examples.md#example-2-sdoh-vulnerability-analysis) |
 | **Cohort Definition** | "Define a cohort for a diabetes prevention study in underserved areas" | [PopulationSim Example 3](populationsim-examples.md#example-3-cohort-specification) |
 | **Trial Feasibility** | "Assess enrollment feasibility for a NASH trial in Texas" | [PopulationSim Example 4](populationsim-examples.md#example-4-trial-feasibility-analysis) |
+
+---
+
+### Level 2.7: Provider Network Data (10-15 minutes)
+
+Generate providers, facilities, pharmacies, and network configurations.
+
+| Scenario | Example Prompt | Guide |
+|----------|----------------|-------|
+| **Provider** | "Generate a cardiologist in Houston with full credentials" | [NetworkSim Example 1](networksim-examples.md#generate-specialist-with-credentials) |
+| **Hospital** | "Generate a 200-bed community hospital in Dallas" | [NetworkSim Example 2](networksim-examples.md#generate-community-hospital) |
+| **Specialty Pharmacy** | "Generate a specialty pharmacy for oncology" | [NetworkSim Example 3](networksim-examples.md#generate-specialty-pharmacy) |
+| **Network Config** | "Generate a tiered PPO network with 3 tiers" | [NetworkSim Example 4](networksim-examples.md#tiered-ppo-network) |
 
 ---
 
@@ -127,6 +141,7 @@ Create realistic end-to-end test data spanning multiple products.
 | [RxMemberSim Examples](rxmembersim-examples.md) | Pharmacy data | Prescriptions, DUR alerts, copay cards |
 | [TrialSim Examples](trialsim-examples.md) | Clinical trial data | SDTM domains, AEs, efficacy, sites |
 | [PopulationSim Examples](populationsim-examples.md) | Population intelligence | Profiles, SDOH, cohorts, feasibility |
+| [NetworkSim Examples](networksim-examples.md) | Provider network data | Providers, facilities, pharmacies, networks |
 | [Oncology Examples](oncology-examples.md) | Cancer-specific scenarios | Staging, treatment, biomarkers |
 | [Cross-Domain Examples](cross-domain-examples.md) | Multi-product scenarios | End-to-end test data |
 | [Format Examples](format-examples.md) | Output transformations | FHIR, HL7v2, X12, C-CDA, SDTM, CSV |
@@ -200,6 +215,16 @@ Generate a claim with out-of-network penalties
 Generate a pharmacy claim with drug-drug interaction alert
 Generate a specialty drug claim requiring prior authorization
 Generate a copay card transaction for a brand medication
+```
+
+### Provider Network
+
+```text
+Generate a cardiologist in Houston, Texas with full credentials
+Generate a 200-bed community hospital in suburban Dallas
+Generate a specialty pharmacy for oncology medications
+Generate a tiered PPO network with quality-based tiers
+Explain the difference between HMO and PPO networks
 ```
 
 ---
