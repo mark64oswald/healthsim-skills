@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **[Packages]** Package dependency alignment (2025-12-25)
+  - Renamed packages/core from `healthsim-common` to `healthsim-core` to match dependency references
+  - Updated membersim, patientsim, rxmembersim to use `healthsim-core>=1.0.0`
+  - Removed git+ remote references in favor of local package references
+  - All 1,289 tests now passing (476 core + 447 patientsim + 190 membersim + 176 rxmembersim)
+
 - **[PopulationSim]** CSV data file parsing issues (2024-12-25)
   - Removed UTF-8 BOM from `svi_tract_2022.csv` that corrupted first column header
   - Cleaned `adi_blockgroup_2023.csv`: removed R export index column and unnecessary quotes
@@ -16,12 +22,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- **[Hello-HealthSim]** Consolidated PopulationSim examples (2025-12-25)
+  - Removed redundant `hello-healthsim/populationsim/` folder (1,386 lines)
+  - Enhanced `populationsim-examples.md` with v2.0 data-first information
+  - All products now use consistent `examples/product-examples.md` pattern
+
 - **[NetworkSim]** Post-implementation polish (2024-12-24)
   - Updated root README.md: NetworkSim status changed from "planned" to active
   - Added NetworkSim cross-product section to RxMemberSim SKILL.md
   - Verified all cross-product references in place across ecosystem
 
 ### Added
+
+- **[Docs]** Documentation completeness improvements (2025-12-25)
+  - Created `formats/README.md` - Index of all 15 output format files
+  - Created `packages/core/CLAUDE.md` - Claude context for core package
+  - Comprehensive audit report: `docs/archive/audits/COMPREHENSIVE-AUDIT-2025-12-25.md`
+  - Removed duplicate skill templates from `docs/skills/`
 
 - **[NetworkSim]** Phase 1 Complete - Foundation and Reference Knowledge (2024-12-24)
   - Directory structure: `skills/networksim/` with reference/, synthetic/, patterns/, integration/ subdirectories
