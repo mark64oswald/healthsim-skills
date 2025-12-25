@@ -1,118 +1,102 @@
 # HealthSim Workspace
 
-**The unified repository for the HealthSim product family.**
+**Synthetic healthcare data generation through natural language conversation.**
 
-This repository contains everything for HealthSim:
-- **Skills** - Structured markdown documents that Claude uses to generate clinically coherent healthcare data
-- **Formats** - Output transformation specs (FHIR, C-CDA, HL7v2, X12, NCPDP, CDISC)
-- **References** - Shared terminology, code systems, and clinical rules
-- **Packages** - Python infrastructure (MCP servers, validation, dimensional output)
+HealthSim generates realistic, clinically coherent healthcare data for testing, training, and development—from simple patient records to complete care journeys spanning clinical, claims, pharmacy, and clinical trial domains.
 
 ---
 
-## Quick Start
+## I Want To...
 
-**New to HealthSim?** Start here: **[hello-healthsim/](hello-healthsim/README.md)**
-
-The getting started guide includes:
-- Installation and configuration
-- Your first 5 minutes with HealthSim
-- Detailed examples for all products
-- How to extend the framework
+| Goal | Start Here | Products Used |
+|------|------------|---------------|
+| **Get started quickly** | [hello-healthsim/](hello-healthsim/README.md) | All products |
+| **Generate patient clinical data** | [PatientSim SKILL.md](skills/patientsim/SKILL.md) | PatientSim |
+| **Generate claims/billing data** | [MemberSim SKILL.md](skills/membersim/SKILL.md) | MemberSim |
+| **Generate pharmacy data** | [RxMemberSim SKILL.md](skills/rxmembersim/SKILL.md) | RxMemberSim |
+| **Generate clinical trial data** | [TrialSim SKILL.md](skills/trialsim/SKILL.md) | TrialSim |
+| **Analyze population demographics** | [PopulationSim SKILL.md](skills/populationsim/SKILL.md) | PopulationSim |
+| **Generate provider networks** | [NetworkSim SKILL.md](skills/networksim/SKILL.md) | NetworkSim |
+| **Generate a complete patient journey** | [Product Architecture](docs/product-architecture.md#common-workflows) | Multiple |
+| **Use real geographic health data** | [PopulationSim v2.0](#populationsim-v20---data-driven-generation) | PopulationSim + others |
+| **Generate patient + claims together** | [Product Architecture](docs/product-architecture.md#2-patient-with-claims) | PatientSim + MemberSim |
+| **Plan a clinical trial** | [TrialSim SKILL.md](skills/trialsim/SKILL.md#trial-support) | TrialSim + PopulationSim |
+| **Output as FHIR/HL7/X12** | [Output Formats](#output-formats) | Any product |
+| **Extend or customize** | [EXTENDING.md](hello-healthsim/EXTENDING.md) | Framework |
 
 ---
 
-## 🆕 PopulationSim v2.0 - Data-Driven Generation
+## Products Overview
 
-**PopulationSim v2.0** embeds 148 MB of real CDC/Census data directly in the repository, enabling **evidence-based synthetic data generation** grounded in actual population statistics.
+| Product | What It Generates | Key Scenarios | Standards |
+|---------|-------------------|---------------|-----------|
+| **[PatientSim](skills/patientsim/README.md)** | Clinical/EMR data | Diabetes, heart failure, oncology, maternal, behavioral health | FHIR R4, HL7v2, C-CDA |
+| **[MemberSim](skills/membersim/README.md)** | Claims/payer data | Professional claims, facility claims, prior auth, accumulators | X12 837/835/834 |
+| **[RxMemberSim](skills/rxmembersim/README.md)** | Pharmacy/PBM data | Retail fills, specialty drugs, DUR alerts, manufacturer programs | NCPDP D.0 |
+| **[TrialSim](skills/trialsim/README.md)** | Clinical trial data | Phase I-III, adverse events, efficacy endpoints, SDTM domains | CDISC SDTM/ADaM |
+| **[PopulationSim](skills/populationsim/README.md)** | Demographics/SDOH | County profiles, health disparities, cohort specifications | Census, CDC PLACES |
+| **[NetworkSim](skills/networksim/README.md)** | Provider networks | Providers, facilities, pharmacies, network configurations | NPPES, NPI |
+
+---
+
+## Quick Examples
+
+```plaintext
+# Basic
+Generate a patient
+Generate a professional claim for an office visit
+Generate a pharmacy claim for metformin
+
+# Clinical scenarios
+Generate a 65-year-old diabetic with HFpEF and CKD Stage 3
+Generate a denied MRI claim requiring prior authorization
+Generate a drug-drug interaction alert for warfarin and aspirin
+
+# Clinical trials
+Generate a Phase III oncology trial with 200 subjects as SDTM
+Generate adverse events for an immunotherapy trial with MedDRA coding
+
+# Data-driven (with PopulationSim v2.0)
+Generate 50 diabetic patients for Harris County, TX with real prevalence data
+Profile San Diego County health indicators and SDOH factors
+
+# Output formats
+Generate a diabetic patient as FHIR Bundle
+Generate an inpatient admission as ADT A01 HL7v2 message
+Generate a professional claim as X12 837P
+```
+
+See [hello-healthsim/examples/](hello-healthsim/examples/) for detailed examples with expected outputs.
+
+---
+
+## PopulationSim v2.0 - Data-Driven Generation
+
+**NEW**: PopulationSim v2.0 embeds 148 MB of real CDC/Census data, enabling **evidence-based synthetic data generation** grounded in actual population statistics.
 
 | Data Source | Coverage | Records | Key Use |
-|-------------|----------|---------|--------|
-| CDC PLACES 2024 | 100% US counties, 100% tracts | 86,665 | Disease prevalence |
-| CDC SVI 2022 | 100% US counties, 100% tracts | 87,264 | Social vulnerability |
+|-------------|----------|---------|---------|
+| CDC PLACES 2024 | 100% US counties + tracts | 86,665 | Disease prevalence (40 measures) |
+| CDC SVI 2022 | 100% US counties + tracts | 87,264 | Social vulnerability (16 indicators) |
 | HRSA ADI 2023 | 100% US block groups | 242,336 | Area deprivation |
 
-### What This Enables
+**What This Enables:**
 
-```
+```plaintext
 # Instead of generic data:
-"Generate 10 diabetic patients" → Generic 10.2% prevalence applied
+"Generate 10 diabetic patients" → Generic 10.2% national prevalence
 
 # With PopulationSim v2.0:
-"Generate 10 diabetic patients in Harris County, TX" → 
+"Generate 10 diabetic patients in Harris County, TX" →
   - Uses actual 12.1% diabetes rate from CDC PLACES
-  - Applies 72% minority population from SVI
-  - Includes real comorbidity correlations (HTN: 32.4%, obesity: 32.8%)
+  - Applies 72% minority population from SVI  
+  - Includes real comorbidity correlations
   - Tracks data provenance in output
 ```
 
-### Cross-Product Integration
+**Cross-Product Data Flow**: PopulationSim data grounds generation in PatientSim (demographics, conditions), MemberSim (utilization, risk), RxMemberSim (adherence), and TrialSim (feasibility, diversity).
 
-PopulationSim v2.0 data flows to all downstream products:
-- **PatientSim**: Demographics, conditions, SDOH Z-codes grounded in real rates
-- **MemberSim**: Plan mix, utilization patterns, risk adjustment based on actual prevalence
-- **RxMemberSim**: Adherence modeling using SVI socioeconomic factors
-- **TrialSim**: Site selection, feasibility, diversity planning with real population data
-
-See: [skills/populationsim/SKILL.md](skills/populationsim/SKILL.md) | [hello-healthsim/populationsim/](hello-healthsim/populationsim/)
-
----
-
-## What Can HealthSim Generate?
-
-| Product | What It Creates | Example Request |
-|---------|-----------------|-----------------|
-| **PatientSim** | Clinical/EMR data | "Generate a 65-year-old diabetic with recent labs" |
-| **MemberSim** | Claims/payer data | "Generate a denied MRI claim requiring prior auth" |
-| **RxMemberSim** | Pharmacy/PBM data | "Generate a drug interaction alert for warfarin" |
-| **TrialSim** | Clinical trial data | "Generate a Phase III oncology trial with 200 subjects" |
-| **PopulationSim** | Demographics/SDOH | "Generate a population profile for Maricopa County" |
-| **NetworkSim** | Provider networks | "Generate a cardiology provider network for Atlanta" |
-
-### Clinical Domains
-
-| Domain | Scenario | Example Use Cases |
-|--------|----------|-------------------|
-| **Diabetes** | diabetes-management.md | Type 1/2, A1C monitoring, insulin therapy, complications |
-| **Heart Failure** | heart-failure.md | HFrEF/HFpEF, NYHA staging, GDMT, decompensation |
-| **Chronic Kidney Disease** | chronic-kidney-disease.md | CKD stages 1-5, dialysis, transplant, comorbidities |
-| **Oncology** | oncology/*.md | Breast, lung, colorectal cancer; staging, chemo, biomarkers |
-| **Maternal Health** | maternal-health.md | Prenatal care, GDM, preeclampsia, L&D, postpartum |
-| **Behavioral Health** | behavioral-health.md | Depression, anxiety, SUD, psychotherapy, PHP/IOP |
-| **Acute Care** | sepsis-acute-care.md | Sepsis, ICU, antibiotics, critical care |
-| **Emergency** | ed-chest-pain.md | Chest pain, ACS workup, HEART score, troponin |
-| **Surgical** | elective-joint.md | Hip/knee replacement, pre-op, post-op, PT |
-| **ADT Workflows** | adt-workflow.md | Admission, transfer, discharge, bed management |
-
-### Clinical Trials (TrialSim)
-
-| Domain | Scenario | Example Use Cases |
-|--------|----------|-------------------|
-| **Phase 1** | phase1-dose-escalation.md | FIH, 3+3, BOIN, CRM, MTD determination |
-| **Phase 2** | phase2-proof-of-concept.md | Simon's two-stage, MCP-Mod, futility stopping |
-| **Phase 3** | phase3-pivotal.md | Pivotal trials, superiority, non-inferiority |
-| **Oncology Trials** | therapeutic-areas/oncology.md | RECIST, tumor response, survival endpoints |
-| **CV Trials** | therapeutic-areas/cardiovascular.md | MACE, CV outcomes, cardiac biomarkers |
-| **CNS Trials** | therapeutic-areas/cns.md | ADAS-Cog, EDSS, cognitive scales |
-| **Cell & Gene Therapy** | therapeutic-areas/cgt.md | CAR-T, gene therapy, CRS, long-term follow-up |
-| **SDTM Domains** | domains/*.md | DM, AE, VS, LB, CM, EX, DS, MH |
-
-### Output Formats
-
-| Format | Request With | Use Case |
-|--------|--------------|----------|
-| JSON | (default) | API testing, general use |
-| FHIR R4 | "as FHIR", "as FHIR Bundle" | Modern interoperability |
-| C-CDA | "as C-CDA", "as CCD" | Clinical documents, HIE |
-| HL7v2 | "as HL7", "as ADT message" | Legacy EMR integration |
-| X12 837/835 | "as 837", "as X12 claim" | Claims submission |
-| X12 834 | "as 834", "enrollment file" | Benefit enrollment |
-| NCPDP D.0 | "as NCPDP" | Pharmacy transactions |
-| CDISC SDTM | "as SDTM", "SDTM domains" | Clinical trial regulatory submission |
-| CDISC ADaM | "as ADaM", "analysis datasets" | Clinical trial statistical analysis |
-| Star Schema | "as star schema for DuckDB" | BI analytics, dashboards |
-| CSV | "as CSV" | Analytics, spreadsheets |
-| SQL | "as SQL" | Database loading |
+See: [PopulationSim SKILL.md](skills/populationsim/SKILL.md) | [Data Package README](skills/populationsim/data/README.md)
 
 ---
 
@@ -121,14 +105,21 @@ See: [skills/populationsim/SKILL.md](skills/populationsim/SKILL.md) | [hello-hea
 HealthSim products work together to generate complete healthcare data journeys:
 
 ```
-PatientSim (Clinical)  →  MemberSim (Claims)  →  RxMemberSim (Pharmacy)
-     │                         │                        │
-     └─────────────────────────┼────────────────────────┘
-                               │
-                          TrialSim (if enrolled in clinical trial)
+Person (Base Identity)
+   │
+   ├── PatientSim → Patient → Clinical encounters, labs, meds
+   │        ↓
+   ├── MemberSim → Member → Claims, adjudication, accumulators  
+   │        ↓
+   ├── RxMemberSim → RxMember → Pharmacy claims, DUR, formulary
+   │
+   └── TrialSim → Subject → Protocol visits, AEs, efficacy (if enrolled)
+
+   NetworkSim provides: Providers, facilities, pharmacies for all products
+   PopulationSim provides: Demographics, health rates, SDOH for all products
 ```
 
-### Example: Heart Failure Patient Journey
+**Example: Heart Failure Patient Journey**
 
 | Day | Product | Event | Output |
 |-----|---------|-------|--------|
@@ -139,203 +130,97 @@ PatientSim (Clinical)  →  MemberSim (Claims)  →  RxMemberSim (Pharmacy)
 | 30 | PatientSim | Cardiology follow-up | Office encounter |
 | 32 | MemberSim | Professional claim | 837P (99214) |
 
-### Identity Correlation
+See [Cross-Product Integration Guide](docs/HEALTHSIM-ARCHITECTURE-GUIDE.md#83-cross-product-integration) | [Product Architecture Diagrams](docs/product-architecture.md)
 
-The same person can exist across all products using a common identity pattern. See `references/data-models.md` → "Cross-Product Identity Correlation" for:
-- Entity inheritance (Person → Patient/Member/RxMember)
-- Identity linking keys (SSN as universal correlator)
-- Event correlation timing
+---
 
-### Learn More
+## Output Formats
 
-- [docs/HEALTHSIM-ARCHITECTURE-GUIDE.md](docs/HEALTHSIM-ARCHITECTURE-GUIDE.md) - Section 8.3: Cross-Product Integration
-- [docs/CROSS-PRODUCT-INTEGRATION-GAPS.md](docs/CROSS-PRODUCT-INTEGRATION-GAPS.md) - Integration roadmap
+| Format | Request With | Use Case | Products |
+|--------|--------------|----------|----------|
+| JSON | (default) | API testing | All |
+| FHIR R4 | "as FHIR" | Interoperability | PatientSim |
+| C-CDA | "as C-CDA" | Clinical documents | PatientSim |
+| HL7v2 | "as HL7", "as ADT" | Legacy EMR | PatientSim |
+| X12 837/835 | "as 837", "as X12" | Claims | MemberSim |
+| X12 834 | "as 834" | Enrollment | MemberSim |
+| NCPDP D.0 | "as NCPDP" | Pharmacy | RxMemberSim |
+| CDISC SDTM | "as SDTM" | Trial submission | TrialSim |
+| CDISC ADaM | "as ADaM" | Trial analysis | TrialSim |
+| Star Schema | "as star schema" | BI analytics | All |
+| CSV | "as CSV" | Spreadsheets | All |
+
+See [formats/](formats/) for transformation specifications.
+
+---
+
+## Clinical Scenarios
+
+### PatientSim Scenarios
+
+| Domain | Skill | Key Use Cases |
+|--------|-------|---------------|
+| Diabetes | [diabetes-management.md](skills/patientsim/diabetes-management.md) | Type 1/2, A1C, insulin, complications |
+| Heart Failure | [heart-failure.md](skills/patientsim/heart-failure.md) | HFrEF/HFpEF, NYHA, GDMT |
+| CKD | [chronic-kidney-disease.md](skills/patientsim/chronic-kidney-disease.md) | Stages 1-5, dialysis |
+| Oncology | [oncology/](skills/patientsim/oncology/) | Breast, lung, colorectal cancer |
+| Maternal | [maternal-health.md](skills/patientsim/maternal-health.md) | Prenatal, GDM, preeclampsia |
+| Behavioral | [behavioral-health.md](skills/patientsim/behavioral-health.md) | Depression, anxiety, SUD |
+| Acute Care | [sepsis-acute-care.md](skills/patientsim/sepsis-acute-care.md) | Sepsis, ICU |
+| Pediatrics | [pediatrics/](skills/patientsim/pediatrics/) | Asthma, otitis media |
+
+### TrialSim Scenarios
+
+| Domain | Skill | Key Use Cases |
+|--------|-------|---------------|
+| Phase 1 | [phase1-dose-escalation.md](skills/trialsim/phase1-dose-escalation.md) | FIH, 3+3, BOIN, MTD |
+| Phase 2 | [phase2-proof-of-concept.md](skills/trialsim/phase2-proof-of-concept.md) | Simon's, futility |
+| Phase 3 | [phase3-pivotal.md](skills/trialsim/phase3-pivotal.md) | Registration trials |
+| SDTM Domains | [domains/](skills/trialsim/domains/) | DM, AE, VS, LB, CM, EX, DS |
+| Therapeutic | [therapeutic-areas/](skills/trialsim/therapeutic-areas/) | Oncology, CV, CNS, CGT |
 
 ---
 
 ## Repository Structure
 
 ```
-healthsim-common/
-├── SKILL.md                    # Master skill file (start here)
+healthsim-workspace/
+├── SKILL.md                    # Master skill file (Claude entry point)
 ├── README.md                   # This file
 │
-├── hello-healthsim/            # Getting started guide
-│   ├── README.md              # Quick start
-│   ├── CLAUDE-DESKTOP.md      # Claude Desktop setup
-│   ├── CLAUDE-CODE.md         # Claude Code CLI setup
-│   ├── EXTENDING.md           # How to customize
-│   ├── TROUBLESHOOTING.md     # Common issues
-│   └── examples/              # Detailed examples
+├── hello-healthsim/            # Getting started (tutorials, setup)
+│   ├── README.md              # Quick start guide
+│   └── examples/              # Detailed examples by product
 │
-├── skills/                  # Domain-specific generation
-│   ├── patientsim/            # Clinical data (9 scenarios + 3 oncology)
-│   │   ├── SKILL.md
-│   │   ├── diabetes-management.md
-│   │   ├── heart-failure.md
-│   │   ├── maternal-health.md
-│   │   ├── oncology/          # Cancer-specific scenarios
-│   │   └── ...
-│   ├── membersim/             # Claims data (8 scenarios)
-│   │   ├── SKILL.md
-│   │   ├── professional-claims.md
-│   │   ├── behavioral-health.md
-│   │   └── ...
-│   ├── rxmembersim/           # Pharmacy data (8 scenarios)
-│   │   ├── SKILL.md
-│   │   ├── retail-pharmacy.md
-│   │   ├── specialty-pharmacy.md
-│   │   └── ...
+├── skills/                     # Product skills (domain knowledge)
+│   ├── patientsim/            # Clinical/EMR (12 scenarios)
+│   ├── membersim/             # Claims/payer (8 scenarios)
+│   ├── rxmembersim/           # Pharmacy/PBM (8 scenarios)
 │   ├── trialsim/              # Clinical trials (20+ skills)
-│   │   ├── SKILL.md
-│   │   ├── phase1-dose-escalation.md
-│   │   ├── phase2-proof-of-concept.md
-│   │   ├── phase3-pivotal.md
-│   │   ├── domains/           # SDTM domains (DM, AE, LB, etc.)
-│   │   ├── therapeutic-areas/ # Oncology, CV, CNS, CGT
-│   │   └── rwe/               # Real-world evidence
-│   ├── populationsim/         # Demographics/SDOH
-│   └── networksim/            # Provider networks (planned)
+│   ├── populationsim/         # Demographics/SDOH + embedded data
+│   └── networksim/            # Provider networks
 │
-├── formats/                    # Output transformations (12 files)
-│   ├── fhir-r4.md
-│   ├── ccda-format.md
-│   ├── hl7v2-adt.md
-│   ├── x12-837.md
-│   └── ...
-│
-├── references/                 # Shared knowledge (11 files + subdirs)
-│   ├── data-models.md         # Entity schemas
-│   ├── code-systems.md        # ICD-10, CPT, LOINC, NDC
-│   ├── clinical-rules.md      # Clinical business rules
-│   ├── pediatric-dosing.md    # Pediatric medication dosing
-│   ├── mental-health-reference.md  # Behavioral health codes
-│   ├── oncology/              # Oncology reference data
-│   └── ccda/                   # C-CDA template references
-│
-├── docs/                       # Shared developer documentation
-│   ├── README.md              # Documentation index
-│   ├── architecture/          # System architecture
-│   ├── mcp/                   # MCP integration
-│   ├── state-management/      # State management
-│   ├── skills/                # Skills format specs
-│   ├── extensions/            # Extension guides
-│   └── contributing.md        # Contribution guidelines
-│
-├── src/healthsim/              # Core Python modules
-│   ├── benefits/              # Accumulator tracking (deductibles, OOPM)
-│   ├── config/                # Settings and logging
-│   ├── dimensional/           # Data warehouse output (DuckDB, Databricks)
-│   ├── formats/               # Format base classes
-│   ├── generation/            # Distributions, reproducibility, cohorts
-│   ├── person/                # Demographics and identifiers
-│   ├── state/                 # Workspace persistence and provenance
-│   ├── temporal/              # Timeline and period utilities
-│   └── validation/            # Validation framework
-│
-├── tests/                      # Python test suite (476 tests)
-│
-└── pyproject.toml             # Python package config
+├── formats/                    # Output transformations (12 formats)
+├── references/                 # Shared terminology, code systems
+├── docs/                       # Architecture, guides, processes
+├── src/healthsim/              # Python infrastructure
+└── tests/                      # Test suite (476 tests)
 ```
 
 ---
 
-## Example Usage
+## Setup
 
-### Basic Examples (Start Here)
+### Claude Desktop (Recommended)
 
-```
-Generate a patient
-Generate a professional claim for an office visit
-Generate a pharmacy claim for metformin
-```
-
-### Clinical Domain Examples
-
-| Domain | Example Prompt |
-|--------|----------------|
-| **Diabetes** | "Generate a 62-year-old with poorly controlled Type 2 diabetes and A1C of 9.5" |
-| **Heart Failure** | "Generate a patient with HFrEF, NYHA Class III, on GDMT therapy" |
-| **CKD** | "Generate a patient with Stage 4 CKD and diabetes" |
-| **Oncology** | "Generate a Stage IIB ER-positive breast cancer patient with treatment plan" |
-| **Maternal** | "Generate a 32-week pregnant patient with gestational diabetes" |
-| **Behavioral** | "Generate a telehealth psychotherapy claim for depression" |
-| **Emergency** | "Generate an ED chest pain patient with HEART score workup" |
-
-### Claims & Pharmacy Examples
-
-| Type | Example Prompt |
-|------|----------------|
-| **Paid Claim** | "Generate a paid professional claim for an office visit" |
-| **Denied Claim** | "Generate a denied MRI claim requiring prior authorization" |
-| **Facility Claim** | "Generate an inpatient heart failure admission with DRG" |
-| **DUR Alert** | "Generate a pharmacy claim with drug-drug interaction alert" |
-| **Prior Auth** | "Generate a PA approval workflow for specialty drug" |
-
-### Output Format Examples
-
-| Format | Example Prompt |
-|--------|----------------|
-| **FHIR** | "Generate a diabetic patient as a FHIR Bundle" |
-| **C-CDA** | "Generate a discharge summary as C-CDA" |
-| **HL7v2** | "Generate an admission as an ADT A01 message" |
-| **X12 837** | "Generate a professional claim as X12 837P" |
-
-### Cross-Domain Scenarios
-
-```
-Generate a diabetic patient with their office visit claim and metformin pharmacy claim
-Generate a breast cancer patient with infusion facility claim and oral chemo pharmacy claim
-Generate a heart failure patient with hospital admission, follow-up visit, and discharge medications
-```
-
-See [hello-healthsim/examples/](hello-healthsim/examples/) for detailed examples with expected outputs.
-
----
-
-## Key Features
-
-### Clinical Coherence
-- Diagnoses appropriate for age and gender
-- Medications match conditions
-- Lab values correlate with disease state
-- Comorbidities follow real-world patterns
-
-### Proper Healthcare Codes
-- ICD-10-CM diagnosis codes
-- CPT/HCPCS procedure codes
-- LOINC lab codes
-- NDC drug codes
-- RxNorm medication codes
-
-### Realistic Business Logic
-- Claims adjudication with proper CARC/RARC codes
-- Deductible and OOP accumulator tracking
-- Prior authorization workflows
-- DUR alerts and overrides
-- Formulary tier pricing
-
-### Multiple Output Formats
-- FHIR R4 resources and bundles
-- HL7v2 messages (ADT, ORM, ORU)
-- X12 transactions (834, 837, 835, 270/271)
-- NCPDP pharmacy claims
-- CSV for analytics
-
----
-
-## Configuration
-
-### Claude Desktop
-
-Add SKILL.md to a Claude Project, or configure as MCP server:
+Add to a Claude Project or configure as MCP server:
 
 ```json
 {
   "mcpServers": {
     "healthsim": {
       "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/healthsim-common"]
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/healthsim-workspace"]
     }
   }
 }
@@ -343,10 +228,8 @@ Add SKILL.md to a Claude Project, or configure as MCP server:
 
 ### Claude Code
 
-Run from the healthsim-common directory:
-
 ```bash
-cd healthsim-common
+cd healthsim-workspace
 claude
 ```
 
@@ -356,61 +239,50 @@ See [hello-healthsim/](hello-healthsim/) for detailed setup instructions.
 
 ## Use Cases
 
-- **API Testing** - Generate FHIR resources to test healthcare APIs
-- **Training Data** - Create diverse patient populations for ML models
-- **Product Demos** - Generate realistic scenarios for demonstrations
-- **Load Testing** - Bulk data generation for performance testing
-- **Workflow Validation** - Test claims processing and pharmacy workflows
-- **Education** - Learn healthcare data structures and relationships
+| Use Case | Description |
+|----------|-------------|
+| **API Testing** | Generate FHIR resources, X12 transactions, NCPDP claims |
+| **Training Data** | Create diverse patient populations for ML models |
+| **Product Demos** | Generate realistic scenarios for demonstrations |
+| **Load Testing** | Bulk data generation for performance testing |
+| **Workflow Validation** | Test claims processing, pharmacy adjudication |
+| **Education** | Learn healthcare data structures and relationships |
+| **Trial Planning** | Feasibility analysis, site selection, diversity planning |
 
 ---
 
 ## Documentation
 
-### Getting Started
-- **[hello-healthsim/](hello-healthsim/)** - 5-minute quick start for all products
-- **[SKILL.md](SKILL.md)** - Master skill file with full reference
-
-### Developer Documentation (Shared Across Products)
-- **[MCP Integration](docs/mcp/integration-guide.md)** - MCP server integration guide
-- **[State Management](docs/state-management/user-guide.md)** - Save/load and session management
-- **[Extension Philosophy](docs/extensions/philosophy.md)** - How to extend HealthSim
-- **[Skills Format](docs/skills/format-specification-v2.md)** - Skills format specification
-- **[Quick Reference](docs/extensions/quick-reference.md)** - Fast lookup for all extension types
-- **[Contributing](docs/contributing.md)** - Development guidelines
-
-### Reference
-- **[skills/](skills/)** - Clinical scenarios organized by product
-- **[formats/](formats/)** - Output format transformations (FHIR, HL7v2, X12, NCPDP)
-- **[references/](references/)** - Code systems, clinical rules, terminology
-
-### Architecture
-- **[Layered Architecture](docs/architecture/layered-pattern.md)** - System design patterns
-- **[HealthSim Core Spec](docs/architecture/healthsim-common-spec.md)** - Shared infrastructure specification
+| Topic | Location |
+|-------|----------|
+| Quick Start | [hello-healthsim/](hello-healthsim/README.md) |
+| Master Skill Reference | [SKILL.md](SKILL.md) |
+| Product Architecture | [docs/product-architecture.md](docs/product-architecture.md) |
+| Architecture Guide | [docs/HEALTHSIM-ARCHITECTURE-GUIDE.md](docs/HEALTHSIM-ARCHITECTURE-GUIDE.md) |
+| Extension Guide | [hello-healthsim/EXTENDING.md](hello-healthsim/EXTENDING.md) |
+| Skills Format Spec | [docs/skills/format-specification-v2.md](docs/skills/format-specification-v2.md) |
+| Contributing | [docs/contributing.md](docs/contributing.md) |
 
 ---
 
-## Contributing
+## Key Features
 
-See [hello-healthsim/EXTENDING.md](hello-healthsim/EXTENDING.md) for how to add new scenarios, formats, and code systems.
-
-For detailed development guidelines, see [docs/contributing.md](docs/contributing.md).
-
----
-
-## License
-
-MIT
+- **Clinical Coherence**: Age/gender-appropriate conditions, medications match diagnoses, labs correlate with disease state
+- **Proper Healthcare Codes**: ICD-10, CPT, LOINC, NDC, RxNorm, MedDRA, taxonomy codes
+- **Realistic Business Logic**: Claims adjudication, accumulators, prior auth, DUR alerts, formulary tiers
+- **Data-Driven Generation**: Ground synthetic data in real CDC/Census population statistics
+- **Multiple Output Formats**: FHIR, HL7v2, C-CDA, X12, NCPDP, CDISC SDTM/ADaM
 
 ---
 
 ## Links
 
-- [Getting Started Guide](hello-healthsim/README.md)
+- [Getting Started](hello-healthsim/README.md)
 - [Full Reference (SKILL.md)](SKILL.md)
 - [HL7 FHIR R4](https://hl7.org/fhir/R4/)
 - [X12 Standards](https://x12.org/)
 - [NCPDP Standards](https://www.ncpdp.org/)
+- [CDISC Standards](https://www.cdisc.org/)
 
 ---
 

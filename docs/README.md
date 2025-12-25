@@ -156,6 +156,7 @@ This is a **monorepo** containing all HealthSim skills, formats, references, and
 
 | Document | Description |
 |----------|-------------|
+| [product-architecture.md](product-architecture.md) | Visual product relationships and workflows |
 | [HEALTHSIM-ARCHITECTURE-GUIDE.md](HEALTHSIM-ARCHITECTURE-GUIDE.md) | Complete architecture guide |
 | [HEALTHSIM-DEVELOPMENT-PROCESS.md](HEALTHSIM-DEVELOPMENT-PROCESS.md) | Development workflow |
 | [skills/format-specification-v2.md](skills/format-specification-v2.md) | Skills format specification |
