@@ -9,11 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **[RxMemberSim]** Updated MCP server to v1.x API pattern (2025-12-25)
+  - Migrated from deprecated `@server.tool()` decorator to explicit `list_tools/call_tool` pattern
+  - All 6 MCP tools now have proper JSON schemas for Claude integration
+  - Tests: 204 passed (was 176 with MCP tests excluded due to API incompatibility)
+
 - **[Packages]** Package dependency alignment (2025-12-25)
   - Renamed packages/core from `healthsim-common` to `healthsim-core` to match dependency references
   - Updated membersim, patientsim, rxmembersim to use `healthsim-core>=1.0.0`
   - Removed git+ remote references in favor of local package references
-  - All 1,289 tests now passing (476 core + 447 patientsim + 190 membersim + 176 rxmembersim)
+  - All 1,317 tests now passing (476 core + 447 patientsim + 190 membersim + 204 rxmembersim)
 
 - **[PopulationSim]** CSV data file parsing issues (2024-12-25)
   - Removed UTF-8 BOM from `svi_tract_2022.csv` that corrupted first column header
