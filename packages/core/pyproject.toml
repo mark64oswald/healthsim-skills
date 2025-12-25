@@ -3,7 +3,7 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "healthsim-common"
+name = "healthsim-core"
 version = "1.0.0"
 description = "Shared foundation for HealthSim product family - skills, formats, references, and core Python"
 readme = "README.md"

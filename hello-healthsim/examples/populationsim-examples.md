@@ -2,6 +2,18 @@
 
 Welcome to PopulationSim - the demographic and SDOH foundation for HealthSim. PopulationSim analyzes real population data from public sources to create specifications that drive realistic synthetic data generation.
 
+## v2.0 Data-First Approach
+
+PopulationSim v2.0 uses **embedded real-world data files**. When you request a profile, Claude looks up actual values:
+
+| Dataset | Coverage | Records |
+|---------|----------|---------|
+| CDC PLACES 2024 | 40 health measures | 3,144 counties, 84,000 tracts |
+| CDC SVI 2022 | 16 vulnerability indicators | 3,144 counties, 84,000 tracts |
+| ADI 2023 | Area deprivation | 242,000 block groups |
+
+**Key difference**: Values are **looked up from real data**, not estimated. When you request Harris County, Claude reads the actual diabetes rate (12.1%) from CDC PLACES data.
+
 ---
 
 ## Example 1: County Population Profile
