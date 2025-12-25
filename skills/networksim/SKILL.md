@@ -97,7 +97,7 @@ Enhance other HealthSim products with network context. These skills bridge Netwo
 | [network-for-member](integration/network-for-member.md) | Add network context to MemberSim member | "network for this member", "plan network" |
 | [pharmacy-for-rx](integration/pharmacy-for-rx.md) | Generate pharmacy for RxMemberSim prescription | "pharmacy for this prescription", "dispensing pharmacy" |
 | [benefit-for-claim](integration/benefit-for-claim.md) | Add benefit context to MemberSim claim | "benefit for this claim", "cost sharing" |
-| [formulary-concepts-for-rx](integration/formulary-concepts-for-rx.md) | Add formulary context to RxMemberSim | "formulary for this drug", "tier for medication" |
+| [formulary-for-rx](integration/formulary-for-rx.md) | Add formulary context to RxMemberSim | "formulary for this drug", "tier for medication" |
 
 ---
 

@@ -354,7 +354,7 @@ You can skip steps if:
 - [PBM Operations](pbm-operations.md) - Claims processing
 - [Pharmacy Benefit Concepts](pharmacy-benefit-concepts.md) - Tier structures
 - [Specialty Pharmacy](specialty-pharmacy.md) - High-touch specialty
-- [Formulary Concepts for RX](../integration/formulary-concepts-for-rx.md) - RxMemberSim
+- [Formulary for RX](../integration/formulary-for-rx.md) - RxMemberSim
 
 ---
 

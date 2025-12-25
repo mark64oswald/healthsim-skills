@@ -14,7 +14,7 @@ related_skills:
   - network-types
   - synthetic-provider
   - network-adequacy
-  - facility-for-encounter
+  - provider-for-encounter
 cross_product:
   - patientsim: Facility for inpatient admissions, ED visits, procedures
   - membersim: Facility claims (837I), place of service
@@ -758,7 +758,7 @@ Context needed:
 
 - [Network Adequacy](../reference/network-adequacy.md) - Access standards for facilities
 - [Synthetic Provider](synthetic-provider.md) - Generate affiliated providers
-- [Facility for Encounter](../integration/facility-for-encounter.md) - PatientSim integration
+- [Provider for Encounter](../integration/provider-for-encounter.md) - PatientSim integration
 - [Network for Member](../integration/network-for-member.md) - MemberSim network context
 
 ---

@@ -14,7 +14,7 @@ related_skills:
   - pharmacy-benefit-concepts
   - specialty-pharmacy
   - synthetic-provider
-  - pharmacy-for-claim
+  - pharmacy-for-rx
 cross_product:
   - rxmembersim: Dispensing pharmacy for claims
   - patientsim: Medication dispensing location
@@ -912,7 +912,7 @@ Context needed:
 - [Pharmacy Benefit Concepts](../reference/pharmacy-benefit-concepts.md) - Benefit context
 - [Specialty Pharmacy](../reference/specialty-pharmacy.md) - Specialty operations
 - [Synthetic Provider](synthetic-provider.md) - Prescriber relationships
-- [Pharmacy for Claim](../integration/pharmacy-for-claim.md) - RxMemberSim integration
+- [Pharmacy for Prescription](../integration/pharmacy-for-rx.md) - RxMemberSim integration
 
 ---
 
