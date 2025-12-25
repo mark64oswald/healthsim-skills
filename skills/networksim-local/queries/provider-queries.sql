@@ -1,18 +1,16 @@
--- NetworkSim-Local Query Templates
--- These queries work with the DuckDB database built from NPPES data
+-- NetworkSim-Local: Provider Query Templates
+-- For use with DuckDB database
 
---------------------------------------------------------------------------------
--- PROVIDER LOOKUP QUERIES
---------------------------------------------------------------------------------
+-- ============================================================
+-- BASIC LOOKUPS
+-- ============================================================
 
 -- Lookup provider by NPI
--- Usage: Replace :npi with actual NPI value
 SELECT 
     npi,
     entity_type_code,
-    CASE WHEN entity_type_code = 1 THEN 
-        CONCAT(first_name, ' ', last_name, COALESCE(', ' || credential, ''))
-    ELSE organization_name END as provider_name,
+    COALESCE(organization_name, last_name || ', ' || first_name) as provider_name,
+    credential,
     taxonomy_code,
     practice_address_1,
     practice_city,
@@ -20,39 +18,184 @@ SELECT
     practice_zip,
     practice_phone
 FROM providers 
-WHERE npi = :npi;
+WHERE npi = ?;  -- Parameter: NPI (10-digit string)
 
 
--- Lookup provider with category
-SELECT p.*, pc.provider_category
-FROM providers p
-JOIN provider_categories pc ON p.npi = pc.npi
-WHERE p.npi = :npi;
+-- Search providers by name (organization)
+SELECT 
+    npi,
+    organization_name,
+    taxonomy_code,
+    practice_city,
+    practice_state
+FROM providers 
+WHERE entity_type_code = '2'
+  AND organization_name ILIKE '%' || ? || '%'
+LIMIT 50;  -- Parameter: search term
 
 
---------------------------------------------------------------------------------
--- GEOGRAPHIC QUERIES
---------------------------------------------------------------------------------
+-- Search providers by name (individual)
+SELECT 
+    npi,
+    last_name,
+    first_name,
+    credential,
+    taxonomy_code,
+    practice_city,
+    practice_state
+FROM providers 
+WHERE entity_type_code = '1'
+  AND (last_name ILIKE ? || '%' OR first_name ILIKE ? || '%')
+LIMIT 50;  -- Parameters: last name, first name
+
+
+-- ============================================================
+-- GEOGRAPHIC SEARCHES
+-- ============================================================
 
 -- Providers by state
-SELECT * FROM providers 
-WHERE practice_state = :state
-LIMIT 100;
+SELECT 
+    npi,
+    COALESCE(organization_name, last_name || ', ' || first_name) as provider_name,
+    credential,
+    taxonomy_code,
+    practice_city,
+    practice_zip
+FROM providers 
+WHERE practice_state = ?
+LIMIT 100;  -- Parameter: state code (e.g., 'CA')
 
 
 -- Providers by city and state
-SELECT * FROM providers
-WHERE practice_city = :city 
-  AND practice_state = :state
-ORDER BY last_name, first_name
-LIMIT 100;
+SELECT 
+    npi,
+    COALESCE(organization_name, last_name || ', ' || first_name) as provider_name,
+    credential,
+    taxonomy_code,
+    practice_address_1,
+    practice_zip,
+    practice_phone
+FROM providers 
+WHERE practice_city ILIKE ?
+  AND practice_state = ?
+LIMIT 100;  -- Parameters: city, state
 
 
--- Providers by ZIP code (exact or prefix)
-SELECT * FROM providers
-WHERE practice_zip LIKE :zip_pattern  -- e.g., '90210' or '902%'
-LIMIT 100;
+-- Providers by ZIP code (prefix match for area)
+SELECT 
+    npi,
+    COALESCE(organization_name, last_name || ', ' || first_name) as provider_name,
+    credential,
+    taxonomy_code,
+    practice_city,
+    practice_zip,
+    practice_phone
+FROM providers 
+WHERE practice_zip LIKE ? || '%'
+LIMIT 100;  -- Parameter: ZIP prefix (e.g., '921' for San Diego area)
 
+
+-- ============================================================
+-- SPECIALTY SEARCHES
+-- ============================================================
+
+-- Providers by taxonomy code (exact)
+SELECT 
+    npi,
+    COALESCE(organization_name, last_name || ', ' || first_name) as provider_name,
+    credential,
+    taxonomy_code,
+    practice_city,
+    practice_state,
+    practice_phone
+FROM providers 
+WHERE taxonomy_code = ?
+LIMIT 100;  -- Parameter: taxonomy code (e.g., '207RC0000X')
+
+
+-- Providers by taxonomy prefix (specialty group)
+SELECT 
+    npi,
+    COALESCE(organization_name, last_name || ', ' || first_name) as provider_name,
+    credential,
+    taxonomy_code,
+    practice_city,
+    practice_state
+FROM providers 
+WHERE taxonomy_code LIKE ? || '%'
+LIMIT 100;  -- Parameter: taxonomy prefix (e.g., '207R' for internal medicine)
+
+
+-- Providers by specialty in location
+SELECT 
+    npi,
+    COALESCE(organization_name, last_name || ', ' || first_name) as provider_name,
+    credential,
+    taxonomy_code,
+    practice_address_1,
+    practice_city,
+    practice_zip,
+    practice_phone
+FROM providers 
+WHERE taxonomy_code LIKE ? || '%'
+  AND practice_state = ?
+ORDER BY practice_city
+LIMIT 100;  -- Parameters: taxonomy prefix, state
+
+
+-- ============================================================
+-- FACILITY SEARCHES
+-- ============================================================
+
+-- Hospitals by state
+SELECT 
+    npi,
+    organization_name,
+    taxonomy_code,
+    practice_address_1,
+    practice_city,
+    practice_zip,
+    practice_phone
+FROM providers 
+WHERE taxonomy_code LIKE '282%'  -- Hospital taxonomy codes
+  AND practice_state = ?
+ORDER BY organization_name;  -- Parameter: state
+
+
+-- Pharmacies by location
+SELECT 
+    npi,
+    organization_name,
+    taxonomy_code,
+    practice_address_1,
+    practice_city,
+    practice_zip,
+    practice_phone
+FROM providers 
+WHERE taxonomy_code LIKE '3336%'  -- Pharmacy taxonomy codes
+  AND practice_city ILIKE ?
+  AND practice_state = ?
+ORDER BY organization_name;  -- Parameters: city, state
+
+
+-- Clinics by type and location
+SELECT 
+    npi,
+    organization_name,
+    taxonomy_code,
+    practice_address_1,
+    practice_city,
+    practice_zip,
+    practice_phone
+FROM providers 
+WHERE taxonomy_code LIKE '261Q%'  -- Clinic taxonomy codes
+  AND practice_state = ?
+ORDER BY practice_city, organization_name;  -- Parameter: state
+
+
+-- ============================================================
+-- ANALYTICS QUERIES
+-- ============================================================
 
 -- Provider count by state
 SELECT 
@@ -63,82 +206,7 @@ GROUP BY practice_state
 ORDER BY provider_count DESC;
 
 
---------------------------------------------------------------------------------
--- SPECIALTY/TAXONOMY QUERIES
---------------------------------------------------------------------------------
-
--- Providers by taxonomy code
-SELECT * FROM providers
-WHERE taxonomy_code = :taxonomy_code
-AND practice_state = :state
-LIMIT 100;
-
-
--- Providers by category (using view)
-SELECT * FROM provider_categories
-WHERE provider_category = :category  -- e.g., 'Physician (Allopathic)'
-AND practice_state = :state
-LIMIT 100;
-
-
--- Find pharmacies in a ZIP code area
-SELECT * FROM providers
-WHERE taxonomy_code LIKE '3336%'  -- All pharmacy types
-AND practice_zip LIKE :zip_prefix  -- e.g., '100%' for NYC
-LIMIT 50;
-
-
--- Find hospitals by state
-SELECT * FROM providers
-WHERE taxonomy_code LIKE '282%'  -- All hospital types
-AND practice_state = :state;
-
-
--- Specialty distribution by state
-SELECT 
-    pc.provider_category,
-    COUNT(*) as count,
-    ROUND(COUNT(*) * 100.0 / SUM(COUNT(*)) OVER (), 2) as percentage
-FROM provider_categories pc
-WHERE pc.practice_state = :state
-GROUP BY pc.provider_category
-ORDER BY count DESC;
-
-
---------------------------------------------------------------------------------
--- ENTITY TYPE QUERIES
---------------------------------------------------------------------------------
-
--- Individual providers (Type 1) only
-SELECT * FROM providers
-WHERE entity_type_code = 1
-AND practice_state = :state
-LIMIT 100;
-
-
--- Organizations (Type 2) only
-SELECT * FROM providers
-WHERE entity_type_code = 2
-AND practice_state = :state
-LIMIT 100;
-
-
--- Entity type distribution
-SELECT 
-    CASE entity_type_code 
-        WHEN 1 THEN 'Individual'
-        WHEN 2 THEN 'Organization'
-    END as entity_type,
-    COUNT(*) as count
-FROM providers
-GROUP BY entity_type_code;
-
-
---------------------------------------------------------------------------------
--- STATISTICAL QUERIES
---------------------------------------------------------------------------------
-
--- Provider counts by category
+-- Provider count by category
 SELECT 
     provider_category,
     COUNT(*) as count
@@ -147,40 +215,76 @@ GROUP BY provider_category
 ORDER BY count DESC;
 
 
--- Top cities by provider count
+-- Specialty distribution in a state
+SELECT 
+    taxonomy_code,
+    COUNT(*) as count
+FROM providers
+WHERE practice_state = ?
+GROUP BY taxonomy_code
+ORDER BY count DESC
+LIMIT 20;  -- Parameter: state
+
+
+-- Providers by city (top cities in state)
 SELECT 
     practice_city,
-    practice_state,
     COUNT(*) as provider_count
 FROM providers
-GROUP BY practice_city, practice_state
+WHERE practice_state = ?
+GROUP BY practice_city
 ORDER BY provider_count DESC
-LIMIT 20;
+LIMIT 20;  -- Parameter: state
 
 
--- Recently updated providers
-SELECT * FROM providers
-WHERE last_update_date >= :since_date
-ORDER BY last_update_date DESC
-LIMIT 100;
+-- ============================================================
+-- CROSS-PRODUCT INTEGRATION QUERIES
+-- ============================================================
 
-
---------------------------------------------------------------------------------
--- METADATA QUERIES
---------------------------------------------------------------------------------
-
--- Database load information
-SELECT * FROM load_metadata;
-
-
--- Total record count
-SELECT COUNT(*) as total_providers FROM providers;
-
-
--- Database summary
+-- Random provider for PatientSim (attending physician)
 SELECT 
-    (SELECT value FROM load_metadata WHERE key = 'load_date') as load_date,
-    (SELECT value FROM load_metadata WHERE key = 'source_file') as source_file,
-    (SELECT COUNT(*) FROM providers) as total_providers,
-    (SELECT COUNT(*) FROM providers WHERE entity_type_code = 1) as individuals,
-    (SELECT COUNT(*) FROM providers WHERE entity_type_code = 2) as organizations;
+    npi,
+    last_name,
+    first_name,
+    credential,
+    taxonomy_code,
+    practice_city,
+    practice_state
+FROM providers 
+WHERE entity_type_code = '1'  -- Individual
+  AND taxonomy_code LIKE '207%'  -- Physician
+  AND practice_state = ?
+ORDER BY RANDOM()
+LIMIT 1;  -- Parameter: state
+
+
+-- Random pharmacy for RxMemberSim
+SELECT 
+    npi,
+    organization_name,
+    practice_address_1,
+    practice_city,
+    practice_state,
+    practice_zip,
+    practice_phone
+FROM providers 
+WHERE taxonomy_code LIKE '3336%'  -- Pharmacy
+  AND practice_zip LIKE ? || '%'
+ORDER BY RANDOM()
+LIMIT 1;  -- Parameter: ZIP prefix
+
+
+-- Random hospital for MemberSim claim
+SELECT 
+    npi,
+    organization_name,
+    practice_address_1,
+    practice_city,
+    practice_state,
+    practice_zip,
+    practice_phone
+FROM providers 
+WHERE taxonomy_code LIKE '282N%'  -- General acute care hospital
+  AND practice_state = ?
+ORDER BY RANDOM()
+LIMIT 1;  -- Parameter: state

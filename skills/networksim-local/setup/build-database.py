@@ -8,7 +8,7 @@ Usage:
     python build-database.py [--nppes-file PATH] [--output PATH]
 
 Example:
-    python build-database.py --nppes-file ../data/raw/nppes/npidata_pfile_20050523-20241208.csv
+    python build-database.py --nppes-file ../data/nppes/npidata_pfile_20050523-20251208.csv
 """
 
 import argparse
@@ -34,7 +34,7 @@ COLUMN_MAPPING = {
     'Provider Name Prefix Text': 'name_prefix',
     'Provider Name Suffix Text': 'name_suffix',
     'Provider Credential Text': 'credential',
-    'Provider Gender Code': 'gender_code',
+    'Provider Sex Code': 'gender_code',
     'Provider First Line Business Practice Location Address': 'practice_address_1',
     'Provider Second Line Business Practice Location Address': 'practice_address_2',
     'Provider Business Practice Location Address City Name': 'practice_city',
@@ -68,28 +68,43 @@ US_STATES = {
     'DC', 'PR', 'VI', 'GU', 'AS', 'MP'  # DC + Territories
 }
 
+# Top 10 states for filtered builds
+TOP_10_STATES = {'CA', 'TX', 'NY', 'FL', 'IL', 'PA', 'OH', 'GA', 'NC', 'MI'}
+
 
 def find_nppes_file(data_dir: Path) -> Path:
-    """Find the NPPES data file in the raw directory."""
-    nppes_dir = data_dir / 'raw' / 'nppes'
-    if not nppes_dir.exists():
-        return None
+    """Find the NPPES data file in possible directories."""
     
-    # Look for npidata_pfile_*.csv
-    for f in nppes_dir.glob('npidata_pfile_*.csv'):
-        return f
+    # Check multiple possible locations
+    search_dirs = [
+        data_dir / 'nppes',          # New location
+        data_dir / 'raw' / 'nppes',  # Old location
+        data_dir,                     # Direct in data dir
+    ]
+    
+    for search_dir in search_dirs:
+        if not search_dir.exists():
+            continue
+        
+        # Look for npidata_pfile_*.csv (exclude header files)
+        for f in search_dir.glob('npidata_pfile_*.csv'):
+            if 'fileheader' not in f.name.lower():
+                return f
     
     return None
 
 
-def build_database(nppes_file: Path, output_file: Path, verbose: bool = True):
+def build_database(nppes_file: Path, output_file: Path, 
+                   filter_states: set = None, verbose: bool = True):
     """Build DuckDB database from NPPES CSV."""
     
     if verbose:
         print(f"NetworkSim-Local Database Builder")
-        print(f"=" * 50)
+        print(f"=" * 60)
         print(f"Input:  {nppes_file}")
         print(f"Output: {output_file}")
+        if filter_states:
+            print(f"Filter: {len(filter_states)} states")
         print()
     
     # Ensure output directory exists
@@ -103,35 +118,41 @@ def build_database(nppes_file: Path, output_file: Path, verbose: bool = True):
     con = duckdb.connect(str(output_file))
     
     try:
-        # Build column selection for CSV read
-        csv_columns = list(COLUMN_MAPPING.keys())
-        db_columns = list(COLUMN_MAPPING.values())
-        
         if verbose:
             print("Step 1: Reading NPPES CSV (this may take several minutes)...")
         
-        # Read CSV with DuckDB's fast CSV reader
-        # DuckDB handles the large file efficiently
-        select_cols = ', '.join([f'"{col}"' for col in csv_columns])
+        # Escape path for SQL (handle backslashes on Windows)
+        escaped_path = str(nppes_file).replace('\\', '/')
+        
+        # Determine state filter
+        states_to_use = filter_states if filter_states else US_STATES
+        states_sql = ','.join([f"'{s}'" for s in states_to_use])
+        
+        # Build column selection
+        column_select = ', '.join([
+            f'"{csv}" AS {db}' for csv, db in COLUMN_MAPPING.items()
+        ])
         
         # Create the providers table with filtering
+        # Use all_varchar=true to avoid date parsing issues (NPPES uses MM/DD/YYYY)
         query = f"""
         CREATE TABLE providers AS
-        SELECT 
-            {', '.join([f'"{csv}" AS {db}' for csv, db in COLUMN_MAPPING.items()])}
+        SELECT {column_select}
         FROM read_csv_auto(
-            '{nppes_file}',
+            '{escaped_path}',
             header=true,
             ignore_errors=true,
-            parallel=true
+            parallel=true,
+            sample_size=-1,
+            all_varchar=true
         )
         WHERE 
             -- Active providers only (no deactivation date, or has reactivation)
             ("NPI Deactivation Date" IS NULL 
-             OR "NPI Deactivation Date" = ''
-             OR ("NPI Reactivation Date" IS NOT NULL AND "NPI Reactivation Date" != ''))
-            -- US locations only
-            AND "Provider Business Practice Location Address State Name" IN ({','.join([f"'{s}'" for s in US_STATES])})
+             OR TRIM("NPI Deactivation Date") = ''
+             OR ("NPI Reactivation Date" IS NOT NULL AND TRIM("NPI Reactivation Date") != ''))
+            -- Selected states only
+            AND "Provider Business Practice Location Address State Name" IN ({states_sql})
         """
         
         con.execute(query)
@@ -139,7 +160,7 @@ def build_database(nppes_file: Path, output_file: Path, verbose: bool = True):
         # Get record count
         count = con.execute("SELECT COUNT(*) FROM providers").fetchone()[0]
         if verbose:
-            print(f"   Loaded {count:,} active US providers")
+            print(f"   Loaded {count:,} active providers")
         
         # Step 2: Create indexes
         if verbose:
@@ -208,11 +229,13 @@ def build_database(nppes_file: Path, output_file: Path, verbose: bool = True):
         )
         """)
         
+        states_str = ','.join(sorted(states_to_use)) if filter_states else 'ALL'
         con.execute(f"""
         INSERT INTO load_metadata VALUES
             ('source_file', '{nppes_file.name}'),
             ('load_date', '{datetime.now().isoformat()}'),
             ('total_providers', '{count}'),
+            ('states_included', '{states_str}'),
             ('version', '1.0.0')
         """)
         
@@ -228,16 +251,29 @@ def build_database(nppes_file: Path, output_file: Path, verbose: bool = True):
         
         if verbose:
             print("\n   Provider Distribution:")
-            for cat, cnt in stats[:10]:
+            for cat, cnt in stats[:12]:
                 print(f"     {cat}: {cnt:,}")
-            if len(stats) > 10:
-                print(f"     ... and {len(stats) - 10} more categories")
+            if len(stats) > 12:
+                print(f"     ... and {len(stats) - 12} more categories")
+        
+        # State distribution
+        if verbose:
+            print("\n   State Distribution (top 10):")
+            state_stats = con.execute("""
+            SELECT practice_state, COUNT(*) as cnt
+            FROM providers
+            GROUP BY practice_state
+            ORDER BY cnt DESC
+            LIMIT 10
+            """).fetchall()
+            for state, cnt in state_stats:
+                print(f"     {state}: {cnt:,}")
         
         # Final stats
         db_size = output_file.stat().st_size / (1024 * 1024)
         
         if verbose:
-            print(f"\n{'=' * 50}")
+            print(f"\n{'=' * 60}")
             print(f"Database built successfully!")
             print(f"  Records:  {count:,}")
             print(f"  Size:     {db_size:.1f} MB")
@@ -262,7 +298,17 @@ def main():
         '--output',
         type=Path,
         default=None,
-        help='Output database path (default: data/processed/networksim.duckdb)'
+        help='Output database path (default: data/networksim-local.duckdb)'
+    )
+    parser.add_argument(
+        '--top-10-states',
+        action='store_true',
+        help='Filter to top 10 states only (smaller database)'
+    )
+    parser.add_argument(
+        '--all-states',
+        action='store_true',
+        help='Include all US states and territories'
     )
     parser.add_argument(
         '--quiet', '-q',
@@ -284,7 +330,7 @@ def main():
         if not nppes_file:
             print("ERROR: No NPPES file found.")
             print(f"Please download from https://download.cms.gov/nppes/NPI_Files.html")
-            print(f"and extract to: {data_dir / 'raw' / 'nppes'}/")
+            print(f"and extract to: {data_dir / 'nppes'}/")
             sys.exit(1)
     
     if not nppes_file.exists():
@@ -292,13 +338,29 @@ def main():
         sys.exit(1)
     
     # Determine output path
-    output_file = args.output or (data_dir / 'processed' / 'networksim.duckdb')
+    output_file = args.output or (data_dir / 'networksim-local.duckdb')
+    
+    # Determine state filter
+    if args.top_10_states:
+        filter_states = TOP_10_STATES
+    elif args.all_states:
+        filter_states = US_STATES
+    else:
+        # Default: all US states
+        filter_states = US_STATES
     
     # Build database
     try:
-        build_database(nppes_file, output_file, verbose=not args.quiet)
+        build_database(
+            nppes_file, 
+            output_file, 
+            filter_states=filter_states,
+            verbose=not args.quiet
+        )
     except Exception as e:
         print(f"ERROR: {e}")
+        import traceback
+        traceback.print_exc()
         sys.exit(1)
 
 
