@@ -1,0 +1,25 @@
+# NetworkSim-Local Data Files
+# These files are stored locally and NOT committed to Git
+
+# Raw data directories
+raw/
+
+# Processed database files
+processed/
+*.duckdb
+*.duckdb.wal
+
+# Source data files
+*.csv
+*.CSV
+*.zip
+*.ZIP
+*.parquet
+
+# Temporary files
+*.tmp
+*.temp
+
+# OS files
+.DS_Store
+Thumbs.db
