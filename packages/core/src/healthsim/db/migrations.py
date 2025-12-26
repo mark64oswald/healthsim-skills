@@ -13,9 +13,11 @@ import duckdb
 # Versions should be comparable strings (e.g., "1.1", "1.2", "2.0")
 MIGRATIONS: List[Tuple[str, str, str]] = [
     # Initial schema is applied via schema.py, not migrations
-    # Future migrations go here:
-    # ("1.1", "Add index on patients.ssn", "CREATE INDEX idx_patients_ssn ON patients(ssn)"),
-    # ("1.2", "Add column foo to patients", "ALTER TABLE patients ADD COLUMN foo VARCHAR"),
+    # Add sequences for auto-increment IDs (fixes databases created before sequences added)
+    ("1.1", "Add sequences for scenario_entities and scenario_tags", """
+        CREATE SEQUENCE IF NOT EXISTS scenario_entities_seq START 1;
+        CREATE SEQUENCE IF NOT EXISTS scenario_tags_seq START 1;
+    """),
 ]
 
 
