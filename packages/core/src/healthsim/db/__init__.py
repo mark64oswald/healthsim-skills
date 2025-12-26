@@ -39,6 +39,12 @@ from .queries import (
     scenario_exists,
     get_schema_version,
 )
+from .reference import (
+    import_all_reference_data,
+    get_reference_status,
+    is_reference_data_loaded,
+    REFERENCE_TABLES,
+)
 
 __all__ = [
     # Connection management
@@ -68,4 +74,10 @@ __all__ = [
     'list_scenarios',
     'scenario_exists',
     'get_schema_version',
+    
+    # Reference Data
+    'import_all_reference_data',
+    'get_reference_status',
+    'is_reference_data_loaded',
+    'REFERENCE_TABLES',
 ]
