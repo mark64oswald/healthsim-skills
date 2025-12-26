@@ -9,6 +9,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[DuckDB]** Complete Canonical Schema for All Products (2024-12-26)
+  - 41 tables across all 6 products + state management
+  - Core: persons, providers, facilities (3 tables)
+  - PatientSim: patients, encounters, diagnoses, procedures, lab_results, medications, allergies, vitals (8 tables)
+  - MemberSim: members, accumulators, claims, claim_lines, authorizations (5 tables)
+  - RxMemberSim: rx_members, prescriptions, pharmacy_claims, dur_alerts, pharmacies (5 tables)
+  - TrialSim: studies, sites, treatment_arms, subjects, adverse_events, visit_schedule, actual_visits, disposition_events (8 tables)
+  - PopulationSim: geographic_entities, population_profiles, health_indicators, sdoh_indices, cohort_specifications (5 tables)
+  - NetworkSim: networks, network_providers, network_facilities, provider_specialties (4 tables)
+  - State Management: scenarios, scenario_entities, scenario_tags (3 tables)
+  - Cross-product linking via person_id, SSN universal correlator, and foreign keys
+  - Schema documentation: docs/healthsim-duckdb-schema.md
+
+- **[Tools]** Scenario Loader/Saver Utilities (2024-12-26)
+  - `tools/scenario_loader.py` - Load JSON scenarios into DuckDB
+  - `tools/scenario_saver.py` - Export scenarios from DuckDB to JSON
+  - Support for all 38 entity types across 6 products
+  - By-product export format with separate JSON files per domain
+  - Documentation: tools/README.md
+
+### Changed
+
+- **[DuckDB]** Status updated from "Proposed" to "Active" (2024-12-26)
+  - DuckDB canonical schema now implemented and operational
+  - Loader/saver utilities available for scenario management
+  - Analytics layer deferred to future phase
+
 - **[Phase 1]** DuckDB Unified Data Architecture - COMPLETE! (SESSION-07) (2024-12-26)
   - All 605 tests passing
   - Integration tests verified (save/load, export/import, reference queries)
