@@ -39,6 +39,23 @@ from .entity import EntityWithProvenance
 from .provenance import Provenance, ProvenanceSummary, SourceType
 from .session import Session, SessionManager
 from .workspace import WORKSPACES_DIR, Workspace, WorkspaceMetadata
+from .manager import (
+    StateManager,
+    get_manager,
+    save_scenario,
+    load_scenario,
+    list_scenarios,
+    delete_scenario,
+    scenario_exists,
+)
+from .legacy import (
+    export_to_json,
+    import_from_json,
+    list_legacy_scenarios,
+    migrate_legacy_scenario,
+    migrate_all_legacy_scenarios,
+    LEGACY_SCENARIOS_PATH,
+)
 
 __all__ = [
     # Provenance
@@ -47,11 +64,26 @@ __all__ = [
     "SourceType",
     # Entity
     "EntityWithProvenance",
-    # Workspace
+    # Workspace (file-based)
     "Workspace",
     "WorkspaceMetadata",
     "WORKSPACES_DIR",
     # Session (abstract)
     "Session",
     "SessionManager",
+    # State Manager (DuckDB-backed)
+    "StateManager",
+    "get_manager",
+    "save_scenario",
+    "load_scenario",
+    "list_scenarios",
+    "delete_scenario",
+    "scenario_exists",
+    # Legacy JSON support
+    "export_to_json",
+    "import_from_json",
+    "list_legacy_scenarios",
+    "migrate_legacy_scenario",
+    "migrate_all_legacy_scenarios",
+    "LEGACY_SCENARIOS_PATH",
 ]

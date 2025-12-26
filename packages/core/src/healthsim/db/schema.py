@@ -36,6 +36,15 @@ CREATE TABLE IF NOT EXISTS schema_migrations (
 # STATE MANAGEMENT TABLES  
 # ============================================================================
 
+# Sequences for auto-increment IDs
+SCENARIO_ENTITIES_SEQ_DDL = """
+CREATE SEQUENCE IF NOT EXISTS scenario_entities_seq START 1;
+"""
+
+SCENARIO_TAGS_SEQ_DDL = """
+CREATE SEQUENCE IF NOT EXISTS scenario_tags_seq START 1;
+"""
+
 SCENARIOS_DDL = """
 CREATE TABLE IF NOT EXISTS scenarios (
     scenario_id     VARCHAR PRIMARY KEY,
@@ -49,7 +58,7 @@ CREATE TABLE IF NOT EXISTS scenarios (
 
 SCENARIO_ENTITIES_DDL = """
 CREATE TABLE IF NOT EXISTS scenario_entities (
-    id              INTEGER PRIMARY KEY,
+    id              INTEGER PRIMARY KEY DEFAULT nextval('scenario_entities_seq'),
     scenario_id     VARCHAR NOT NULL REFERENCES scenarios(scenario_id),
     entity_type     VARCHAR NOT NULL,  -- 'patient', 'encounter', 'claim', etc.
     entity_id       VARCHAR NOT NULL,
@@ -61,7 +70,7 @@ CREATE TABLE IF NOT EXISTS scenario_entities (
 
 SCENARIO_TAGS_DDL = """
 CREATE TABLE IF NOT EXISTS scenario_tags (
-    id              INTEGER PRIMARY KEY,
+    id              INTEGER PRIMARY KEY DEFAULT nextval('scenario_tags_seq'),
     scenario_id     VARCHAR NOT NULL REFERENCES scenarios(scenario_id),
     tag             VARCHAR NOT NULL,
     UNIQUE(scenario_id, tag)
@@ -506,6 +515,10 @@ CREATE INDEX IF NOT EXISTS idx_scenario_tags_tag ON scenario_tags(tag);
 ALL_DDL = [
     # System tables
     SCHEMA_MIGRATIONS_DDL,
+    
+    # Sequences (must be created before tables that reference them)
+    SCENARIO_ENTITIES_SEQ_DDL,
+    SCENARIO_TAGS_SEQ_DDL,
     
     # State management tables
     SCENARIOS_DDL,
