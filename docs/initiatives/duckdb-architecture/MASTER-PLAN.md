@@ -1,0 +1,167 @@
+# DuckDB Unified Data Architecture - Master Plan
+
+**Initiative**: Migrate HealthSim to DuckDB-based state management, analytics, and reference data  
+**Status**: 🟡 IN PROGRESS  
+**Started**: 2024-12-26  
+**Target Completion**: Phase 1 by early January 2025
+
+---
+
+## Executive Summary
+
+This initiative consolidates HealthSim's storage architecture into a unified DuckDB database:
+- **State Management**: Replace JSON files with DuckDB tables
+- **Analytics**: Add optional star schema layer for OHDSI-style analysis
+- **Reference Data**: Migrate PopulationSim CSVs to DuckDB
+
+### Key Decisions (Locked)
+
+| Decision | Choice | Rationale |
+|----------|--------|-----------|
+| Database Engine | DuckDB | Analytics focus, MotherDuck path, already used |
+| Schema Versioning | Migrations at load time | Handled in data loading process |
+| Partial Analytics | Materialize all scenario entities | More data > less data for analytics users |
+| MotherDuck | Deferred | Architect for it, implement later |
+| Conflict Resolution | Latest wins (by UUID) | Simple approach, not building distributed DB |
+
+---
+
+## Phase 1: Foundation
+
+**Goal**: Replace JSON state management with DuckDB, migrate PopulationSim data
+
+| Session | Description | Status | Commit |
+|---------|-------------|--------|--------|
+| [SESSION-01](SESSION-01-foundation.md) | Database module, schema, connection management | ⬜ Not Started | - |
+| [SESSION-02](SESSION-02-populationsim-migration.md) | Migrate PopulationSim CSVs to DuckDB | ⬜ Not Started | - |
+| [SESSION-03](SESSION-03-state-management.md) | Update state management MCP tools | ⬜ Not Started | - |
+| [SESSION-04](SESSION-04-json-compatibility.md) | JSON export/import for sharing | ⬜ Not Started | - |
+| [SESSION-05](SESSION-05-migration-tool.md) | Migrate existing JSON scenarios | ⬜ Not Started | - |
+| [SESSION-06](SESSION-06-documentation.md) | Update all docs, skills, tutorials | ⬜ Not Started | - |
+| [SESSION-07](SESSION-07-testing-polish.md) | Integration testing, cleanup | ⬜ Not Started | - |
+
+### Phase 1 Success Criteria
+
+- [ ] `~/.healthsim/healthsim.duckdb` created on first use
+- [ ] All existing MCP state tools work with DuckDB backend
+- [ ] PopulationSim queries work against DuckDB tables
+- [ ] JSON export produces identical output to current format
+- [ ] Existing JSON scenarios migrated successfully
+- [ ] All 476+ tests still passing
+- [ ] Documentation updated, no broken links
+- [ ] Skills updated with new capabilities
+
+---
+
+## Phase 2: Analytics Layer (After Phase 1)
+
+**Goal**: Add star schema transformation for OHDSI-style analytics
+
+| Session | Description | Status | Commit |
+|---------|-------------|--------|--------|
+| SESSION-08 | Star schema design, DDL | ⬜ Not Started | - |
+| SESSION-09 | Canonical → Star transformation | ⬜ Not Started | - |
+| SESSION-10 | Batch generation mode | ⬜ Not Started | - |
+| SESSION-11 | Analytics MCP tools | ⬜ Not Started | - |
+| SESSION-12 | Analytics skills integration | ⬜ Not Started | - |
+
+---
+
+## Phase 3: Scale & Cloud (Future)
+
+**Goal**: MotherDuck integration, Databricks export, team sharing
+
+*Sessions to be defined after Phase 2 completion*
+
+---
+
+## Architecture Reference
+
+```
+~/.healthsim/
+  healthsim.duckdb                 # Unified database
+    ├── Canonical Tables           # patients, encounters, claims, etc.
+    ├── State Management Tables    # scenarios, scenario_entities, scenario_tags
+    ├── Analytics Tables           # dim_*, fact_* (Phase 2)
+    └── Reference Tables           # cdc_places, svi, adi, nppes (optional)
+```
+
+### Layer Summary
+
+| Layer | Purpose | When Populated |
+|-------|---------|----------------|
+| Canonical | Source of truth, mirrors JSON models | On generation/save |
+| State Management | Scenario organization | On save/load |
+| Analytics | Star schema for OHDSI analysis | On explicit request (Phase 2) |
+| Reference | External data (CDC, NPPES) | On init/import |
+
+---
+
+## Files Changed/Created
+
+### New Files
+- `packages/core/healthsim/db/` - Database module
+  - `__init__.py`
+  - `schema.py` - DDL definitions
+  - `connection.py` - Connection management
+  - `migrations.py` - Schema versioning
+- `packages/core/healthsim/db/reference/` - Reference data loaders
+  - `populationsim.py`
+  - `networksim.py` (optional)
+- `scripts/migrate_json_to_duckdb.py`
+- `scripts/import_reference_data.py`
+- `docs/data-architecture.md` - New architecture guide
+
+### Modified Files
+- `packages/core/healthsim/state/manager.py` - DuckDB backend
+- `skills/common/state-management.md` - Updated capabilities
+- `docs/state-management/specification.md` - Updated for DuckDB
+- `docs/state-management/user-guide.md` - Updated for DuckDB
+- `CHANGELOG.md`
+- `README.md`
+
+### Deprecated/Removed
+- `~/.healthsim/scenarios/*.json` - Migrated to DuckDB, kept as backup
+
+---
+
+## Session Recovery
+
+If starting fresh or after interruption:
+
+```bash
+# 1. Check current state
+cd /Users/markoswald/Developer/projects/healthsim-workspace
+git status
+git log --oneline -5
+
+# 2. Read this file for current session status
+
+# 3. Read CURRENT-WORK.md for overall project state
+cat docs/CURRENT-WORK.md
+
+# 4. Resume from the next incomplete session above
+```
+
+---
+
+## Related Documents
+
+- [Design Document](../../healthsim-duckdb-architecture.html) - Full architecture specification
+- [State Management Skill](../../../skills/common/state-management.md) - Current implementation
+- [State Management Spec](../state-management/specification.md) - MCP tool specs
+- [CURRENT-WORK.md](../../CURRENT-WORK.md) - Live project state
+
+---
+
+## Status Legend
+
+- ⬜ Not Started
+- 🟡 In Progress
+- ✅ Complete
+- ❌ Blocked
+- ⏸️ Paused
+
+---
+
+*Last Updated: 2024-12-26*
