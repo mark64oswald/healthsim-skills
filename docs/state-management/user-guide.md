@@ -4,14 +4,14 @@
 
 ## Overview
 
-A **scenario** is a snapshot of your entire workspace - all the patients you've generated, their clinical data, and complete information about how each piece was created. Think of it like saving a document: you can close HealthSim, come back tomorrow, and pick up exactly where you left off.
+A **scenario** is a snapshot of your workspace - all the patients, encounters, claims, and other entities you've generated, with complete information about how each piece was created. Think of it like saving a document: you can close HealthSim, come back tomorrow, and pick up exactly where you left off.
 
 Why save your work?
 
 - **Session continuity** - Work on complex patient cases across multiple sessions
 - **Build libraries** - Create reusable cohorts for different testing scenarios
 - **Experiment safely** - Save before making major changes; restore if needed
-- **Share work** - Scenarios are portable files that can be shared with colleagues
+- **Share work** - Export scenarios as JSON files to share with colleagues
 
 ## Quick Start
 
@@ -75,19 +75,17 @@ Save this as workshop-demo for the Q1 training session, tag it training and diab
 >
 > This scenario is ready for your workshop!
 
-### Save Selected Patients
+### Overwriting Scenarios
 
-Don't want to save everything? Pick specific patients:
+To update an existing scenario with the same name:
 
 ```text
-Save just the first 5 patients as a test set
+Save this as diabetes-cohort and overwrite if it exists
 ```
 
-> **Claude:** **Saved "test-set"**
-> - 5 patients (of 25 in workspace)
-> - All their clinical data included
->
-> The remaining 20 patients are still in your workspace but not in this scenario.
+> **Claude:** **Updated "diabetes-cohort"**
+> - Previous version replaced
+> - 30 patients (was 25)
 
 **Tip:** Claude will suggest saving after significant work. If you've built up a good cohort, you might see: "You've generated 30 patients with detailed clinical data. Would you like to save this as a scenario before we continue?"
 
@@ -145,33 +143,6 @@ Load the ED one
 
 > **Claude:** **Loaded "ed-simulation"** - 50 patients now in your workspace.
 
-### Replace vs Merge
-
-When you load a scenario, you have two options:
-
-| Mode | What happens | When to use |
-|------|--------------|-------------|
-| **Replace** (default) | Clears your workspace, loads the scenario | Starting fresh from a saved state |
-| **Merge** | Adds scenario patients to your existing workspace | Combining patients from multiple scenarios |
-
-If you already have patients in your workspace, Claude will ask:
-
-```text
-Load diabetes-cohort
-```
-
-> **Claude:** I found "diabetes-cohort". You currently have 10 patients in your workspace. Should I:
-> - **Replace** - Clear your workspace and load the 25 diabetes patients
-> - **Merge** - Add the 25 diabetes patients to your existing 10
-
-```text
-Merge them
-```
-
-> **Claude:** **Merged "diabetes-cohort"**
-> - Added 25 patients to your workspace
-> - You now have 35 patients total
-
 ---
 
 ## Managing Your Scenarios
@@ -206,7 +177,43 @@ Yes, delete it
 > **Claude:** **Deleted "test-patients"**
 > You have 3 remaining scenarios.
 
-**Note:** Claude will always ask for confirmation before deleting. This is a safety feature - deleted scenarios cannot be recovered.
+**Note:** Claude will always ask for confirmation before deleting. Deleted scenarios cannot be recovered.
+
+---
+
+## Sharing Scenarios
+
+### Export to JSON
+
+To share a scenario with a colleague, export it as a JSON file:
+
+```text
+Export my diabetes-cohort
+```
+
+> **Claude:** **Exported "diabetes-cohort"**
+> - Saved to: ~/Downloads/diabetes-cohort.json
+> - 25 patients, 150 entities total
+>
+> Share this file with your colleagues!
+
+### Import from JSON
+
+When you receive a scenario file:
+
+```text
+Import the scenario from ~/Downloads/shared-scenario.json
+```
+
+> **Claude:** **Imported "shared-scenario"**
+> - 50 patients added to your scenarios
+> - Ready to load with "load shared-scenario"
+
+You can also override the name:
+
+```text
+Import ~/Downloads/data.json as my-imported-cohort
+```
 
 ---
 
@@ -225,6 +232,9 @@ When you save a scenario, you get a complete snapshot:
 - **Vital Signs** - Temperature, BP, heart rate, etc.
 - **Procedures** - Surgeries and other procedures
 - **Clinical Notes** - Any generated documentation
+- **Members/Claims** - Health plan data (if generated)
+- **Prescriptions** - Pharmacy data (if generated)
+- **Subjects/Visits** - Clinical trial data (if generated)
 
 ### Provenance: Knowing Where Data Came From
 
@@ -235,10 +245,10 @@ Provenance tells you:
 | Field | What it means | Example |
 |-------|---------------|---------|
 | `source_type` | How the data was created | `generated`, `loaded`, `derived` |
-| `source_system` | What system created it | `patientsim`, `csv-import` |
+| `source_system` | What system created it | `patientsim`, `membersim` |
 | `skill_used` | Which clinical skill guided generation | `diabetes-management` |
 
-**Why this matters:** When you load a scenario, you know exactly what's synthetic vs what came from real data (if you imported any). A patient generated with the "sepsis-acute-care" skill keeps that information - you'll know they were designed to test sepsis scenarios.
+**Why this matters:** When you load a scenario, you know exactly what's synthetic vs what came from other sources. A patient generated with the "sepsis-acute-care" skill keeps that information.
 
 ### What's NOT Saved
 
@@ -291,7 +301,7 @@ Add nephropathy and update his medications accordingly
 > - Adjusted metformin dose for eGFR 45
 
 ```text
-Save this - same name
+Save this - same name and overwrite
 ```
 
 > **Claude:** **Updated "complex-diabetes-case"** with your latest changes.
@@ -320,37 +330,25 @@ Save this as ed-simulation-critical
 
 Now you have two scenarios: the original and the critical variation. Both are available anytime.
 
-### Example 3: Combining Cohorts for Integration Testing
+### Example 3: Sharing Work with a Colleague
 
-You need patients from multiple domains for a system-wide test:
-
-```text
-Load diabetes-cohort
-```
-
-> **Claude:** **Loaded "diabetes-cohort"** - 25 patients.
+You've created a useful cohort and want to share it:
 
 ```text
-Merge in my cardiac-demo scenario
+Export my integration-test-cohort for sharing
 ```
 
-> **Claude:** **Merged "cardiac-demo"** - Added 8 cardiac patients.
-> You now have 33 patients total.
-
-```text
-Add 10 new oncology patients
-```
-
-> **Claude:** Generated 10 oncology patients...
-> Workspace now has 43 patients.
-
-```text
-Save this as integration-test-full
-```
-
-> **Claude:** **Saved "integration-test-full"**
+> **Claude:** **Exported to ~/Downloads/integration-test-cohort.json**
 > - 43 patients across 3 clinical domains
-> - Ready for integration testing
+> - Send this file to your colleague!
+
+Your colleague imports it:
+
+```text
+Import ~/Downloads/integration-test-cohort.json
+```
+
+> **Claude:** **Imported "integration-test-cohort"** - 43 patients ready to use.
 
 ---
 
@@ -382,19 +380,29 @@ Tags help you organize and find scenarios. Good tagging strategies:
 | Project | `project-alpha`, `sprint-12`, `workshop-materials` |
 | Status | `draft`, `reviewed`, `final` |
 
-### Scenario Storage
+### Storage and Portability
 
-Scenarios are stored as JSON files in `~/.healthsim/scenarios/`. This means:
+Scenarios are stored in a DuckDB database at `~/.healthsim/healthsim.duckdb`. This means:
 
 - **They persist** - Scenarios survive between HealthSim sessions
-- **They're portable** - Copy the files to share or back up
-- **They're readable** - You can inspect them with any JSON viewer
+- **Fast access** - DuckDB provides fast queries even with large datasets
+- **Queryable** - Advanced users can query scenarios directly with SQL
 
-**Sharing scenarios:** To share a scenario with a colleague, copy the JSON file from `~/.healthsim/scenarios/` and have them place it in their scenarios folder.
+**Sharing scenarios:** Use the export/import feature to share scenarios as JSON files. This is the recommended way to share work with colleagues.
+
+### Migrating from JSON Files
+
+If you have existing scenarios stored as JSON files in `~/.healthsim/scenarios/` from an earlier version of HealthSim, you can migrate them:
+
+```bash
+python scripts/migrate_json_to_duckdb.py
+```
+
+This creates a backup and imports all scenarios to the new DuckDB format.
 
 ---
 
 ## Related Topics
 
 - [State Management Specification](specification.md) - Technical details for developers
-- [MCP Configuration](../mcp/configuration.md) - Setting up MCP servers
+- [Data Architecture](../data-architecture.md) - Database schema and storage details

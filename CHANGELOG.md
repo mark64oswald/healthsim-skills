@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **[Core]** DuckDB Unified Data Architecture - Phase 1 Complete (2024-12-26)
+  - **Database Foundation**: New `packages/core/src/healthsim/db/` module with:
+    - Connection management with singleton pattern
+    - Schema DDL for canonical tables, state management, and reference data
+    - Automatic schema versioning and migrations
+  - **State Management Migration**: DuckDB backend replacing JSON files
+    - `StateManager` class with save/load/list/delete operations
+    - Entity serializers for bidirectional dict ↔ database conversion
+    - 605 tests passing (46 new state management tests)
+  - **JSON Export/Import**: Scenario sharing via portable JSON files
+    - `export_scenario_to_json()` - Export to ~/Downloads/{name}.json
+    - `import_scenario_from_json()` - Import with name override, overwrite options
+    - Supports legacy JSON formats and singular entity key names
+  - **Migration Tool**: `scripts/migrate_json_to_duckdb.py`
+    - Discovers JSON scenarios in ~/.healthsim/scenarios/
+    - Creates backup at ~/.healthsim/scenarios_backup/
+    - CLI with --dry-run, --status, --overwrite options
+  - **PopulationSim Reference Tables**: Optional DuckDB storage for CDC/SVI/ADI data
+    - 5-7x compression vs CSV files
+    - SQL query capability for advanced users
+  - **Documentation**: New data-architecture.md, updated state management docs
+
+### Changed
+
+- **[Core]** State management storage from JSON files to DuckDB database
+- **[Docs]** Updated state management specification and user guide for DuckDB
+- **[Skills]** Updated state-management skill with export/import capabilities
+- **[Skills]** Updated PopulationSim skill with DuckDB reference table info
+
+### Deprecated
+
+- **[Core]** JSON file storage in ~/.healthsim/scenarios/ (migrated, backup preserved)
+
 ### Fixed
 
 - **[Docs]** Documentation structure and navigation improvements (2025-12-26)

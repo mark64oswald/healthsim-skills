@@ -259,6 +259,20 @@ PopulationSim includes an embedded data package (148 MB) with 100% US coverage:
 | ADI (Block Group) | `data/block_group/adi_blockgroup_2023.csv` | 242,336 | 2019-2023 ACS |
 | Geography Crosswalks | `data/crosswalks/*.csv` | Various | 2023 Census |
 
+### DuckDB Reference Tables
+
+For SQL-based analysis, reference data is also available in the DuckDB database:
+
+| Table | Source | Purpose |
+|-------|--------|---------|
+| `ref_cdc_places_tract` | CDC PLACES | Tract-level health indicators |
+| `ref_cdc_places_county` | CDC PLACES | County-level health indicators |
+| `ref_svi_tract` | CDC SVI | Tract-level vulnerability |
+| `ref_svi_county` | CDC SVI | County-level vulnerability |
+| `ref_adi_blockgroup` | ADI | Block group deprivation |
+
+See [Data Architecture](../../docs/data-architecture.md) for details.
+
 ## Directory Structure
 
 ```

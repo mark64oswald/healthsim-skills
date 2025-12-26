@@ -99,18 +99,19 @@ HealthSim includes a state management system for persisting and restoring worksp
 
 | Feature | Description |
 |---------|-------------|
-| **Session Management** | In-memory entity collection across products |
-| **Scenario Storage** | Named snapshots of entire workspace |
+| **Scenario Storage** | Named snapshots saved to DuckDB database |
 | **Provenance Tracking** | Records how each entity was created |
-| **Branching** | Save baseline, explore variations, compare outcomes |
+| **JSON Export/Import** | Share scenarios as portable JSON files |
+| **SQL Queries** | Advanced users can query scenarios directly |
 
 **Tools:**
-- `healthsim.save_scenario` - Save workspace to named scenario
-- `healthsim.load_scenario` - Restore workspace from scenario
-- `healthsim.list_scenarios` - List saved scenarios
-- `healthsim.delete_scenario` - Remove a saved scenario
+- `save_scenario` - Save workspace to named scenario
+- `load_scenario` - Restore workspace from scenario
+- `list_scenarios` - List saved scenarios with optional filtering
+- `export_scenario_to_json` - Export for sharing
+- `import_scenario_from_json` - Import shared scenarios
 
-See [State Management Guide](docs/state-management/) for detailed documentation.
+See [State Management Guide](docs/state-management/) | [Data Architecture](docs/data-architecture.md)
 
 ---
 
@@ -222,7 +223,9 @@ See [hello-healthsim/](hello-healthsim/) for detailed setup instructions.
 | Quick Start | [hello-healthsim/](hello-healthsim/README.md) |
 | Master Skill Reference | [SKILL.md](SKILL.md) |
 | Product Architecture | [docs/product-architecture.md](docs/product-architecture.md) |
+| Data Architecture | [docs/data-architecture.md](docs/data-architecture.md) |
 | Architecture Guide | [docs/HEALTHSIM-ARCHITECTURE-GUIDE.md](docs/HEALTHSIM-ARCHITECTURE-GUIDE.md) |
+| State Management | [docs/state-management/](docs/state-management/) |
 | Extension Guide | [hello-healthsim/EXTENDING.md](hello-healthsim/EXTENDING.md) |
 | Skills Format Spec | [docs/skills/format-specification-v2.md](docs/skills/format-specification-v2.md) |
 | Contributing | [docs/contributing.md](docs/contributing.md) |

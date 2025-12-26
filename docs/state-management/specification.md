@@ -1,533 +1,356 @@
 # State Management Technical Specification
 
-This document defines the MCP tool interfaces and data formats for the State Management capability.
+This document defines the API interfaces and data formats for the State Management capability.
 
 ## Overview
 
-State Management enables users to save and load workspace scenarios - complete snapshots of all patients and clinical data with full provenance tracking.
+State Management enables users to save and load workspace scenarios - complete snapshots of all generated entities (patients, encounters, claims, etc.) with full provenance tracking.
 
-**Storage Location**: `~/.healthsim/scenarios/`
-**File Format**: JSON
-**File Naming**: `{scenario_id}.json` where scenario_id is a UUID
-
-## MCP Tool Specifications
-
-### healthsim.save_scenario
-
-Saves the current workspace as a named scenario.
-
-#### Input Schema
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "name": {
-      "type": "string",
-      "description": "Human-readable name for the scenario (kebab-case recommended)",
-      "minLength": 1,
-      "maxLength": 100,
-      "pattern": "^[a-zA-Z0-9][a-zA-Z0-9-_]*$"
-    },
-    "description": {
-      "type": "string",
-      "description": "Optional description of the scenario contents and purpose",
-      "maxLength": 500
-    },
-    "tags": {
-      "type": "array",
-      "description": "Optional tags for filtering and organization",
-      "items": {
-        "type": "string",
-        "minLength": 1,
-        "maxLength": 50
-      },
-      "maxItems": 20
-    },
-    "scope": {
-      "type": "string",
-      "description": "What to save: 'all' for entire workspace, 'patients' for selected patients",
-      "enum": ["all", "patients"],
-      "default": "all"
-    },
-    "patient_ids": {
-      "type": "array",
-      "description": "Patient IDs to save (required when scope='patients')",
-      "items": {
-        "type": "string"
-      }
-    }
-  },
-  "required": ["name"]
-}
-```
-
-#### Output Schema
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "success": {
-      "type": "boolean",
-      "description": "Whether the save operation succeeded"
-    },
-    "scenario_id": {
-      "type": "string",
-      "description": "UUID of the saved scenario"
-    },
-    "saved_at": {
-      "type": "string",
-      "format": "date-time",
-      "description": "ISO 8601 timestamp of when scenario was saved"
-    },
-    "file_path": {
-      "type": "string",
-      "description": "Path to the saved scenario file"
-    },
-    "summary": {
-      "type": "object",
-      "description": "Summary of what was saved",
-      "properties": {
-        "patient_count": { "type": "integer" },
-        "encounter_count": { "type": "integer" },
-        "diagnosis_count": { "type": "integer" },
-        "lab_count": { "type": "integer" },
-        "medication_count": { "type": "integer" },
-        "vital_count": { "type": "integer" },
-        "procedure_count": { "type": "integer" },
-        "note_count": { "type": "integer" },
-        "provenance_summary": {
-          "type": "object",
-          "properties": {
-            "generated": { "type": "integer" },
-            "loaded": { "type": "integer" },
-            "derived": { "type": "integer" }
-          }
-        }
-      }
-    },
-    "error": {
-      "type": "string",
-      "description": "Error message if success is false"
-    }
-  },
-  "required": ["success"]
-}
-```
-
-#### Behavior
-
-1. Generate a UUID for the scenario
-2. Collect all entities from the workspace (or filtered by patient_ids)
-3. Serialize to JSON preserving all provenance
-4. Create `~/.healthsim/scenarios/` directory if needed
-5. Write to `{scenario_id}.json`
-6. Return summary of saved contents
-
-#### Error Conditions
-
-- Empty workspace (nothing to save)
-- Invalid patient_ids (patients not found)
-- File system errors (permissions, disk full)
-- Invalid name (empty or bad characters)
+**Storage Backend**: DuckDB embedded database  
+**Storage Location**: `~/.healthsim/healthsim.duckdb`  
+**Export Format**: JSON (for sharing)
 
 ---
 
-### healthsim.load_scenario
+## API Reference
 
-Loads a previously saved scenario into the workspace.
+### save_scenario
 
-#### Input Schema
+Saves entities as a named scenario.
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "scenario_id": {
-      "type": "string",
-      "description": "UUID of the scenario to load"
-    },
-    "name": {
-      "type": "string",
-      "description": "Name to search for (fuzzy matching supported)"
-    },
-    "scope": {
-      "type": "string",
-      "description": "What to load: 'all' for entire scenario, 'patients' for selected patients",
-      "enum": ["all", "patients"],
-      "default": "all"
-    },
-    "patient_ids": {
-      "type": "array",
-      "description": "Patient IDs to load from scenario (when scope='patients')",
-      "items": {
-        "type": "string"
-      }
-    },
-    "mode": {
-      "type": "string",
-      "description": "How to handle existing workspace: 'replace' clears first, 'merge' adds to existing",
-      "enum": ["replace", "merge"],
-      "default": "replace"
-    },
-    "conflict_resolution": {
-      "type": "string",
-      "description": "How to handle MRN conflicts during merge",
-      "enum": ["skip", "overwrite", "duplicate"],
-      "default": "skip"
-    }
-  },
-  "oneOf": [
-    { "required": ["scenario_id"] },
-    { "required": ["name"] }
-  ]
-}
-```
+#### Parameters
 
-#### Output Schema
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| name | string | Yes | Unique scenario name (kebab-case recommended) |
+| entities | object | Yes | Dict of entity_type → entity list |
+| description | string | No | Scenario description |
+| tags | array[string] | No | Tags for organization |
+| overwrite | boolean | No | Replace existing (default: false) |
+
+#### Returns
 
 ```json
 {
-  "type": "object",
-  "properties": {
-    "success": {
-      "type": "boolean",
-      "description": "Whether the load operation succeeded"
-    },
-    "scenario_id": {
-      "type": "string",
-      "description": "UUID of the loaded scenario"
-    },
-    "scenario_name": {
-      "type": "string",
-      "description": "Name of the loaded scenario"
-    },
-    "loaded_at": {
-      "type": "string",
-      "format": "date-time",
-      "description": "ISO 8601 timestamp of load operation"
-    },
-    "summary": {
-      "type": "object",
-      "description": "Summary of what was loaded",
-      "properties": {
-        "patients_loaded": { "type": "integer" },
-        "patients_skipped": { "type": "integer" },
-        "patients_overwritten": { "type": "integer" },
-        "total_entities": { "type": "integer" }
-      }
-    },
-    "workspace_state": {
-      "type": "object",
-      "description": "Current workspace state after load",
-      "properties": {
-        "total_patients": { "type": "integer" },
-        "total_encounters": { "type": "integer" }
-      }
-    },
-    "conflicts": {
-      "type": "array",
-      "description": "MRN conflicts encountered during merge",
-      "items": {
-        "type": "object",
-        "properties": {
-          "mrn": { "type": "string" },
-          "workspace_patient": { "type": "string" },
-          "scenario_patient": { "type": "string" },
-          "resolution": { "type": "string" }
-        }
-      }
-    },
-    "error": {
-      "type": "string",
-      "description": "Error message if success is false"
-    }
-  },
-  "required": ["success"]
-}
-```
-
-#### Behavior
-
-1. Find scenario by ID or fuzzy match on name
-2. If mode='replace', clear current workspace
-3. Read and parse scenario JSON
-4. For each patient:
-   - If mode='merge', check for MRN conflicts
-   - Apply conflict_resolution strategy
-   - Add patient and associated clinical data to workspace
-5. Restore all provenance exactly as saved
-6. Return summary of load operation
-
-#### Error Conditions
-
-- Scenario not found (ID or name)
-- Multiple matches for name (ambiguous)
-- Corrupted scenario file (invalid JSON)
-- Incompatible version (future consideration)
-
----
-
-### healthsim.list_scenarios
-
-Lists saved scenarios with optional filtering.
-
-#### Input Schema
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "search": {
-      "type": "string",
-      "description": "Search string to filter by name or description"
-    },
-    "tags": {
-      "type": "array",
-      "description": "Filter to scenarios with ALL specified tags",
-      "items": {
-        "type": "string"
-      }
-    },
-    "limit": {
-      "type": "integer",
-      "description": "Maximum number of scenarios to return",
-      "default": 20,
-      "minimum": 1,
-      "maximum": 100
-    },
-    "sort_by": {
-      "type": "string",
-      "description": "Sort order for results",
-      "enum": ["saved_at", "name", "patient_count"],
-      "default": "saved_at"
-    },
-    "sort_order": {
-      "type": "string",
-      "enum": ["asc", "desc"],
-      "default": "desc"
-    }
+  "scenario_id": "uuid-string",
+  "name": "scenario-name",
+  "entity_count": 42,
+  "entities_by_type": {
+    "patient": 5,
+    "encounter": 15,
+    "diagnosis": 22
   }
 }
 ```
 
-#### Output Schema
+#### Python Usage
+
+```python
+from healthsim.state import save_scenario
+
+scenario_id = save_scenario(
+    name='diabetes-cohort',
+    entities={
+        'patients': [patient1, patient2],
+        'encounters': [enc1, enc2, enc3]
+    },
+    description='Type 2 Diabetes test cohort',
+    tags=['diabetes', 'testing']
+)
+```
+
+---
+
+### load_scenario
+
+Loads a scenario from the database.
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| name | string | Yes | Scenario name or UUID |
+
+#### Returns
 
 ```json
 {
-  "type": "object",
-  "properties": {
-    "success": {
-      "type": "boolean"
-    },
-    "scenarios": {
-      "type": "array",
-      "items": {
-        "type": "object",
-        "properties": {
-          "scenario_id": { "type": "string" },
-          "name": { "type": "string" },
-          "description": { "type": "string" },
-          "tags": {
-            "type": "array",
-            "items": { "type": "string" }
-          },
-          "saved_at": {
-            "type": "string",
-            "format": "date-time"
-          },
-          "patient_count": { "type": "integer" },
-          "entity_count": { "type": "integer" },
-          "file_size_bytes": { "type": "integer" }
-        }
+  "scenario_id": "uuid-string",
+  "name": "scenario-name",
+  "description": "...",
+  "entities": {
+    "patients": [...],
+    "encounters": [...]
+  },
+  "tags": ["tag1", "tag2"],
+  "created_at": "2024-12-26T10:30:00Z"
+}
+```
+
+#### Python Usage
+
+```python
+from healthsim.state import load_scenario
+
+scenario = load_scenario('diabetes-cohort')
+patients = scenario['entities']['patients']
+```
+
+---
+
+### list_scenarios
+
+Lists available scenarios with optional filtering.
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| tag | string | No | Filter by tag |
+| search | string | No | Search in name/description |
+| limit | integer | No | Max results (default: 100) |
+
+#### Returns
+
+```json
+{
+  "scenarios": [
+    {
+      "scenario_id": "uuid-string",
+      "name": "scenario-name",
+      "description": "...",
+      "entity_count": 42,
+      "tags": ["tag1"],
+      "created_at": "2024-12-26T10:30:00Z"
+    }
+  ],
+  "total_count": 5
+}
+```
+
+#### Python Usage
+
+```python
+from healthsim.state import list_scenarios
+
+# List all
+scenarios = list_scenarios()
+
+# Filter by tag
+diabetes_scenarios = list_scenarios(tag='diabetes')
+
+# Search
+matches = list_scenarios(search='cohort')
+```
+
+---
+
+### delete_scenario
+
+Deletes a scenario (metadata and links, not underlying entity data).
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| name | string | Yes | Scenario name or UUID |
+
+#### Python Usage
+
+```python
+from healthsim.state import delete_scenario
+
+delete_scenario('old-scenario')
+```
+
+---
+
+### export_scenario_to_json
+
+Exports a scenario to JSON file for sharing.
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| name | string | Yes | Scenario name or UUID |
+| output_path | string/Path | No | Where to save (default: ~/Downloads/{name}.json) |
+
+#### Returns
+
+Path to the exported file.
+
+#### Python Usage
+
+```python
+from healthsim.state import export_scenario_to_json
+
+path = export_scenario_to_json('diabetes-cohort')
+# Returns: ~/Downloads/diabetes-cohort.json
+
+# Custom location
+path = export_scenario_to_json('diabetes-cohort', output_path='/tmp/export.json')
+```
+
+---
+
+### import_scenario_from_json
+
+Imports a JSON scenario file.
+
+#### Parameters
+
+| Name | Type | Required | Description |
+|------|------|----------|-------------|
+| file_path | string/Path | Yes | Path to JSON file |
+| name | string | No | Override scenario name |
+| overwrite | boolean | No | Replace existing (default: false) |
+
+#### Python Usage
+
+```python
+from healthsim.state import import_scenario_from_json
+from pathlib import Path
+
+scenario_id = import_scenario_from_json(Path('shared-scenario.json'))
+
+# With name override
+scenario_id = import_scenario_from_json(
+    Path('data.json'),
+    name='imported-cohort',
+    overwrite=True
+)
+```
+
+---
+
+## Database Schema
+
+### scenarios
+
+Stores scenario metadata.
+
+```sql
+CREATE TABLE scenarios (
+    scenario_id   UUID PRIMARY KEY,
+    name          VARCHAR UNIQUE NOT NULL,
+    description   VARCHAR,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    metadata      JSON
+);
+```
+
+### scenario_entities
+
+Links entities to scenarios with full entity data.
+
+```sql
+CREATE TABLE scenario_entities (
+    id            INTEGER PRIMARY KEY,
+    scenario_id   UUID NOT NULL REFERENCES scenarios(scenario_id),
+    entity_type   VARCHAR NOT NULL,
+    entity_id     UUID NOT NULL,
+    entity_data   JSON NOT NULL,
+    created_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+### scenario_tags
+
+Tag-based organization.
+
+```sql
+CREATE TABLE scenario_tags (
+    id            INTEGER PRIMARY KEY,
+    scenario_id   UUID NOT NULL REFERENCES scenarios(scenario_id),
+    tag           VARCHAR NOT NULL,
+    UNIQUE(scenario_id, tag)
+);
+```
+
+---
+
+## JSON Export Format
+
+Exported JSON files follow this structure for interoperability:
+
+```json
+{
+  "schema_version": "1.0",
+  "scenario_id": "uuid-string",
+  "name": "scenario-name",
+  "description": "Optional description",
+  "created_at": "2024-12-26T10:30:00Z",
+  "tags": ["tag1", "tag2"],
+  "entities": {
+    "patients": [
+      {
+        "patient_id": "uuid",
+        "mrn": "MRN001",
+        "given_name": "John",
+        "family_name": "Doe",
+        "birth_date": "1980-01-15",
+        "...": "..."
       }
-    },
-    "total_count": {
-      "type": "integer",
-      "description": "Total matching scenarios (may be more than returned due to limit)"
-    },
-    "error": {
-      "type": "string"
-    }
-  },
-  "required": ["success"]
+    ],
+    "encounters": [...],
+    "diagnoses": [...],
+    "medications": [...],
+    "lab_results": [...],
+    "vital_signs": [...],
+    "procedures": [...],
+    "clinical_notes": [...]
+  }
 }
 ```
 
-#### Behavior
+### Supported Entity Types
 
-1. Scan `~/.healthsim/scenarios/` directory
-2. Read metadata from each scenario file (not full content)
-3. Apply search filter (case-insensitive substring match on name/description)
-4. Apply tag filter (AND logic - must have all specified tags)
-5. Sort by specified field
-6. Return limited results with total count
-
-#### Error Conditions
-
-- Scenarios directory doesn't exist (return empty list, not error)
-- Corrupted scenario files (skip with warning)
+| Type | Description |
+|------|-------------|
+| patients | Patient demographics |
+| encounters | Visits, admissions |
+| diagnoses | ICD-10 diagnoses |
+| procedures | CPT/ICD-PCS procedures |
+| medications | Medication records |
+| lab_results | Lab values |
+| vital_signs | Vitals |
+| clinical_notes | Notes/documents |
+| members | Health plan members |
+| claims | Claim headers |
+| claim_lines | Claim line items |
+| prescriptions | Rx fills |
+| subjects | Trial subjects |
+| trial_visits | Trial visit data |
 
 ---
 
-### healthsim.delete_scenario
+## Migration from Legacy JSON
 
-Deletes a saved scenario.
+If you have existing scenarios in `~/.healthsim/scenarios/`:
 
-#### Input Schema
+```bash
+# Check status
+python scripts/migrate_json_to_duckdb.py --status
 
-```json
-{
-  "type": "object",
-  "properties": {
-    "scenario_id": {
-      "type": "string",
-      "description": "UUID of the scenario to delete"
-    },
-    "confirm": {
-      "type": "boolean",
-      "description": "Must be true to actually delete (safety check)",
-      "const": true
-    }
-  },
-  "required": ["scenario_id", "confirm"]
-}
+# Preview migration
+python scripts/migrate_json_to_duckdb.py --dry-run
+
+# Execute migration
+python scripts/migrate_json_to_duckdb.py
 ```
 
-#### Output Schema
-
-```json
-{
-  "type": "object",
-  "properties": {
-    "success": {
-      "type": "boolean"
-    },
-    "deleted_scenario": {
-      "type": "object",
-      "properties": {
-        "scenario_id": { "type": "string" },
-        "name": { "type": "string" },
-        "patient_count": { "type": "integer" }
-      }
-    },
-    "error": {
-      "type": "string"
-    }
-  },
-  "required": ["success"]
-}
-```
-
-#### Behavior
-
-1. Verify confirm=true (reject if false or missing)
-2. Find scenario by ID
-3. Read scenario metadata for response
-4. Delete the scenario file
-5. Return deleted scenario info
-
-#### Error Conditions
-
-- confirm is not true
-- Scenario not found
-- File system errors (permissions)
+The migration tool automatically:
+1. Discovers JSON files in `~/.healthsim/scenarios/`
+2. Creates backup at `~/.healthsim/scenarios_backup/`
+3. Imports each scenario to DuckDB
+4. Verifies migration success
 
 ---
-
-## Scenario JSON Schema
-
-The complete schema for a saved scenario file.
-
-### Schema Definition
-
-```json
-{
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://healthsim.io/schemas/scenario/v1",
-  "title": "HealthSim Scenario",
-  "description": "A saved workspace scenario containing patients and clinical data",
-  "type": "object",
-  "properties": {
-    "schema_version": {
-      "type": "string",
-      "const": "1.0",
-      "description": "Schema version for forward compatibility"
-    },
-    "scenario_id": {
-      "type": "string",
-      "format": "uuid",
-      "description": "Unique identifier for this scenario"
-    },
-    "name": {
-      "type": "string",
-      "description": "Human-readable scenario name"
-    },
-    "description": {
-      "type": "string",
-      "description": "Optional description"
-    },
-    "tags": {
-      "type": "array",
-      "items": { "type": "string" },
-      "description": "Organization tags"
-    },
-    "created_at": {
-      "type": "string",
-      "format": "date-time",
-      "description": "When scenario was saved"
-    },
-    "created_by": {
-      "type": "string",
-      "description": "User or system that created the scenario"
-    },
-    "healthsim_version": {
-      "type": "string",
-      "description": "Version of HealthSim that created this scenario"
-    },
-    "provenance_summary": {
-      "$ref": "#/$defs/ProvenanceSummary"
-    },
-    "entities": {
-      "$ref": "#/$defs/Entities"
-    }
-  },
-  "required": ["schema_version", "scenario_id", "name", "created_at", "entities"]
-}
-```
-
-For the complete schema definition including all entity types (Patient, Encounter, Diagnosis, Medication, LabResult, VitalSign, Procedure, ClinicalNote), see the full specification.
-
----
-
-## Implementation Notes
-
-### File System Operations
-
-- Use atomic writes (write to temp file, then rename)
-- Create directories with appropriate permissions (0700 for ~/.healthsim)
-- Handle concurrent access gracefully (file locking if needed)
-
-### Performance Considerations
-
-- For list_scenarios, read only metadata section (first ~1KB)
-- Consider indexing if scenario count exceeds 100
-- Large scenarios (1000+ patients) may need streaming JSON
-
-### Versioning Strategy
-
-- `schema_version` enables forward compatibility
-- Older versions should be loadable by newer HealthSim
-- Include `healthsim_version` for debugging
-
-### Security
-
-- Validate scenario files on load (don't trust arbitrary JSON)
-- Sanitize file names to prevent path traversal
-- No execution of arbitrary code from scenarios
 
 ## See Also
 
 - [State Management User Guide](user-guide.md)
-- [MCP Configuration](../mcp/configuration.md)
+- [Data Architecture](../data-architecture.md)
+- [State Management Skill](../../skills/common/state-management.md)

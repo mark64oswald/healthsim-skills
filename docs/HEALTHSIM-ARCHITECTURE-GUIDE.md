@@ -20,6 +20,7 @@ description: "Authoritative reference for HealthSim architecture, patterns, and 
 5. [Canonical Data Models](#5-canonical-data-models)
 6. [Output Formats](#6-output-formats)
 7. [MCP Integration](#7-mcp-integration)
+   - [Data Architecture](#75-data-architecture)
 8. [Extension Patterns](#8-extension-patterns)
 
 ---
@@ -299,6 +300,49 @@ description: "{What this skill does}. Use when user requests: {trigger 1}, {trig
 - Formatting data
 - Explaining schemas
 - Validating structures
+
+---
+
+## 7.5 Data Architecture
+
+### 7.5.1 Storage Backend
+
+HealthSim uses **DuckDB** as its unified data store:
+
+| Layer | Purpose | Tables |
+|-------|---------|--------|
+| **Canonical** | Source of truth for entities | patients, encounters, claims, etc. |
+| **State Management** | Scenario organization | scenarios, scenario_entities, scenario_tags |
+| **Reference** | PopulationSim datasets | ref_cdc_places_*, ref_svi_*, ref_adi_* |
+
+**Location**: `~/.healthsim/healthsim.duckdb`
+
+### 7.5.2 State Management
+
+Scenarios are named snapshots containing:
+- All generated entities (patients, encounters, claims, etc.)
+- Full provenance (source_type, source_system, skill_used)
+- User metadata (name, description, tags)
+
+**API**:
+```python
+from healthsim.state import save_scenario, load_scenario, list_scenarios
+
+scenario_id = save_scenario(name='my-cohort', entities={...})
+scenario = load_scenario('my-cohort')
+```
+
+### 7.5.3 Sharing Scenarios
+
+Export to JSON for portability:
+```python
+from healthsim.state import export_scenario_to_json, import_scenario_from_json
+
+export_scenario_to_json('my-cohort')  # → ~/Downloads/my-cohort.json
+import_scenario_from_json(Path('shared.json'))
+```
+
+See [Data Architecture](data-architecture.md) for complete documentation.
 
 ---
 

@@ -674,7 +674,7 @@ After generating data you want to keep:
 Save this as my-diabetes-cohort
 ```
 
-HealthSim saves your entire workspace - all patients, clinical data, claims, and provenance information - to `~/.healthsim/scenarios/`.
+HealthSim saves your entire workspace - all patients, clinical data, claims, and provenance information - to the DuckDB database at `~/.healthsim/healthsim.duckdb`.
 
 ### Load Later
 
@@ -690,11 +690,21 @@ Load my-diabetes-cohort
 What scenarios do I have?
 ```
 
+### Share Scenarios
+
+Export a scenario as JSON to share with colleagues:
+
+```text
+Export my-diabetes-cohort for sharing
+```
+
+This creates `~/Downloads/my-diabetes-cohort.json` that others can import.
+
 ### Why Save Scenarios?
 
 - **Session continuity** - Work on complex cohorts across multiple sessions
 - **Reproducibility** - Save test baselines for regression testing
-- **Sharing** - Scenarios are portable JSON files you can share with colleagues
+- **Sharing** - Export scenarios as portable JSON files to share with colleagues
 - **Version control** - Save before making changes, compare versions
 
 ### "What-If" Branching
