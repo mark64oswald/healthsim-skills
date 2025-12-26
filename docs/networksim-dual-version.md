@@ -158,13 +158,7 @@ Claude selects the appropriate mode based on:
 | NetworkSim-DB skills | 🔮 Planned | `skills/networksim/database/` |
 | Automatic mode selection | 🔮 Planned | Future enhancement |
 
-**Current State**: NetworkSim-Gen is fully functional. NetworkSim-DB is planned for a future release.
-
-**Action Required**: The existing `networksim-local` repository should be:
-1. Made public on GitHub
-2. Renamed to `networksim-db`
-
-This will be completed in a future session.
+**Current State**: NetworkSim-Gen is fully functional. NetworkSim-DB repository is public and available at [github.com/mark64oswald/networksim-db](https://github.com/mark64oswald/networksim-db). The NetworkSim-DB skills (database query skills) are planned for a future session.
 
 ---
 
