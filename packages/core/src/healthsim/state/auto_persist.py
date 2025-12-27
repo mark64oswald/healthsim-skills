@@ -1407,6 +1407,11 @@ class AutoPersistService:
             downloads_dir = Path.home() / "Downloads"
             downloads_dir.mkdir(exist_ok=True)
             output_path = str(downloads_dir / f"{scenario_name}.{format}")
+        else:
+            # If output_path is a directory, create filename within it
+            output_path_obj = Path(output_path)
+            if output_path_obj.is_dir():
+                output_path = str(output_path_obj / f"{scenario_name}.{format}")
         
         # Columns to exclude if not including provenance
         provenance_columns = {

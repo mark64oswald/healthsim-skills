@@ -204,7 +204,7 @@ clone = clone_scenario(
     description='Testing new cohort definition',
     tags=['variant-a', 'testing']
 )
-# clone.target_scenario_id: New scenario UUID
+# clone.new_scenario_id: New scenario UUID
 # clone.entities_cloned: {'patients': 100, 'encounters': 250}
 # clone.total_entities: 350
 ```
