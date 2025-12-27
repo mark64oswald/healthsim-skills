@@ -102,7 +102,21 @@ Test pharmacy benefit workflows and drug utilization review.
 
 ---
 
-### Level 5: Output Formats (15 minutes)
+### Level 5: Token-Efficient Batch Operations (10 minutes)
+
+Generate and persist large batches without filling context.
+
+| Scenario | Example Prompt | Guide |
+|----------|----------------|-------|
+| **Batch Generation** | "Generate 100 Medicare members over 65 in California" | [Auto-Persist Example 1](auto-persist-examples.md#example-1-generate-100-medicare-members) |
+| **Query Saved Data** | "From my medicare scenario, show female members with diabetes" | [Auto-Persist Example 2](auto-persist-examples.md#example-2-query-saved-scenario-data) |
+| **Resume with Summary** | "Load my diabetes cohort from yesterday" | [Auto-Persist Example 3](auto-persist-examples.md#example-3-resume-work-with-summary) |
+| **Get Samples** | "Show me a few example patients from that cohort" | [Auto-Persist Example 4](auto-persist-examples.md#example-4-get-sample-entities) |
+| **Batch Trial Data** | "Generate a trial with 200 subjects" | [Auto-Persist Example 5](auto-persist-examples.md#example-5-batch-generation-workflow) |
+
+---
+
+### Level 6: Output Formats (15 minutes)
 
 Transform data to healthcare standards.
 
@@ -116,7 +130,7 @@ Transform data to healthcare standards.
 
 ---
 
-### Level 6: Cross-Domain Scenarios (20 minutes)
+### Level 7: Cross-Domain Scenarios (20 minutes)
 
 Create realistic end-to-end test data spanning multiple products.
 
@@ -145,6 +159,7 @@ Create realistic end-to-end test data spanning multiple products.
 | [Oncology Examples](oncology-examples.md) | Cancer-specific scenarios | Staging, treatment, biomarkers |
 | [Cross-Domain Examples](cross-domain-examples.md) | Multi-product scenarios | End-to-end test data |
 | [Format Examples](format-examples.md) | Output transformations | FHIR, HL7v2, X12, C-CDA, SDTM, CSV |
+| [Auto-Persist Examples](auto-persist-examples.md) | Token-efficient batch ops | Large cohorts, queries, summaries |
 
 ---
 
@@ -225,6 +240,18 @@ Generate a 200-bed community hospital in suburban Dallas
 Generate a specialty pharmacy for oncology medications
 Generate a tiered PPO network with quality-based tiers
 Explain the difference between HMO and PPO networks
+```
+
+### Batch Operations & Auto-Persist
+
+```text
+Generate 100 Medicare members over 65 in California
+Generate 200 diabetic patients and save them
+Query my medicare scenario for members in San Diego
+Show me a summary of my diabetes cohort
+Get 3 sample patients from my trial scenario
+Rename my scenario to training-cohort-q4
+List my scenarios tagged with training
 ```
 
 ---
