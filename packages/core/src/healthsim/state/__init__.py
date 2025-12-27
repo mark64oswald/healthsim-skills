@@ -17,6 +17,13 @@ Core Classes:
     Session: Abstract base for product-specific sessions
     SessionManager: Abstract base for workspace operations
 
+Auto-Persist Classes (Structured RAG Pattern):
+    AutoPersistService: Main service for auto-persistence
+    PersistResult: Result of entity persistence
+    QueryResult: Paginated query results
+    ScenarioSummary: Token-efficient scenario summary
+    ScenarioBrief: Brief scenario info for listing
+
 Usage:
     Products extend Session and SessionManager with their entity types:
 
@@ -32,6 +39,16 @@ Usage:
         def product_name(self) -> str:
             return "patientsim"
         ...
+    ```
+
+    For auto-persist:
+
+    ```python
+    from healthsim.state import get_auto_persist_service
+
+    service = get_auto_persist_service()
+    result = service.persist_entities(entities, 'patient')
+    summary = service.get_scenario_summary(scenario_id=result.scenario_id)
     ```
 """
 
@@ -57,6 +74,28 @@ from .legacy import (
     migrate_legacy_scenario,
     migrate_all_legacy_scenarios,
     LEGACY_SCENARIOS_PATH,
+)
+
+# Auto-persist (Structured RAG Pattern)
+from .auto_naming import (
+    generate_scenario_name,
+    extract_keywords,
+    ensure_unique_name,
+    sanitize_name,
+    parse_scenario_name,
+)
+from .summary import (
+    ScenarioSummary,
+    generate_summary,
+    get_scenario_by_name,
+)
+from .auto_persist import (
+    AutoPersistService,
+    PersistResult,
+    QueryResult,
+    ScenarioBrief,
+    get_auto_persist_service,
+    reset_service,
 )
 
 __all__ = [
@@ -90,4 +129,21 @@ __all__ = [
     "migrate_legacy_scenario",
     "migrate_all_legacy_scenarios",
     "LEGACY_SCENARIOS_PATH",
+    # Auto-Naming
+    "generate_scenario_name",
+    "extract_keywords",
+    "ensure_unique_name",
+    "sanitize_name",
+    "parse_scenario_name",
+    # Summary
+    "ScenarioSummary",
+    "generate_summary",
+    "get_scenario_by_name",
+    # Auto-Persist Service
+    "AutoPersistService",
+    "PersistResult",
+    "QueryResult",
+    "ScenarioBrief",
+    "get_auto_persist_service",
+    "reset_service",
 ]

@@ -9,10 +9,11 @@ from typing import List
 import duckdb
 
 # Current schema version
-SCHEMA_VERSION = "1.0"
+SCHEMA_VERSION = "1.2"
 
 # Standard provenance columns included in all canonical tables
 PROVENANCE_COLUMNS = """
+    scenario_id         VARCHAR,   -- Links to scenarios table for auto-persist
     created_at          TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     source_type         VARCHAR,   -- 'generated', 'loaded', 'derived'
     source_system       VARCHAR,   -- 'patientsim', 'membersim', etc.
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS scenario_tags (
 PATIENTS_DDL = f"""
 CREATE TABLE IF NOT EXISTS patients (
     id              VARCHAR PRIMARY KEY,
-    mrn             VARCHAR UNIQUE NOT NULL,
+    mrn             VARCHAR NOT NULL,
     ssn             VARCHAR,
     given_name      VARCHAR NOT NULL,
     middle_name     VARCHAR,
@@ -245,7 +246,7 @@ CREATE TABLE IF NOT EXISTS clinical_notes (
 MEMBERS_DDL = f"""
 CREATE TABLE IF NOT EXISTS members (
     id              VARCHAR PRIMARY KEY,
-    member_id       VARCHAR UNIQUE NOT NULL,
+    member_id       VARCHAR NOT NULL,
     subscriber_id   VARCHAR,
     relationship_code VARCHAR DEFAULT '18',  -- 18=Self, 01=Spouse, 19=Child
     ssn             VARCHAR,
@@ -375,7 +376,7 @@ SUBJECTS_DDL = f"""
 CREATE TABLE IF NOT EXISTS subjects (
     id              VARCHAR PRIMARY KEY,
     subject_id      VARCHAR NOT NULL,
-    usubjid         VARCHAR UNIQUE NOT NULL,  -- STUDYID-SITEID-SUBJID
+    usubjid         VARCHAR NOT NULL,  -- STUDYID-SITEID-SUBJID
     study_id        VARCHAR NOT NULL,
     site_id         VARCHAR NOT NULL,
     patient_ref     VARCHAR,           -- Reference to PatientSim MRN
@@ -456,49 +457,65 @@ INDEXES_DDL = """
 -- Patient lookups
 CREATE INDEX IF NOT EXISTS idx_patients_ssn ON patients(ssn);
 CREATE INDEX IF NOT EXISTS idx_patients_mrn ON patients(mrn);
+CREATE INDEX IF NOT EXISTS idx_patients_scenario ON patients(scenario_id);
 
 -- Encounter lookups
 CREATE INDEX IF NOT EXISTS idx_encounters_patient ON encounters(patient_mrn);
 CREATE INDEX IF NOT EXISTS idx_encounters_admission ON encounters(admission_time);
+CREATE INDEX IF NOT EXISTS idx_encounters_scenario ON encounters(scenario_id);
 
 -- Diagnosis lookups
 CREATE INDEX IF NOT EXISTS idx_diagnoses_patient ON diagnoses(patient_mrn);
 CREATE INDEX IF NOT EXISTS idx_diagnoses_code ON diagnoses(code);
+CREATE INDEX IF NOT EXISTS idx_diagnoses_scenario ON diagnoses(scenario_id);
 
 -- Medication lookups
 CREATE INDEX IF NOT EXISTS idx_medications_patient ON medications(patient_mrn);
+CREATE INDEX IF NOT EXISTS idx_medications_scenario ON medications(scenario_id);
 
 -- Lab results lookups
 CREATE INDEX IF NOT EXISTS idx_lab_results_patient ON lab_results(patient_mrn);
 CREATE INDEX IF NOT EXISTS idx_lab_results_loinc ON lab_results(loinc_code);
+CREATE INDEX IF NOT EXISTS idx_lab_results_scenario ON lab_results(scenario_id);
 
 -- Member lookups
 CREATE INDEX IF NOT EXISTS idx_members_ssn ON members(ssn);
 CREATE INDEX IF NOT EXISTS idx_members_subscriber ON members(subscriber_id);
+CREATE INDEX IF NOT EXISTS idx_members_scenario ON members(scenario_id);
 
 -- Claim lookups
 CREATE INDEX IF NOT EXISTS idx_claims_member ON claims(member_id);
 CREATE INDEX IF NOT EXISTS idx_claims_service_date ON claims(service_date);
+CREATE INDEX IF NOT EXISTS idx_claims_scenario ON claims(scenario_id);
 CREATE INDEX IF NOT EXISTS idx_claim_lines_claim ON claim_lines(claim_id);
+CREATE INDEX IF NOT EXISTS idx_claim_lines_scenario ON claim_lines(scenario_id);
 
 -- Pharmacy claim lookups
 CREATE INDEX IF NOT EXISTS idx_pharmacy_claims_member ON pharmacy_claims(member_id);
 CREATE INDEX IF NOT EXISTS idx_pharmacy_claims_ndc ON pharmacy_claims(ndc);
+CREATE INDEX IF NOT EXISTS idx_pharmacy_claims_scenario ON pharmacy_claims(scenario_id);
 
 -- Prescription lookups
 CREATE INDEX IF NOT EXISTS idx_prescriptions_patient ON prescriptions(patient_mrn);
 CREATE INDEX IF NOT EXISTS idx_prescriptions_member ON prescriptions(member_id);
+CREATE INDEX IF NOT EXISTS idx_prescriptions_scenario ON prescriptions(scenario_id);
 
 -- Subject lookups
 CREATE INDEX IF NOT EXISTS idx_subjects_study ON subjects(study_id);
 CREATE INDEX IF NOT EXISTS idx_subjects_site ON subjects(site_id);
 CREATE INDEX IF NOT EXISTS idx_subjects_ssn ON subjects(ssn);
+CREATE INDEX IF NOT EXISTS idx_subjects_scenario ON subjects(scenario_id);
 
 -- Trial visit lookups
 CREATE INDEX IF NOT EXISTS idx_trial_visits_subject ON trial_visits(usubjid);
+CREATE INDEX IF NOT EXISTS idx_trial_visits_scenario ON trial_visits(scenario_id);
 
 -- Adverse event lookups
 CREATE INDEX IF NOT EXISTS idx_adverse_events_subject ON adverse_events(usubjid);
+CREATE INDEX IF NOT EXISTS idx_adverse_events_scenario ON adverse_events(scenario_id);
+
+-- Exposure lookups
+CREATE INDEX IF NOT EXISTS idx_exposures_scenario ON exposures(scenario_id);
 
 -- Scenario entity lookups
 CREATE INDEX IF NOT EXISTS idx_scenario_entities_scenario ON scenario_entities(scenario_id);
@@ -568,7 +585,7 @@ def apply_schema(conn: duckdb.DuckDBPyConnection) -> None:
     # Record initial schema version
     conn.execute("""
         INSERT INTO schema_migrations (version, description)
-        VALUES (?, 'Initial schema')
+        VALUES (?, 'Initial schema with auto-persist support')
     """, [SCHEMA_VERSION])
 
 
