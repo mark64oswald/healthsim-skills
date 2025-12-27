@@ -27,16 +27,21 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 {
   "mcpServers": {
     "healthsim-mcp": {
-      "command": "python",
+      "command": "/Users/markoswald/anaconda3/bin/python",
       "args": [
         "/Users/markoswald/Developer/projects/healthsim-workspace/packages/mcp-server/healthsim_mcp.py"
-      ]
+      ],
+      "env": {
+        "PYTHONPATH": "/Users/markoswald/Developer/projects/healthsim-workspace/packages/core/src:/Users/markoswald/Developer/projects/healthsim-workspace/packages/mcp-server"
+      }
     }
   }
 }
 ```
 
-**Important**: Remove the old `healthsim-duckdb` entry to avoid conflicts.
+**Important**: 
+1. Remove the old `healthsim-duckdb` entry to avoid conflicts
+2. Adjust the Python path to match your environment (`which python3`)
 
 ## Available Tools
 

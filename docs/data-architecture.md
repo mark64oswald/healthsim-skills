@@ -124,7 +124,28 @@ generation_seed     INTEGER     -- For reproducibility
 
 ## Querying
 
-Direct SQL queries are supported via the DuckDB MCP server or Python:
+### Via HealthSim MCP Server (Recommended)
+
+The `healthsim-mcp` server is the **recommended** way to query the database. It maintains the single connection and prevents file locking issues:
+
+```
+# List available tables
+Use healthsim_tables
+
+# Query reference data
+Use healthsim_query_reference with table="places_county" and state="CA"
+
+# Run custom SQL
+Use healthsim_query with sql="SELECT * FROM patients LIMIT 10"
+```
+
+See [MCP Configuration](./mcp/configuration.md) for setup.
+
+### Via Python (Use Carefully)
+
+**Warning**: DuckDB uses file-level locking. If the MCP server is running, Python scripts cannot open the database for writing. Stop the MCP server first, or use read-only mode.
+
+Direct SQL queries are supported via Python:
 
 ```sql
 -- Find all diabetic patients in a scenario
