@@ -14,9 +14,9 @@
 | Phase 0: Preparation | ✅ Complete | 4/4 |
 | Phase 1: Core Service Modules | ✅ Complete | 12/12 |
 | Phase 2: Scenario Management | ⚪ Not Started | 0/6 |
-| Phase 3: Skill Updates | ⚪ Not Started | 0/12 |
-| Phase 4: Documentation | ⚪ Not Started | 0/10 |
-| Phase 5: Testing & Validation | ⚪ Not Started | 0/6 |
+| Phase 3: Skill Updates | ✅ Complete | 12/12 |
+| Phase 4: Documentation | 🟡 In Progress | 4/10 |
+| Phase 5: Testing & Validation | 🟡 In Progress | 1/6 |
 
 **Legend**: ✅ Complete | 🟡 In Progress | ⚪ Not Started | ❌ Blocked
 
@@ -42,7 +42,7 @@
 | DuckDB Schema Tables | 41 | 41 |
 | Entity Types Supported | 38 | 38 |
 | Skills Files | ~30 | ~30 |
-| Hello-HealthSim Examples | 10 | 10 |
+| Hello-HealthSim Examples | 10 | 11 (auto-persist added) |
 
 ---
 
@@ -82,11 +82,6 @@
 - Updated schema version to 1.2
 - Added indexes for scenario filtering
 
-**Module Exports** (in `__init__.py`):
-- Auto-naming: `generate_scenario_name`, `extract_keywords`, `ensure_unique_name`, `sanitize_name`, `parse_scenario_name`
-- Summary: `ScenarioSummary`, `generate_summary`, `get_scenario_by_name`
-- Auto-persist: `AutoPersistService`, `PersistResult`, `QueryResult`, `ScenarioBrief`, `get_auto_persist_service`, `reset_service`
-
 ### 1.2 Integration with StateManager ✅ COMPLETE
 
 - [x] Extended `StateManager` with auto-persist property
@@ -117,7 +112,7 @@ scenario = load_scenario('my-scenario')  # Returns all entities
 from healthsim.state import persist, get_summary, query_scenario
 
 # Persist entities - returns summary, not full data
-result = persist({'patients': [...]}, context='diabetes cohort')
+result = persist({'patients': [...], 'encounters': [...]}, context='diabetes cohort')
 # result.summary has ~500 tokens, result.entity_ids has IDs
 
 # Load summary only (~500 tokens without samples, ~3500 with)
@@ -145,52 +140,53 @@ The core functionality is complete. Phase 2 adds optional enhancements:
 
 ---
 
-## Phase 3: Skill Updates (3-4 hours) ⚪ NOT STARTED
+## Phase 3: Skill Updates ✅ COMPLETE
 
-### 3.1 State Management Skill
+### 3.1 State Management Skill ✅
 **File**: `skills/common/state-management.md`
 
-- [ ] Update overview to describe auto-persist behavior
-- [ ] Add new trigger phrases for persist operations
-- [ ] Update examples to show auto-persist workflow
-- [ ] Add batch generation pattern
-- [ ] Add scenario loading pattern (summary-only)
-- [ ] Add query pattern with pagination
+- [x] Updated to v3.0 with two persistence patterns
+- [x] Added auto-persist trigger phrases
+- [x] Added examples for persist, query, summary workflows
+- [x] Updated with batch generation patterns
+- [x] Added query pattern with pagination
 
-### 3.2 DuckDB Skill
+### 3.2 DuckDB Skill ✅
 **File**: `skills/common/duckdb-skill.md`
 
-- [ ] Add all new MCP tools documentation
-- [ ] Add trigger phrases for each tool
-- [ ] Add examples for each tool
+- [x] Already documented auto-persist API (v1.2)
+- [x] Includes scenario-scoped queries
+- [x] Includes example SQL queries
 
-### 3.3 Product Skills
-- [ ] PatientSim skills update
-- [ ] MemberSim skills update
-- [ ] RxMemberSim skills update
-- [ ] TrialSim skills update
+### 3.3 Hello-HealthSim Examples ✅
+**File**: `hello-healthsim/examples/auto-persist-examples.md`
+
+- [x] Created comprehensive auto-persist examples file
+- [x] 7 examples covering all patterns
+- [x] Updated examples README with Level 5 (batch operations)
+- [x] Added auto-persist to example files table
 
 ---
 
-## Phase 4: Documentation (2-3 hours) ⚪ NOT STARTED
+## Phase 4: Documentation (2-3 hours) 🟡 IN PROGRESS
 
 ### 4.1 Architecture Documentation
-- [ ] Finalize `docs/healthsim-auto-persist-architecture.html` (change status to Active)
+- [x] Created `docs/healthsim-auto-persist-architecture.html` (status: Active)
 
 ### 4.2 README Files
 - [ ] Update main `README.md` with auto-persist overview
 - [ ] Update `packages/core/README.md` with new tools
 
 ### 4.3 Hello-HealthSim Examples
-- [ ] Create `auto-persist-examples.md`
-- [ ] Update existing examples with persist patterns
+- [x] Created `auto-persist-examples.md`
+- [x] Updated examples README with auto-persist section
 
 ### 4.4 CHANGELOG
-- [ ] Add comprehensive entry for auto-persist feature
+- [x] Added comprehensive entry for auto-persist feature
 
 ---
 
-## Phase 5: Testing & Validation ⚪ NOT STARTED
+## Phase 5: Testing & Validation 🟡 IN PROGRESS
 
 ### 5.1 Unit Tests ✅ COMPLETE
 - [x] 63 new unit tests created and passing
@@ -218,19 +214,18 @@ The core functionality is complete. Phase 2 adds optional enhancements:
 **Focus**: Phase 1.1 (Service Modules)
 **Status**: ✅ Complete
 
-#### Accomplishments
-- Created 3 service modules (auto_naming, summary, auto_persist)
-- Created 63 unit tests
-- Updated schema with scenario_id columns
-- Added migration 1.2
-
 ### Session 3: December 27, 2024
 **Focus**: Phase 1.2 (StateManager Integration)
 **Status**: ✅ Complete
 
+### Session 4: December 27, 2024
+**Focus**: Phase 3 (Skills & Examples)
+**Status**: ✅ Complete
+
 #### Accomplishments
-- Extended StateManager with auto-persist methods
-- Added convenience functions to module exports
+- Updated state-management.md to v3.0 with auto-persist patterns
+- Created auto-persist-examples.md with 7 comprehensive examples
+- Updated examples README with Level 5 batch operations
 - All 668 tests passing
 - Pushed to GitHub
 
@@ -256,6 +251,17 @@ The core functionality is complete. Phase 2 adds optional enhancements:
 | `db/schema.py` | Added scenario_id to canonical tables, version 1.2 |
 | `db/migrations.py` | Added migration 1.2 |
 
+### Created (Phase 3)
+| File | Lines | Purpose |
+|------|-------|---------|
+| `hello-healthsim/examples/auto-persist-examples.md` | ~350 | 7 auto-persist examples |
+
+### Modified (Phase 3)
+| File | Changes |
+|------|---------|
+| `skills/common/state-management.md` | Updated to v3.0 with two persistence patterns |
+| `hello-healthsim/examples/README.md` | Added Level 5 batch operations section |
+
 ---
 
 ## Git Commits
@@ -265,6 +271,26 @@ The core functionality is complete. Phase 2 adds optional enhancements:
 | `eee8c1d` | [Auto-Persist] Phase 1.1 complete - Service modules and unit tests |
 | `7df587b` | [Auto-Persist] Update implementation plan with Phase 1.1 completion |
 | `0f5ee9b` | [Auto-Persist] Phase 1.2 complete - StateManager integration |
+| `f205c0a` | [Auto-Persist] Update implementation plan - Phase 1 complete |
+| `5b09919` | [Auto-Persist] Phase 3 - Update skills and CHANGELOG for auto-persist feature |
+| `2bf8052` | [Auto-Persist] Add auto-persist examples to hello-healthsim |
+
+---
+
+## What's Next
+
+### Immediate (Phase 4 Completion)
+1. Update main README.md with auto-persist overview
+2. Update packages/core/README.md
+
+### When Needed (Phase 2 Enhancements)
+- Tag management methods
+- Scenario cloning/merging
+- Export utilities
+
+### Manual Testing (Phase 5)
+- Test actual generation → persist → query workflow in conversation
+- Verify token efficiency in practice
 
 ---
 
