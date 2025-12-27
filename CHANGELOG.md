@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **[Auto-Persist]** Token-Efficient Scenario Management (2024-12-27)
+  - New auto-persist pattern for large batch operations (50+ entities)
+  - Returns summary (~500 tokens) instead of echoing all data back to context
+  - Service modules in `packages/core/src/healthsim/state/`:
+    - `auto_naming.py` - Intelligent scenario naming with 100+ healthcare keywords
+    - `summary.py` - ScenarioSummary dataclass with statistics and samples
+    - `auto_persist.py` - AutoPersistService with persist, query, and sample methods
+  - StateManager integration:
+    - `persist()` - Token-efficient persist, returns summary
+    - `get_summary()` - Load summary without full data
+    - `query()` - SQL queries with pagination (SELECT only)
+    - `get_samples()` - Sample entity retrieval
+    - `rename_scenario()` - Rename scenarios
+  - Module-level convenience functions: `persist()`, `get_summary()`, `query_scenario()`
+  - 63 new unit tests (all passing)
+  - Schema v1.2: Added `scenario_id` column to all 17 canonical tables
+  - Indexes for efficient scenario-scoped queries
+
+- **[Skills]** Updated state-management and duckdb-skill for auto-persist (2024-12-27)
+  - state-management.md v3.0 - Two persistence patterns documented
+  - duckdb-skill.md v1.2 - Auto-persist API and scenario queries
+
 - **[DuckDB]** Complete Canonical Schema for All Products (2024-12-26)
   - 41 tables across all 6 products + state management
   - Core: persons, providers, facilities (3 tables)
@@ -30,6 +52,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Documentation: tools/README.md
 
 ### Changed
+
+- **[Core]** `delete_scenario()` now requires `confirm=True` for safety (2024-12-27)
+  - Prevents accidental deletions
+  - Also deletes canonical table entries where scenario_id matches
 
 - **[DuckDB]** Status updated from "Proposed" to "Active" (2024-12-26)
   - DuckDB canonical schema now implemented and operational
