@@ -2,7 +2,11 @@
 HealthSim MCP Server.
 
 Provides MCP tools for interacting with the HealthSim DuckDB database.
-This server is the single connection holder, solving the DuckDB file locking issue.
+Uses dual-connection pattern for concurrent access:
+- Persistent read-only connection for queries (shared lock)
+- On-demand write connection for modifications (brief exclusive lock)
+
+See docs/mcp/duckdb-connection-architecture.md for design details.
 
 Tools provided:
 - healthsim_list_scenarios: List all saved scenarios
@@ -25,16 +29,17 @@ Configuration in claude_desktop_config.json:
 
 Environment Variables:
     HEALTHSIM_DB_PATH: Override default database path
-    HEALTHSIM_READ_ONLY: Set to "true" for read-only mode (avoids locks)
 """
 
 import json
 import os
 import sys
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
+import duckdb
 from mcp.server.fastmcp import FastMCP
 from pydantic import BaseModel, Field, ConfigDict
 
@@ -42,7 +47,7 @@ from pydantic import BaseModel, Field, ConfigDict
 WORKSPACE_ROOT = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(WORKSPACE_ROOT / "packages" / "core" / "src"))
 
-from healthsim.db import get_connection, DatabaseConnection, DEFAULT_DB_PATH
+from healthsim.db import DEFAULT_DB_PATH
 from healthsim.state import StateManager
 
 
@@ -52,38 +57,100 @@ from healthsim.state import StateManager
 
 # Allow override via environment variable
 DB_PATH = Path(os.environ.get("HEALTHSIM_DB_PATH", str(DEFAULT_DB_PATH)))
-READ_ONLY = os.environ.get("HEALTHSIM_READ_ONLY", "").lower() == "true"
 
 # Log startup configuration (to stderr so it doesn't interfere with MCP protocol)
 print(f"HealthSim MCP Server starting...", file=sys.stderr)
 print(f"  Database: {DB_PATH}", file=sys.stderr)
-print(f"  Read-only: {READ_ONLY}", file=sys.stderr)
+print(f"  Connection mode: dual (read-only persistent + on-demand write)", file=sys.stderr)
 print(f"  DB exists: {DB_PATH.exists()}", file=sys.stderr)
 
 
 # =============================================================================
-# Global Connection - Single Database Connection Holder
+# Connection Manager - Dual Connection Pattern
 # =============================================================================
 
-# Initialize connection and state manager at module load
-# This ensures only one connection exists for the entire server lifetime
-_conn = None
-_manager = None
+class ConnectionManager:
+    """
+    Manages DuckDB connections using dual-connection pattern.
+    
+    - Read operations: Use persistent read-only connection (shared lock)
+    - Write operations: Use on-demand connection (brief exclusive lock)
+    
+    This allows external processes (pytest, CLI tools) to access the database
+    concurrently while MCP server is running.
+    """
+    
+    def __init__(self, db_path: Path):
+        self.db_path = db_path
+        self._read_conn: Optional[duckdb.DuckDBPyConnection] = None
+        self._read_manager: Optional[StateManager] = None
+    
+    def get_read_connection(self) -> duckdb.DuckDBPyConnection:
+        """
+        Get persistent read-only connection.
+        
+        Uses shared lock - allows concurrent readers from other processes.
+        Connection is reused across all read operations.
+        """
+        if self._read_conn is None:
+            self._read_conn = duckdb.connect(str(self.db_path), read_only=True)
+            print(f"  Opened read-only connection to {self.db_path}", file=sys.stderr)
+        return self._read_conn
+    
+    def get_read_manager(self) -> StateManager:
+        """Get StateManager backed by read-only connection."""
+        if self._read_manager is None:
+            self._read_manager = StateManager(connection=self.get_read_connection())
+        return self._read_manager
+    
+    @contextmanager
+    def write_connection(self):
+        """
+        Context manager for write operations.
+        
+        Acquires exclusive lock, performs operation, releases immediately.
+        Ensures write lock is held for minimum duration.
+        
+        Usage:
+            with manager.write_connection() as conn:
+                conn.execute("INSERT INTO ...")
+        """
+        conn = duckdb.connect(str(self.db_path))
+        try:
+            yield conn
+        finally:
+            conn.close()
+    
+    @contextmanager
+    def write_manager(self):
+        """
+        Context manager for StateManager with write capability.
+        
+        Usage:
+            with manager.write_manager() as state_mgr:
+                state_mgr.save_scenario(...)
+        """
+        with self.write_connection() as conn:
+            yield StateManager(connection=conn)
+    
+    def close(self):
+        """Close all connections."""
+        if self._read_conn:
+            self._read_conn.close()
+            self._read_conn = None
+            self._read_manager = None
+            print(f"  Closed read-only connection", file=sys.stderr)
 
 
-def _get_conn():
-    """Get or create the database connection."""
-    global _conn
-    if _conn is None:
-        _conn = get_connection(db_path=DB_PATH, read_only=READ_ONLY)
-    return _conn
+# Global connection manager
+_manager: Optional[ConnectionManager] = None
 
 
-def _get_manager():
-    """Get or create the state manager."""
+def _get_manager() -> ConnectionManager:
+    """Get or create the connection manager."""
     global _manager
     if _manager is None:
-        _manager = StateManager(connection=_get_conn())
+        _manager = ConnectionManager(DB_PATH)
     return _manager
 
 
@@ -159,7 +226,7 @@ class QueryReferenceInput(BaseModel):
 
 
 # =============================================================================
-# Tool Implementations
+# Tool Implementations - READ Operations (use persistent read connection)
 # =============================================================================
 
 @mcp.tool(
@@ -181,7 +248,7 @@ def list_scenarios(params: ListScenariosInput) -> str:
         JSON list of scenario summaries with: scenario_id, name, description,
         created_at, updated_at, entity_count, tags
     """
-    manager = _get_manager()
+    manager = _get_manager().get_read_manager()
     
     scenarios = manager.list_scenarios(
         tag=params.tag,
@@ -223,7 +290,7 @@ def load_scenario(params: LoadScenarioInput) -> str:
     Returns:
         JSON with scenario metadata and entities dict
     """
-    manager = _get_manager()
+    manager = _get_manager().get_read_manager()
     
     try:
         scenario = manager.load_scenario(params.name_or_id)
@@ -233,92 +300,6 @@ def load_scenario(params: LoadScenarioInput) -> str:
             scenario.pop("entities", None)
         
         return json.dumps(scenario, indent=2, default=str)
-    except ValueError as e:
-        return json.dumps({"error": str(e)})
-
-
-@mcp.tool(
-    name="healthsim_save_scenario",
-    annotations={
-        "title": "Save HealthSim Scenario",
-        "readOnlyHint": False,
-        "destructiveHint": False,
-        "idempotentHint": False,
-    }
-)
-def save_scenario(params: SaveScenarioInput) -> str:
-    """Save a scenario to the HealthSim database.
-    
-    Entities should be a dict mapping entity type to list of entities:
-    {
-        "patients": [{...}, {...}],
-        "encounters": [{...}],
-        "claims": [{...}]
-    }
-    
-    Supported entity types: patients, members, encounters, claims, 
-    claim_lines, prescriptions, subjects, etc.
-    
-    Returns:
-        JSON with scenario_id and status
-    """
-    manager = _get_manager()
-    
-    try:
-        scenario_id = manager.save_scenario(
-            name=params.name,
-            entities=params.entities,
-            description=params.description,
-            tags=params.tags,
-            overwrite=params.overwrite,
-        )
-        
-        # Get entity counts
-        entity_counts = {k: len(v) for k, v in params.entities.items()}
-        
-        return json.dumps({
-            "status": "saved",
-            "scenario_id": scenario_id,
-            "name": params.name,
-            "entity_counts": entity_counts,
-            "total_entities": sum(entity_counts.values()),
-        }, indent=2)
-    except ValueError as e:
-        return json.dumps({"error": str(e)})
-
-
-@mcp.tool(
-    name="healthsim_delete_scenario",
-    annotations={
-        "title": "Delete HealthSim Scenario",
-        "readOnlyHint": False,
-        "destructiveHint": True,
-        "idempotentHint": False,
-    }
-)
-def delete_scenario(params: DeleteScenarioInput) -> str:
-    """Delete a scenario from the database.
-    
-    CAUTION: This permanently removes the scenario and all linked entities.
-    You must set confirm=True to actually delete.
-    
-    Returns:
-        JSON with deletion status
-    """
-    manager = _get_manager()
-    
-    if not params.confirm:
-        return json.dumps({
-            "error": "Must set confirm=True to delete. This action is permanent.",
-            "scenario": params.name_or_id,
-        })
-    
-    try:
-        deleted = manager.delete_scenario(params.name_or_id, confirm=True)
-        return json.dumps({
-            "status": "deleted" if deleted else "not_found",
-            "scenario": params.name_or_id,
-        })
     except ValueError as e:
         return json.dumps({"error": str(e)})
 
@@ -345,7 +326,7 @@ def query(params: QueryInput) -> str:
     Returns:
         JSON with columns and rows
     """
-    conn = _get_conn()
+    conn = _get_manager().get_read_connection()
     
     # Basic SQL injection protection
     sql_lower = params.sql.lower().strip()
@@ -404,7 +385,7 @@ def get_summary(params: GetSummaryInput) -> str:
     Returns:
         JSON with entity counts, statistics, and optional samples
     """
-    manager = _get_manager()
+    manager = _get_manager().get_read_manager()
     
     try:
         summary = manager.get_summary(
@@ -441,7 +422,7 @@ def query_reference(params: QueryReferenceInput) -> str:
     Returns:
         JSON with columns and filtered rows
     """
-    conn = _get_conn()
+    conn = _get_manager().get_read_connection()
     
     # Map short names to full table names
     table_map = {
@@ -512,7 +493,7 @@ def list_tables() -> str:
     Returns:
         JSON with categorized table names
     """
-    conn = _get_conn()
+    conn = _get_manager().get_read_connection()
     
     result = conn.execute("SHOW TABLES").fetchall()
     tables = [row[0] for row in result]
@@ -528,6 +509,101 @@ def list_tables() -> str:
         "system_tables": [t for t in system if t in tables],
         "total": len(tables),
     }, indent=2)
+
+
+# =============================================================================
+# Tool Implementations - WRITE Operations (use on-demand write connection)
+# =============================================================================
+
+@mcp.tool(
+    name="healthsim_save_scenario",
+    annotations={
+        "title": "Save HealthSim Scenario",
+        "readOnlyHint": False,
+        "destructiveHint": False,
+        "idempotentHint": False,
+    }
+)
+def save_scenario(params: SaveScenarioInput) -> str:
+    """Save a scenario to the HealthSim database.
+    
+    Entities should be a dict mapping entity type to list of entities:
+    {
+        "patients": [{...}, {...}],
+        "encounters": [{...}],
+        "claims": [{...}]
+    }
+    
+    Supported entity types: patients, members, encounters, claims, 
+    claim_lines, prescriptions, subjects, etc.
+    
+    Returns:
+        JSON with scenario_id and status
+    """
+    try:
+        # Use write connection for the save operation
+        with _get_manager().write_manager() as manager:
+            scenario_id = manager.save_scenario(
+                name=params.name,
+                entities=params.entities,
+                description=params.description,
+                tags=params.tags,
+                overwrite=params.overwrite,
+            )
+        
+        # Get entity counts
+        entity_counts = {k: len(v) for k, v in params.entities.items()}
+        
+        return json.dumps({
+            "status": "saved",
+            "scenario_id": scenario_id,
+            "name": params.name,
+            "entity_counts": entity_counts,
+            "total_entities": sum(entity_counts.values()),
+        }, indent=2)
+    except ValueError as e:
+        return json.dumps({"error": str(e)})
+    except Exception as e:
+        return json.dumps({"error": f"Save failed: {str(e)}"})
+
+
+@mcp.tool(
+    name="healthsim_delete_scenario",
+    annotations={
+        "title": "Delete HealthSim Scenario",
+        "readOnlyHint": False,
+        "destructiveHint": True,
+        "idempotentHint": False,
+    }
+)
+def delete_scenario(params: DeleteScenarioInput) -> str:
+    """Delete a scenario from the database.
+    
+    CAUTION: This permanently removes the scenario and all linked entities.
+    You must set confirm=True to actually delete.
+    
+    Returns:
+        JSON with deletion status
+    """
+    if not params.confirm:
+        return json.dumps({
+            "error": "Must set confirm=True to delete. This action is permanent.",
+            "scenario": params.name_or_id,
+        })
+    
+    try:
+        # Use write connection for the delete operation
+        with _get_manager().write_manager() as manager:
+            deleted = manager.delete_scenario(params.name_or_id, confirm=True)
+        
+        return json.dumps({
+            "status": "deleted" if deleted else "not_found",
+            "scenario": params.name_or_id,
+        })
+    except ValueError as e:
+        return json.dumps({"error": str(e)})
+    except Exception as e:
+        return json.dumps({"error": f"Delete failed: {str(e)}"})
 
 
 # =============================================================================
