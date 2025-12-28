@@ -553,7 +553,7 @@ class TestNetworkSimConcurrentAccess:
             result = conn.execute("""
                 SELECT COUNT(*)
                 FROM network.providers p
-                JOIN ref_svi_county s ON p.state = s.stateabbr
+                JOIN population.svi_county s ON p.county_fips = s.stcnty
                 LIMIT 1
             """).fetchone()[0]
             assert result >= 0
@@ -587,50 +587,50 @@ class TestPopulationSimConcurrentAccess:
             raise
     
     def test_places_county_query_read_only(self, production_db):
-        """Can query ref_places_county with read-only connection."""
+        """Can query population.places_county with read-only connection."""
         self._check_can_connect(production_db)
         
         conn = duckdb.connect(str(production_db), read_only=True)
         try:
             result = conn.execute(
-                "SELECT COUNT(*) FROM ref_places_county"
+                "SELECT COUNT(*) FROM population.places_county"
             ).fetchone()[0]
             # Should have ~3,143 counties
             assert result > 3000
         except duckdb.CatalogException:
-            pytest.skip("ref_places_county table not found")
+            pytest.skip("population.places_county table not found")
         finally:
             conn.close()
     
     def test_svi_county_query_read_only(self, production_db):
-        """Can query ref_svi_county with read-only connection."""
+        """Can query population.svi_county with read-only connection."""
         self._check_can_connect(production_db)
         
         conn = duckdb.connect(str(production_db), read_only=True)
         try:
             result = conn.execute(
-                "SELECT COUNT(*) FROM ref_svi_county"
+                "SELECT COUNT(*) FROM population.svi_county"
             ).fetchone()[0]
             # Should have ~3,144 counties
             assert result > 3000
         except duckdb.CatalogException:
-            pytest.skip("ref_svi_county table not found")
+            pytest.skip("population.svi_county table not found")
         finally:
             conn.close()
     
     def test_adi_blockgroup_query_read_only(self, production_db):
-        """Can query ref_adi_blockgroup with read-only connection."""
+        """Can query population.adi_blockgroup with read-only connection."""
         self._check_can_connect(production_db)
         
         conn = duckdb.connect(str(production_db), read_only=True)
         try:
             result = conn.execute(
-                "SELECT COUNT(*) FROM ref_adi_blockgroup"
+                "SELECT COUNT(*) FROM population.adi_blockgroup"
             ).fetchone()[0]
             # Should have ~242,336 block groups
             assert result > 200000
         except duckdb.CatalogException:
-            pytest.skip("ref_adi_blockgroup table not found")
+            pytest.skip("population.adi_blockgroup table not found")
         finally:
             conn.close()
 

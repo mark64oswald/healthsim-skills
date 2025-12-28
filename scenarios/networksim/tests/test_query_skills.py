@@ -206,7 +206,7 @@ class TestHospitalQuality:
         """Join facilities with quality ratings."""
         result = db_conn.execute("""
             SELECT 
-                f.facility_name,
+                f.name,
                 f.state,
                 hq.hospital_overall_rating
             FROM network.facilities f
