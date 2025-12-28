@@ -265,11 +265,11 @@ For SQL-based analysis, reference data is also available in the DuckDB database:
 
 | Table | Source | Purpose |
 |-------|--------|---------|
-| `ref_cdc_places_tract` | CDC PLACES | Tract-level health indicators |
-| `ref_cdc_places_county` | CDC PLACES | County-level health indicators |
-| `ref_svi_tract` | CDC SVI | Tract-level vulnerability |
-| `ref_svi_county` | CDC SVI | County-level vulnerability |
-| `ref_adi_blockgroup` | ADI | Block group deprivation |
+| `population.places_tract` | CDC PLACES | Tract-level health indicators |
+| `population.places_county` | CDC PLACES | County-level health indicators |
+| `population.svi_tract` | CDC SVI | Tract-level vulnerability |
+| `population.svi_county` | CDC SVI | County-level vulnerability |
+| `population.adi_blockgroup` | ADI | Block group deprivation |
 
 See [Data Architecture](../../docs/data-architecture.md) for details.
 

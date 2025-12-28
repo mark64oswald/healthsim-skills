@@ -67,11 +67,11 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 | Table | Rows | Description |
 |-------|------|-------------|
-| `ref_places_county` | 3,143 | CDC PLACES county-level health indicators |
-| `ref_places_tract` | 83,522 | CDC PLACES tract-level health indicators |
-| `ref_svi_county` | 3,144 | Social Vulnerability Index by county |
-| `ref_svi_tract` | 84,120 | Social Vulnerability Index by tract |
-| `ref_adi_blockgroup` | 242,336 | Area Deprivation Index by block group |
+| `population.places_county` | 3,143 | CDC PLACES county-level health indicators |
+| `population.places_tract` | 83,522 | CDC PLACES tract-level health indicators |
+| `population.svi_county` | 3,144 | Social Vulnerability Index by county |
+| `population.svi_tract` | 84,120 | Social Vulnerability Index by tract |
+| `population.adi_blockgroup` | 242,336 | Area Deprivation Index by block group |
 
 ## Usage Examples
 

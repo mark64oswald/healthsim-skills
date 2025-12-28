@@ -317,7 +317,7 @@ def query(params: QueryInput) -> str:
     """Execute a SQL query against the HealthSim database.
     
     Only SELECT queries are allowed. Use this for:
-    - Exploring reference data (ref_places_county, ref_svi_tract, etc.)
+    - Exploring reference data (population.places_county, population.svi_tract, etc.)
     - Querying entity tables (patients, members, encounters, claims)
     - Running analytics queries
     
@@ -424,13 +424,13 @@ def query_reference(params: QueryReferenceInput) -> str:
     """
     conn = _get_manager().get_read_connection()
     
-    # Map short names to full table names
+    # Map short names to full schema-qualified table names
     table_map = {
-        "places_county": "ref_places_county",
-        "places_tract": "ref_places_tract",
-        "svi_county": "ref_svi_county",
-        "svi_tract": "ref_svi_tract",
-        "adi_blockgroup": "ref_adi_blockgroup",
+        "places_county": "population.places_county",
+        "places_tract": "population.places_tract",
+        "svi_county": "population.svi_county",
+        "svi_tract": "population.svi_tract",
+        "adi_blockgroup": "population.adi_blockgroup",
     }
     
     table = table_map.get(params.table)
