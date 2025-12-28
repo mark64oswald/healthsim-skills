@@ -116,10 +116,19 @@ NetworkSim integrates with other HealthSim products:
 - Network adequacy scoring
 - Recruitment priority identification
 
-### Quality-Based Queries (Coming Soon - Session 7)
+### Quality-Based Queries (Complete - Session 7) ✅
 
-**hospital-quality-search** - Filter hospitals by CMS star ratings
-**physician-quality-search** - Search by MIPS scores and certifications
+**[hospital-quality-search](query/hospital-quality-search.md)** - Search hospitals by CMS star ratings
+- Filter by 1-5 star ratings or "Not Available"
+- Quality tier network development (Premium/Preferred/Standard)
+- Geographic quality distribution analysis
+- Quality gap identification by county
+
+**[physician-quality-search](query/physician-quality-search.md)** - Search physicians by quality indicators
+- Credential-based filtering (MD, DO, NP, PA)
+- Specialty board certification inference
+- Hospital affiliation quality proxies
+- Framework for MIPS/satisfaction metrics
 
 ### Advanced Analytics (Coming Soon - Session 8)
 
@@ -275,16 +284,16 @@ python scripts/test_search_skills.py
 ## Development Status
 
 **Version**: 2.0.0  
-**Status**: Phase 2 Active (Network & Analysis Skills Complete)
+**Status**: Phase 2 Complete (Query Skills), Phase 3 Ready
 
 ### Phase 1: Data Infrastructure ✅ Complete
 - [x] Session 1-3: NPPES data acquisition and import (8.9M providers)
 - [x] Session 4: Geographic enrichment and validation (97.77% coverage)
 
-### Phase 2: Query Skills Development 🔄 In Progress
+### Phase 2: Query Skills Development ✅ Complete
 - [x] Session 5: Provider & facility search skills ✅
 - [x] Session 6: Network & analysis skills ✅
-- [ ] Session 7: Quality-based query skills
+- [x] Session 7: Quality-based query skills ✅
 
 ### Phase 3: Integration & Advanced Analytics
 - [ ] Session 8-10: Advanced analysis skills
