@@ -155,10 +155,27 @@ class ConnectionManager:
         Uses shared lock - allows concurrent readers from other processes.
         Connection is reused across all read operations.
         Will be automatically reopened after write operations.
+        
+        Includes retry logic in case a previous write lock hasn't fully released.
         """
+        import time
+        
         if self._read_conn is None:
-            self._read_conn = duckdb.connect(str(self.db_path), read_only=True)
-            print(f"  Opened read-only connection to {self.db_path}", file=sys.stderr)
+            max_retries = 3
+            retry_delay = 0.1  # 100ms between retries
+            
+            for attempt in range(max_retries):
+                try:
+                    self._read_conn = duckdb.connect(str(self.db_path), read_only=True)
+                    print(f"  Opened read-only connection to {self.db_path}", file=sys.stderr)
+                    break
+                except Exception as e:
+                    if attempt < max_retries - 1 and "lock" in str(e).lower():
+                        print(f"  Read connection attempt {attempt + 1} failed (lock), retrying...", file=sys.stderr)
+                        time.sleep(retry_delay)
+                        retry_delay *= 2  # Exponential backoff
+                    else:
+                        raise
         return self._read_conn
     
     def get_read_manager(self) -> StateManager:
@@ -195,17 +212,31 @@ class ConnectionManager:
             with manager.write_connection() as conn:
                 conn.execute("INSERT INTO ...")
         """
+        import time
+        
         # Close read connection first - DuckDB doesn't allow mixed configurations
         self._close_read_connection()
+        
+        # Small delay to ensure read connection is fully released
+        time.sleep(0.05)
         
         conn = duckdb.connect(str(self.db_path))  # read_only=False (default)
         print(f"  Opened read-write connection for write operation", file=sys.stderr)
         try:
             yield conn
         finally:
+            # Explicit checkpoint to ensure all changes are flushed to disk
+            # This helps prevent lock issues when reopening read connection
+            try:
+                conn.execute("CHECKPOINT")
+                print(f"  Checkpointed database", file=sys.stderr)
+            except Exception as e:
+                print(f"  Checkpoint warning: {e}", file=sys.stderr)
+            
             conn.close()
             print(f"  Closed read-write connection (write complete)", file=sys.stderr)
-            # Read connection will reopen lazily on next read
+            # Small delay to ensure write lock is fully released
+            time.sleep(0.05)
     
     @contextmanager
     def write_manager(self):
