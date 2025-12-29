@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **[MCP Server]** DuckDB connection configuration conflict resolved (2024-12-29)
+  - Root cause: DuckDB does NOT allow simultaneous connections with different `read_only` configurations to the same database file, even within the same process
+  - Symptom: "Can't open a connection to same database file with a different configuration" when saving scenarios after querying reference data
+  - Solution: Implemented **close-before-write pattern** in ConnectionManager:
+    - Read operations use persistent read-only connection (fast, reusable)
+    - Before write operations, close the read connection first
+    - Open read-write connection, perform write, close it
+    - Read connection reopens lazily on next read
+  - New test file: `test_close_before_write.py` with 11 comprehensive tests
+  - Updated documentation: `docs/mcp/duckdb-connection-architecture.md`
+  - All 48 MCP server tests passing
+
 ### Added
 
 - **[MCP Server]** HealthSim MCP Server - Single DuckDB Connection Holder (2024-12-27)

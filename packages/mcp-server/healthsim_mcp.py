@@ -2,9 +2,14 @@
 HealthSim MCP Server.
 
 Provides MCP tools for interacting with the HealthSim DuckDB database.
-Uses dual-connection pattern for concurrent access:
-- Persistent read-only connection for queries (shared lock)
-- On-demand write connection for modifications (brief exclusive lock)
+Uses close-before-write pattern for reliable database access:
+- Persistent read-only connection for queries (shared lock, fast repeated reads)
+- Write operations close read connection first, then open read-write connection
+- Read connection reopens lazily after writes complete
+
+This pattern is required because DuckDB does not allow simultaneous connections
+with different read_only configurations to the same database file, even within
+the same process.
 
 See docs/mcp/duckdb-connection-architecture.md for design details.
 
@@ -66,18 +71,25 @@ print(f"  DB exists: {DB_PATH.exists()}", file=sys.stderr)
 
 
 # =============================================================================
-# Connection Manager - Dual Connection Pattern
+# Connection Manager - Close-Before-Write Pattern
 # =============================================================================
 
 class ConnectionManager:
     """
-    Manages DuckDB connections using dual-connection pattern.
+    Manages DuckDB connections using close-before-write pattern.
     
+    DuckDB Constraint: Cannot have simultaneous connections with different
+    read_only configurations to the same database file, even in the same process.
+    
+    Solution:
     - Read operations: Use persistent read-only connection (shared lock)
-    - Write operations: Use on-demand connection (brief exclusive lock)
+    - Write operations: Close read connection first, open read-write connection,
+      perform write, close write connection. Read connection reopens lazily.
     
-    This allows external processes (pytest, CLI tools) to access the database
-    concurrently while MCP server is running.
+    This allows:
+    - Fast repeated reads (connection reuse)
+    - Reliable writes (no configuration conflicts)
+    - External process access during reads (shared lock)
     """
     
     def __init__(self, db_path: Path):
@@ -91,6 +103,7 @@ class ConnectionManager:
         
         Uses shared lock - allows concurrent readers from other processes.
         Connection is reused across all read operations.
+        Will be automatically reopened after write operations.
         """
         if self._read_conn is None:
             self._read_conn = duckdb.connect(str(self.db_path), read_only=True)
@@ -103,23 +116,45 @@ class ConnectionManager:
             self._read_manager = StateManager(connection=self.get_read_connection())
         return self._read_manager
     
+    def _close_read_connection(self):
+        """
+        Close the read connection.
+        
+        Called before write operations to avoid DuckDB configuration conflicts.
+        The read connection will be lazily reopened on the next read operation.
+        """
+        if self._read_conn is not None:
+            self._read_conn.close()
+            self._read_conn = None
+            self._read_manager = None
+            print(f"  Closed read-only connection (preparing for write)", file=sys.stderr)
+    
     @contextmanager
     def write_connection(self):
         """
         Context manager for write operations.
         
-        Acquires exclusive lock, performs operation, releases immediately.
-        Ensures write lock is held for minimum duration.
+        IMPORTANT: Closes read connection first to avoid DuckDB's constraint
+        against mixing read_only=True and read_only=False connections to the
+        same database file.
+        
+        The read connection will be lazily reopened on the next read operation.
         
         Usage:
             with manager.write_connection() as conn:
                 conn.execute("INSERT INTO ...")
         """
-        conn = duckdb.connect(str(self.db_path))
+        # Close read connection first - DuckDB doesn't allow mixed configurations
+        self._close_read_connection()
+        
+        conn = duckdb.connect(str(self.db_path))  # read_only=False (default)
+        print(f"  Opened read-write connection for write operation", file=sys.stderr)
         try:
             yield conn
         finally:
             conn.close()
+            print(f"  Closed read-write connection (write complete)", file=sys.stderr)
+            # Read connection will reopen lazily on next read
     
     @contextmanager
     def write_manager(self):
