@@ -62,7 +62,36 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 |------|-------------|
 | `healthsim_query` | Execute read-only SQL queries |
 | `healthsim_query_reference` | Query PopulationSim reference data |
+| `healthsim_search_providers` | Search REAL NPPES provider data (8.9M records) |
 | `healthsim_tables` | List all database tables |
+
+## Real vs Synthetic Data Decision
+
+HealthSim uses a "real data first" approach. **Always query real reference data before generating synthetic data**:
+
+| Entity Type | Data Source | Why |
+|-------------|-------------|-----|
+| **Providers/Facilities** | Use `healthsim_search_providers` (NPPES) | 8.9M real registered providers |
+| **Demographics/Health** | Use `healthsim_query_reference` (CDC/SVI) | Real population health data |
+| **Patients/Members/Claims** | Generate SYNTHETIC | PHI - must be synthetic |
+
+### When to Use Real vs Synthetic
+
+```
+User: "Add PCPs to the Rewire Health scenario"
+
+✅ CORRECT: Query real NPPES data first
+   healthsim_search_providers(state="CA", city="San Diego", specialty="Family Medicine")
+   Then add real providers to scenario
+
+❌ WRONG: Generate synthetic providers immediately
+   healthsim_add_entities(entities={"providers": [generated_fake_npis...]})
+```
+
+**Only generate synthetic providers if:**
+- Real data is unavailable for the geography
+- User explicitly requests synthetic data
+- Testing requires controlled/predictable NPIs
 
 ## save_scenario vs add_entities
 
@@ -165,6 +194,24 @@ Then for subsequent batches:
 - entities: {"patients": [...]}
 - batch_number: 2
 - total_batches: 4
+```
+
+### Search for real providers
+```
+Use healthsim_search_providers with:
+- state: "CA"
+- city: "San Diego"
+- specialty: "Family Medicine"
+- entity_type: "individual"
+- limit: 50
+```
+
+Or search by taxonomy code:
+```
+Use healthsim_search_providers with:
+- state: "CA"
+- taxonomy_code: "207Q00000X"  # Family Medicine
+- limit: 20
 ```
 
 ### Run custom SQL

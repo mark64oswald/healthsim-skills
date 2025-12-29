@@ -22,7 +22,13 @@ Tools provided:
 - healthsim_query: Execute read-only SQL queries
 - healthsim_get_summary: Get token-efficient scenario summary
 - healthsim_query_reference: Query PopulationSim reference data
+- healthsim_search_providers: Search real NPPES provider data
 - healthsim_tables: List all tables in the database
+
+DATA SOURCE DECISION GUIDE:
+- Providers/Facilities: Use healthsim_search_providers to query REAL NPPES data (8.9M providers)
+- PHI entities (patients, members, claims): Generate SYNTHETIC data
+- Reference data (demographics, health indicators): Use healthsim_query_reference for real CDC/SVI data
 
 Usage:
     python healthsim_mcp.py
@@ -309,6 +315,40 @@ class QueryReferenceInput(BaseModel):
     state: Optional[str] = Field(default=None, description="Filter by state abbreviation (e.g., 'CA')")
     county: Optional[str] = Field(default=None, description="Filter by county name")
     limit: int = Field(default=20, description="Max rows", ge=1, le=100)
+
+
+class SearchProvidersInput(BaseModel):
+    """Input for searching real NPPES provider data.
+    
+    This searches REAL registered providers from the NPPES database (8.9M records).
+    Use this BEFORE generating synthetic providers to check if real data is available.
+    """
+    model_config = ConfigDict(str_strip_whitespace=True)
+    
+    # Location filters
+    state: str = Field(..., description="State abbreviation (e.g., 'CA', 'TX')")
+    city: Optional[str] = Field(default=None, description="City name (optional)")
+    county_fips: Optional[str] = Field(default=None, description="5-digit county FIPS code (optional)")
+    zip_code: Optional[str] = Field(default=None, description="ZIP code (5 digits, optional)")
+    
+    # Specialty filters
+    specialty: Optional[str] = Field(
+        default=None, 
+        description="Specialty keyword (e.g., 'Family Medicine', 'Cardiology', 'Internal Medicine')"
+    )
+    taxonomy_code: Optional[str] = Field(
+        default=None, 
+        description="NUCC taxonomy code (e.g., '207Q00000X' for Family Medicine)"
+    )
+    
+    # Entity type
+    entity_type: Optional[str] = Field(
+        default=None,
+        description="'individual' (NPI-1) or 'organization' (NPI-2). Default: both"
+    )
+    
+    # Results
+    limit: int = Field(default=50, description="Max results to return", ge=1, le=200)
 
 
 # =============================================================================
@@ -644,6 +684,166 @@ def list_tables() -> str:
     }, indent=2)
 
 
+@mcp.tool(
+    name="healthsim_search_providers",
+    annotations={
+        "title": "Search Real NPPES Providers",
+        "readOnlyHint": True,
+        "destructiveHint": False,
+        "idempotentHint": True,
+    }
+)
+def search_providers(params: SearchProvidersInput) -> str:
+    """Search real healthcare providers from NPPES data (8.9M records).
+    
+    ⚠️ USE THIS TOOL FIRST when providers are needed for a scenario.
+    Returns REAL, registered healthcare providers with valid NPIs.
+    Only generate synthetic providers if real data is unavailable or explicitly requested.
+    
+    Common taxonomy codes for Primary Care:
+    - 207Q00000X: Family Medicine
+    - 207R00000X: Internal Medicine
+    - 208D00000X: General Practice
+    - 363L00000X: Nurse Practitioner
+    - 363A00000X: Physician Assistant
+    
+    Common taxonomy codes for Specialists:
+    - 207RC0000X: Cardiovascular Disease
+    - 207RG0100X: Gastroenterology
+    - 2084N0400X: Neurology
+    - 207RX0202X: Medical Oncology
+    - 2086S0122X: Orthopedic Surgery
+    
+    Returns:
+        JSON with provider records including NPI, name, specialty, location
+    """
+    conn = _get_manager().get_read_connection()
+    
+    # Check if network.providers table exists
+    try:
+        table_check = conn.execute(
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'providers'"
+        ).fetchone()
+        if not table_check or table_check[0] == 0:
+            return json.dumps({
+                "error": "NPPES provider data not loaded. Run NetworkSim data import first.",
+                "hint": "See skills/networksim/data/ for import instructions",
+            })
+    except Exception:
+        return json.dumps({
+            "error": "network.providers table not available",
+            "hint": "NPPES provider data may not be loaded in this database",
+        })
+    
+    # Build query with filters
+    conditions = ["1=1"]  # Base condition for easier AND chaining
+    query_params = []
+    
+    # State is required
+    conditions.append("practice_state = ?")
+    query_params.append(params.state.upper())
+    
+    # Optional filters
+    if params.city:
+        conditions.append("practice_city ILIKE ?")
+        query_params.append(f"%{params.city}%")
+    
+    if params.county_fips:
+        conditions.append("county_fips = ?")
+        query_params.append(params.county_fips)
+    
+    if params.zip_code:
+        conditions.append("practice_zip LIKE ?")
+        query_params.append(f"{params.zip_code}%")
+    
+    if params.taxonomy_code:
+        # Search across all 4 taxonomy columns
+        conditions.append("(taxonomy_1 = ? OR taxonomy_2 = ? OR taxonomy_3 = ? OR taxonomy_4 = ?)")
+        query_params.extend([params.taxonomy_code] * 4)
+    elif params.specialty:
+        # Search taxonomy descriptions (requires join or subquery)
+        # For now, search in common taxonomy codes based on specialty keyword
+        specialty_lower = params.specialty.lower()
+        taxonomy_patterns = []
+        
+        if 'family' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '207Q%'")
+        if 'internal' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '207R%'")
+        if 'cardio' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '207RC%'")
+        if 'neuro' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '2084N%'")
+        if 'gastro' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '207RG%'")
+        if 'oncol' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '207RX%'")
+        if 'ortho' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '2086S%'")
+        if 'nurse' in specialty_lower or 'np' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '363L%'")
+        if 'physician assistant' in specialty_lower or 'pa-c' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '363A%'")
+        if 'hospital' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '282N%'")
+        if 'urgent' in specialty_lower:
+            taxonomy_patterns.append("taxonomy_1 LIKE '261QU%'")
+        
+        if taxonomy_patterns:
+            conditions.append(f"({' OR '.join(taxonomy_patterns)})")
+    
+    if params.entity_type:
+        if params.entity_type.lower() == 'individual':
+            conditions.append("entity_type_code = 1")
+        elif params.entity_type.lower() == 'organization':
+            conditions.append("entity_type_code = 2")
+    
+    where_clause = " AND ".join(conditions)
+    
+    sql = f"""
+        SELECT 
+            npi,
+            entity_type_code,
+            CASE WHEN entity_type_code = 1 THEN first_name || ' ' || last_name
+                 ELSE organization_name END as name,
+            credential,
+            taxonomy_1 as primary_taxonomy,
+            practice_address,
+            practice_city,
+            practice_state,
+            practice_zip,
+            county_fips,
+            phone
+        FROM network.providers
+        WHERE {where_clause}
+        LIMIT {params.limit}
+    """
+    
+    try:
+        result = conn.execute(sql, query_params).fetchall()
+        columns = [desc[0] for desc in conn.description]
+        
+        rows = []
+        for row in result:
+            rows.append({col: val for col, val in zip(columns, row)})
+        
+        return json.dumps({
+            "source": "NPPES (National Plan and Provider Enumeration System)",
+            "data_type": "REAL registered providers",
+            "filters_applied": {
+                "state": params.state,
+                "city": params.city,
+                "specialty": params.specialty,
+                "taxonomy_code": params.taxonomy_code,
+                "entity_type": params.entity_type,
+            },
+            "result_count": len(rows),
+            "providers": rows,
+        }, indent=2, default=str)
+    except Exception as e:
+        return json.dumps({"error": str(e)})
+
+
 # =============================================================================
 # Tool Implementations - WRITE Operations (use on-demand write connection)
 # =============================================================================
@@ -719,6 +919,11 @@ def save_scenario(params: SaveScenarioInput) -> str:
 )
 def add_entities(params: AddEntitiesInput) -> str:
     """Add entities incrementally to a scenario (RECOMMENDED for most use cases).
+    
+    ⚠️ REAL vs SYNTHETIC DATA DECISION:
+    - For PROVIDERS/FACILITIES: Use healthsim_search_providers FIRST to get real NPPES data
+    - For PHI entities (patients, members, claims): Generate synthetic data here
+    - Only generate synthetic providers if real data unavailable or explicitly requested
     
     ✅ USE THIS TOOL when:
     - Total entity count exceeds 50 (avoids token limit truncation)
