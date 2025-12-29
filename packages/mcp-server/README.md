@@ -66,14 +66,25 @@ Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ## save_scenario vs add_entities
 
-The two write tools have different behaviors:
+The two write tools have different behaviors. **Claude automatically selects the right tool** based on entity count:
 
 | Feature | `save_scenario` | `add_entities` |
 |---------|-----------------|----------------|
+| **When to use** | ≤50 entities total | >50 entities OR incremental |
 | Behavior | Replace all entities | Upsert (add/update only) |
 | Safe for batching | ❌ No (overwrites) | ✅ Yes |
 | Creates scenario | Yes | Yes (if not exists) |
-| Recommended for | Small, complete datasets | Large, batched datasets |
+| Token efficient | ❌ Echoes all data | ✅ Returns summary only |
+
+### Automatic Tool Selection
+
+The tool descriptions guide Claude to automatically choose:
+
+- **≤50 entities**: `save_scenario` (simple, atomic)
+- **>50 entities**: `add_entities` in batches of ~50 (avoids truncation)
+- **Adding to existing**: Always `add_entities` (upsert, non-destructive)
+
+You don't need to specify which tool to use - just describe what you want and Claude will pick appropriately.
 
 ### When to use `add_entities`
 

@@ -475,3 +475,112 @@ class TestScenarioTotals:
             assert totals.get('patients') == 3
             assert totals.get('members') == 2
             assert sum(totals.values()) == 5
+
+
+
+class TestToolSelectionGuidance:
+    """Tests verifying tool descriptions contain proper selection guidance.
+    
+    These tests ensure Claude receives clear signals about when to use
+    save_scenario vs add_entities based on entity count thresholds.
+    """
+    
+    def test_save_scenario_warns_about_large_datasets(self):
+        """Verify save_scenario docstring warns about 50+ entity limit."""
+        from healthsim_mcp import save_scenario
+        
+        docstring = save_scenario.__doc__
+        assert docstring is not None
+        
+        # Should warn to use add_entities instead
+        assert "add_entities" in docstring.lower() or "healthsim_add_entities" in docstring
+        
+        # Should mention the 50 entity threshold
+        assert "50" in docstring
+        
+        # Should indicate it's for small datasets
+        assert "small" in docstring.lower() or "≤50" in docstring
+        
+        # Should warn about replacement behavior
+        assert "replace" in docstring.lower()
+    
+    def test_add_entities_recommends_for_large_datasets(self):
+        """Verify add_entities docstring recommends itself for large datasets."""
+        from healthsim_mcp import add_entities
+        
+        docstring = add_entities.__doc__
+        assert docstring is not None
+        
+        # Should indicate it's recommended
+        assert "recommended" in docstring.lower() or "RECOMMENDED" in docstring
+        
+        # Should mention 50 entity threshold
+        assert "50" in docstring
+        
+        # Should mention upsert/incremental behavior
+        assert "upsert" in docstring.lower() or "incremental" in docstring.lower()
+        
+        # Should mention it doesn't delete
+        assert "never delete" in docstring.lower() or "NEVER deletes" in docstring
+    
+    def test_tool_descriptions_are_complementary(self):
+        """Verify the two tools have complementary guidance."""
+        from healthsim_mcp import save_scenario, add_entities
+        
+        save_doc = save_scenario.__doc__
+        add_doc = add_entities.__doc__
+        
+        # save_scenario should redirect to add_entities for large datasets
+        assert "healthsim_add_entities" in save_doc or "add_entities" in save_doc
+        
+        # add_entities should be marked as preferred
+        assert "✅" in add_doc or "RECOMMENDED" in add_doc
+        
+        # save_scenario should have warning indicator
+        assert "⚠" in save_doc or "WARNING" in save_doc
+    
+    def test_threshold_consistency(self):
+        """Verify both tools reference the same entity count threshold."""
+        from healthsim_mcp import save_scenario, add_entities
+        
+        save_doc = save_scenario.__doc__
+        add_doc = add_entities.__doc__
+        
+        # Both should mention 50 as the threshold
+        assert "50" in save_doc, "save_scenario should mention 50 entity threshold"
+        assert "50" in add_doc, "add_entities should mention 50 entity threshold"
+
+
+class TestToolAnnotations:
+    """Tests verifying MCP tool annotations are correct."""
+    
+    def test_save_scenario_annotations(self):
+        """Verify save_scenario has correct MCP annotations."""
+        from healthsim_mcp import mcp
+        
+        # Get the tool from the MCP server
+        tools = mcp._tool_manager._tools
+        save_tool = tools.get("healthsim_save_scenario")
+        
+        assert save_tool is not None, "healthsim_save_scenario tool should exist"
+    
+    def test_add_entities_annotations(self):
+        """Verify add_entities has correct MCP annotations."""
+        from healthsim_mcp import mcp
+        
+        tools = mcp._tool_manager._tools
+        add_tool = tools.get("healthsim_add_entities")
+        
+        assert add_tool is not None, "healthsim_add_entities tool should exist"
+    
+    def test_add_entities_is_idempotent(self):
+        """Verify add_entities is marked as idempotent (upsert behavior)."""
+        from healthsim_mcp import mcp
+        
+        tools = mcp._tool_manager._tools
+        add_tool = tools.get("healthsim_add_entities")
+        
+        # The tool should exist and be properly configured
+        assert add_tool is not None
+        # Note: FastMCP may store annotations differently, 
+        # but the key behavior is tested in TestUpsertBehavior

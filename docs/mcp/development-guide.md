@@ -175,7 +175,36 @@ Tool(name="gen_ent")  # Cryptic
 Tool(name="generate_entity")  # Clear, action-verb
 ```
 
-### 2. Descriptive Input Schemas
+### 2. Tool Selection Guidance in Descriptions
+
+When multiple tools can handle similar operations, include explicit guidance in the docstrings about when to use each tool:
+
+```python
+@mcp.tool()
+def save_scenario(...):
+    """Save a scenario to the database.
+    
+    ⚠️  USE healthsim_add_entities INSTEAD when:
+    - Total entity count exceeds 50 (to avoid token limit truncation)
+    - Building scenarios incrementally across multiple calls
+    
+    This tool REPLACES ALL entities. Only use for small, complete datasets.
+    """
+
+@mcp.tool()
+def add_entities(...):
+    """Add entities incrementally (RECOMMENDED for most use cases).
+    
+    ✅ USE THIS TOOL when:
+    - Total entity count exceeds 50
+    - Building scenarios in batches
+    - Adding to existing scenarios
+    """
+```
+
+This ensures Claude automatically selects the right tool based on the use case.
+
+### 3. Descriptive Input Schemas
 
 ❌ **Bad:**
 ```python
@@ -204,7 +233,7 @@ inputSchema={
 }
 ```
 
-### 3. Helpful Error Messages
+### 4. Helpful Error Messages
 
 ```python
 try:
@@ -216,7 +245,7 @@ except ValueError as e:
     )]
 ```
 
-### 4. Return Structured Output
+### 5. Return Structured Output
 
 ```python
 return [TextContent(

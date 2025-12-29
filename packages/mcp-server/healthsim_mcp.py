@@ -660,8 +660,13 @@ def list_tables() -> str:
 def save_scenario(params: SaveScenarioInput) -> str:
     """Save a scenario to the HealthSim database.
     
-    WARNING: When overwrite=True, this REPLACES ALL entities in the scenario.
-    For incremental additions, use healthsim_add_entities instead.
+    ⚠️  USE healthsim_add_entities INSTEAD when:
+    - Total entity count exceeds 50 (to avoid token limit truncation)
+    - Building scenarios incrementally across multiple calls
+    - Adding entities to an existing scenario
+    
+    This tool REPLACES ALL entities in one atomic operation.
+    Only use for small, complete datasets (≤50 entities total).
     
     Entities should be a dict mapping entity type to list of entities:
     {
@@ -713,13 +718,20 @@ def save_scenario(params: SaveScenarioInput) -> str:
     }
 )
 def add_entities(params: AddEntitiesInput) -> str:
-    """Add entities incrementally to a scenario without replacing existing data.
+    """Add entities incrementally to a scenario (RECOMMENDED for most use cases).
     
-    RECOMMENDED for large datasets. This tool:
-    - ADDS entities without deleting existing ones
-    - Handles duplicates gracefully (upsert: update if exists, insert if new)
-    - Returns a summary instead of echoing all data (token-efficient)
-    - Supports batched operations across multiple calls
+    ✅ USE THIS TOOL when:
+    - Total entity count exceeds 50 (avoids token limit truncation)
+    - Building scenarios in batches across multiple calls
+    - Adding new entity types to existing scenarios
+    - Updating specific entities without affecting others
+    
+    This tool uses UPSERT logic:
+    - Adds new entities
+    - Updates existing entities (matched by entity_id)
+    - NEVER deletes entities not in the current payload
+    
+    Returns a summary (not full data) to stay within token limits.
     
     Usage patterns:
     
