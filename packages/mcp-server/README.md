@@ -93,6 +93,79 @@ User: "Add PCPs to the Rewire Health scenario"
 - User explicitly requests synthetic data
 - Testing requires controlled/predictable NPIs
 
+## Entity Type Taxonomy
+
+HealthSim enforces a clear separation between **scenario data**, **relationship data**, and **reference data**:
+
+### Scenario Data (Stored per-scenario)
+
+These are synthetic PHI entities that are generated for each scenario:
+
+| Entity Type | Description | Example Fields |
+|-------------|-------------|----------------|
+| `patients` | Synthetic patient demographics | patient_id, name, dob, address |
+| `members` | Synthetic insurance enrollment | member_id, patient_id, plan_id |
+| `claims` | Synthetic claims/utilization | claim_id, member_id, service_date |
+| `claim_lines` | Synthetic claim line items | claim_line_id, procedure_code |
+| `encounters` | Synthetic clinical encounters | encounter_id, diagnosis_codes |
+| `prescriptions` | Synthetic medication records | rx_id, ndc, quantity |
+| `subjects` | Clinical trial subjects | subject_id, enrollment_date |
+
+### Relationship Data (Stored per-scenario)
+
+These link scenario data to reference data via IDs/NPIs:
+
+| Entity Type | Description | Key Fields |
+|-------------|-------------|------------|
+| `pcp_assignments` | Member → Provider relationships | member_id, provider_npi, effective_date |
+| `network_contracts` | Plan → Provider contracts | plan_id, provider_npi, contract_type |
+| `authorizations` | Service authorizations | member_id, service_code, provider_npi |
+| `referrals` | Provider → Provider referrals | member_id, from_npi, to_npi |
+| `facility_assignments` | Member → Facility assignments | member_id, facility_npi |
+
+### Reference Data (Query directly, never copy)
+
+These exist in shared tables and should **NEVER** be added to scenarios:
+
+| Entity Type | Query Tool | Table |
+|-------------|-----------|-------|
+| `providers` | `healthsim_search_providers` | `network.providers` (8.9M records) |
+| `facilities` | `healthsim_search_providers` | `network.providers` (entity_type=2) |
+| `pharmacies` | `healthsim_query` | `network.providers` (taxonomy LIKE '333600%') |
+| `hospitals` | `healthsim_search_providers` | `network.providers` (taxonomy LIKE '282N%') |
+
+### Validation Enforcement
+
+The `healthsim_add_entities` and `healthsim_save_scenario` tools will **reject** attempts to store reference data with a helpful error message:
+
+```
+❌ REJECTED: 'providers' is REFERENCE DATA and should not be stored in scenarios.
+
+CORRECT APPROACH:
+  → To QUERY providers: use healthsim_search_providers or healthsim_query
+  → To LINK members to providers: add 'pcp_assignments' with provider NPIs
+  → For analytics: JOIN scenario members to network.providers directly
+```
+
+### Correct Pattern Example
+
+```python
+# ❌ WRONG: Copying provider data into scenario
+healthsim_add_entities(entities={
+    "providers": [{"npi": "123", "name": "Dr. Smith", ...}]  # REJECTED
+})
+
+# ✅ CORRECT: Store relationship, query reference data
+healthsim_add_entities(entities={
+    "pcp_assignments": [{"member_id": "M001", "provider_npi": "1234567890"}]
+})
+
+# For analytics, JOIN to reference table:
+# SELECT m.*, p.name as pcp_name 
+# FROM scenario_members m
+# JOIN network.providers p ON m.provider_npi = p.npi
+```
+
 ## save_scenario vs add_entities
 
 The two write tools have different behaviors. **Claude automatically selects the right tool** based on entity count:

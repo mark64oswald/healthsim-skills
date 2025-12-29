@@ -66,6 +66,46 @@ from healthsim.state.auto_persist import AutoPersistService
 
 
 # =============================================================================
+# Entity Type Taxonomy - Defines what can be stored in scenarios
+# =============================================================================
+
+# SCENARIO DATA: Synthetic PHI entities that are generated per-scenario
+# These are the ONLY entity types that should be stored in scenario_entities
+SCENARIO_ENTITY_TYPES = {
+    "patients",      # Synthetic patient demographics
+    "members",       # Synthetic insurance enrollment  
+    "claims",        # Synthetic claims/utilization
+    "claim_lines",   # Synthetic claim line items
+    "encounters",    # Synthetic clinical encounters
+    "prescriptions", # Synthetic medication records
+    "subjects",      # Clinical trial subjects
+}
+
+# RELATIONSHIP ENTITIES: Link scenario data to reference data via IDs/NPIs
+# These store relationships, not copies of reference data
+RELATIONSHIP_ENTITY_TYPES = {
+    "pcp_assignments",      # member_id → provider_npi
+    "network_contracts",    # plan_id → provider_npi  
+    "authorizations",       # member_id → service → provider_npi
+    "referrals",            # member_id → from_npi → to_npi
+    "facility_assignments", # member_id → facility_npi
+}
+
+# REFERENCE DATA: Real-world data that should NEVER be copied into scenarios
+# These exist in shared reference tables (network.providers, population.*, etc.)
+REFERENCE_ENTITY_TYPES = {
+    "providers",    # → Query network.providers (8.9M NPPES records)
+    "facilities",   # → Query network.providers with entity_type=2
+    "pharmacies",   # → Query network.providers with taxonomy LIKE '333600%'
+    "hospitals",    # → Query network.providers with taxonomy LIKE '282N%'
+    "organizations",# → Query network.providers with entity_type=2
+}
+
+# Combined set of allowed types for validation
+ALLOWED_ENTITY_TYPES = SCENARIO_ENTITY_TYPES | RELATIONSHIP_ENTITY_TYPES
+
+
+# =============================================================================
 # Configuration from Environment
 # =============================================================================
 
@@ -349,6 +389,52 @@ class SearchProvidersInput(BaseModel):
     
     # Results
     limit: int = Field(default=50, description="Max results to return", ge=1, le=200)
+
+
+# =============================================================================
+# Validation Helpers
+# =============================================================================
+
+def validate_entity_types(entities: Dict[str, List[Dict[str, Any]]]) -> Optional[str]:
+    """
+    Validate that entity types are appropriate for scenario storage.
+    
+    Returns None if valid, or an error message string if invalid.
+    """
+    for entity_type in entities.keys():
+        # Normalize to lowercase plural
+        normalized = entity_type.lower()
+        if not normalized.endswith('s'):
+            normalized += 's'
+        
+        # Check if it's reference data (should NOT be stored in scenarios)
+        if normalized in REFERENCE_ENTITY_TYPES:
+            return (
+                f"❌ REJECTED: '{entity_type}' is REFERENCE DATA and should not be stored in scenarios.\n\n"
+                f"Reference data like providers, facilities, and pharmacies already exists in shared tables "
+                f"(8.9M+ records in network.providers). Copying it into scenarios creates duplicates and "
+                f"causes data inconsistencies.\n\n"
+                f"CORRECT APPROACH:\n"
+                f"  → To QUERY providers: use healthsim_search_providers or healthsim_query\n"
+                f"  → To LINK members to providers: add 'pcp_assignments' with provider NPIs\n"
+                f"  → To define a plan network: add 'network_contracts' with contracted NPIs\n"
+                f"  → For analytics: JOIN scenario members to network.providers directly\n\n"
+                f"Example pcp_assignment (stores relationship, not provider data):\n"
+                f"  {{'member_id': 'M001', 'provider_npi': '1234567890', 'effective_date': '2024-01-01'}}"
+            )
+        
+        # Check if it's an allowed type
+        if normalized not in ALLOWED_ENTITY_TYPES:
+            allowed_list = sorted(ALLOWED_ENTITY_TYPES)
+            return (
+                f"⚠️ Unknown entity type: '{entity_type}'\n\n"
+                f"Allowed scenario entity types:\n"
+                f"  Scenario data: {sorted(SCENARIO_ENTITY_TYPES)}\n"
+                f"  Relationships: {sorted(RELATIONSHIP_ENTITY_TYPES)}\n\n"
+                f"If this is a new valid entity type, add it to the taxonomy in healthsim_mcp.py"
+            )
+    
+    return None  # Valid
 
 
 # =============================================================================
@@ -882,6 +968,11 @@ def save_scenario(params: SaveScenarioInput) -> str:
         JSON with scenario_id and status
     """
     try:
+        # Validate entity types - reject reference data
+        validation_error = validate_entity_types(params.entities)
+        if validation_error:
+            return json.dumps({"error": validation_error})
+        
         # Use write connection for the save operation
         with _get_manager().write_manager() as manager:
             scenario_id = manager.save_scenario(
@@ -961,6 +1052,11 @@ def add_entities(params: AddEntitiesInput) -> str:
             return json.dumps({
                 "error": "Must provide scenario_id (to add to existing) or scenario_name (to create new), plus entities"
             })
+        
+        # Validate entity types - reject reference data
+        validation_error = validate_entity_types(params.entities)
+        if validation_error:
+            return json.dumps({"error": validation_error})
         
         # Use write connection for the add operation
         with _get_manager().write_auto_persist() as service:
