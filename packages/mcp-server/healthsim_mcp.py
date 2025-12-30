@@ -307,6 +307,20 @@ signal.signal(signal.SIGTERM, _signal_handler)
 signal.signal(signal.SIGINT, _signal_handler)
 
 
+def _ensure_sequences():
+    """Ensure required sequences exist (for databases created before sequences were added)."""
+    try:
+        conn = duckdb.connect(str(DB_PATH))
+        conn.execute("CREATE SEQUENCE IF NOT EXISTS scenario_tags_seq START 1")
+        conn.execute("CREATE SEQUENCE IF NOT EXISTS scenario_entities_seq START 1")
+        conn.close()
+    except Exception as e:
+        print(f"  Warning: Could not ensure sequences: {e}", file=sys.stderr)
+
+
+_ensure_sequences()
+
+
 # Initialize the MCP server
 mcp = FastMCP("healthsim_mcp")
 
@@ -1269,8 +1283,8 @@ def add_entities(params: AddEntitiesInput) -> str:
                         if params.tags:
                             for tag in params.tags:
                                 service.conn.execute("""
-                                    INSERT INTO scenario_tags (scenario_id, tag)
-                                    VALUES (?, ?)
+                                    INSERT INTO scenario_tags (id, scenario_id, tag)
+                                    VALUES (nextval('scenario_tags_seq'), ?, ?)
                                 """, [scenario_id, tag.lower()])
                 else:
                     # Auto-generate scenario name

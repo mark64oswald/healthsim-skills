@@ -365,8 +365,8 @@ class AutoPersistService:
         if tags:
             for tag in tags:
                 self.conn.execute("""
-                    INSERT INTO scenario_tags (scenario_id, tag)
-                    VALUES (?, ?)
+                    INSERT INTO scenario_tags (id, scenario_id, tag)
+                    VALUES (nextval('scenario_tags_seq'), ?, ?)
                 """, [scenario_id, tag.lower()])
         
         return scenario_id
