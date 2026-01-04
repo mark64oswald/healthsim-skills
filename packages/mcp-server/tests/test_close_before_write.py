@@ -228,7 +228,7 @@ class TestMCPToolsReadThenWrite:
             )
         """)
         conn.execute("""
-            CREATE TABLE scenario_tags (
+            CREATE TABLE cohort_tags (
                 scenario_id VARCHAR NOT NULL,
                 tag VARCHAR NOT NULL,
                 PRIMARY KEY (scenario_id, tag)
@@ -304,7 +304,7 @@ class TestMCPToolsReadThenWrite:
                 
                 # Step 3: Query again to verify (read connection should reopen)
                 query_result2 = mcp_module.query(QueryInput(
-                    sql="SELECT COUNT(*) as cnt FROM scenarios"
+                    sql="SELECT COUNT(*) as cnt FROM cohorts"
                 ))
                 data2 = json.loads(query_result2)
                 assert data2["rows"][0]["cnt"] == 1

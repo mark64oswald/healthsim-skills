@@ -134,7 +134,7 @@ class TestCanonicalInsert:
         
         # Verify the data
         row = test_db.execute(
-            "SELECT id, given_name, family_name, city, scenario_id FROM patients WHERE id = ?",
+            "SELECT id, given_name, family_name, city, cohort_id FROM patients WHERE id = ?",
             ["PT-001"]
         ).fetchone()
         
@@ -168,7 +168,7 @@ class TestCanonicalInsert:
         
         # Verify the data - use columns that match the serializer output
         row = test_db.execute(
-            "SELECT member_id, plan_code, group_id, scenario_id FROM members WHERE member_id = ?",
+            "SELECT member_id, plan_code, group_id, cohort_id FROM members WHERE member_id = ?",
             ["MBR-001"]
         ).fetchone()
         

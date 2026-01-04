@@ -151,13 +151,13 @@ def test_canonical_insert_end_to_end():
         print("\n=== Verifying Canonical Tables ===")
         
         patient_check = conn.execute(
-            "SELECT id, given_name, family_name, city, scenario_id FROM patients WHERE scenario_id = ?",
+            "SELECT id, given_name, family_name, city, cohort_id FROM patients WHERE id = ?",
             [test_scenario_id]
         ).fetchall()
         print(f"Patients in canonical table: {patient_check}")
         
         member_check = conn.execute(
-            "SELECT id, member_id, given_name, family_name, plan_code, scenario_id FROM members WHERE scenario_id = ?",
+            "SELECT id, member_id, given_name, family_name, plan_code, cohort_id FROM members WHERE id = ?",
             [test_scenario_id]
         ).fetchall()
         print(f"Members in canonical table: {member_check}")

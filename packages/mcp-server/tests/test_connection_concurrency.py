@@ -171,7 +171,7 @@ class TestConnectionManager:
             )
         """)
         conn.execute("""
-            INSERT INTO scenarios (scenario_id, name, description)
+            INSERT INTO cohorts (id, name, description)
             VALUES ('test-123', 'Test Scenario', 'A test scenario')
         """)
         conn.close()
@@ -204,7 +204,7 @@ class TestConnectionManager:
         conn = manager.get_read_connection()
         
         with pytest.raises(duckdb.InvalidInputException):
-            conn.execute("INSERT INTO scenarios (scenario_id, name) VALUES ('x', 'x')")
+            conn.execute("INSERT INTO cohorts (id, name) VALUES ('x', 'x')")
         
         manager.close()
     
@@ -217,7 +217,7 @@ class TestConnectionManager:
         # Write using context manager
         with manager.write_connection() as conn:
             conn.execute("""
-                INSERT INTO scenarios (scenario_id, name, description)
+                INSERT INTO cohorts (id, name, description)
                 VALUES ('new-123', 'New Scenario', 'Created via write_connection')
             """)
         
@@ -225,7 +225,7 @@ class TestConnectionManager:
         # Verify by reading with read connection
         read_conn = manager.get_read_connection()
         result = read_conn.execute(
-            "SELECT name FROM scenarios WHERE scenario_id = 'new-123'"
+            "SELECT name FROM cohorts WHERE id = 'new-123'"
         ).fetchone()
         
         assert result[0] == "New Scenario"
@@ -241,20 +241,20 @@ class TestConnectionManager:
         # First write
         with manager.write_connection() as conn:
             conn.execute("""
-                INSERT INTO scenarios (scenario_id, name)
+                INSERT INTO cohorts (id, name)
                 VALUES ('scenario-1', 'First')
             """)
         
         # Second write should work (lock was released)
         with manager.write_connection() as conn:
             conn.execute("""
-                INSERT INTO scenarios (scenario_id, name)
+                INSERT INTO cohorts (id, name)
                 VALUES ('scenario-2', 'Second')
             """)
         
         # Verify both exist
         read_conn = manager.get_read_connection()
-        count = read_conn.execute("SELECT COUNT(*) FROM scenarios").fetchone()[0]
+        count = read_conn.execute("SELECT COUNT(*) FROM cohorts").fetchone()[0]
         assert count == 3  # original + 2 new
         
         manager.close()
@@ -268,7 +268,7 @@ class TestConnectionManager:
         
         # Multiple sequential reads
         for i in range(10):
-            result = conn.execute("SELECT COUNT(*) FROM scenarios").fetchone()[0]
+            result = conn.execute("SELECT COUNT(*) FROM cohorts").fetchone()[0]
             assert result == 1
         
         manager.close()
@@ -286,7 +286,7 @@ class TestConnectionManager:
         write_manager = ConnectionManager(temp_db)
         with write_manager.write_connection() as write_conn:
             write_conn.execute("""
-                INSERT INTO scenarios (scenario_id, name)
+                INSERT INTO cohorts (id, name)
                 VALUES ('new-1', 'New One')
             """)
         write_manager.close()  # Release all connections
@@ -294,7 +294,7 @@ class TestConnectionManager:
         # Second: Read operation (separate manager)
         read_manager = ConnectionManager(temp_db)
         read_conn = read_manager.get_read_connection()
-        count = read_conn.execute("SELECT COUNT(*) FROM scenarios").fetchone()[0]
+        count = read_conn.execute("SELECT COUNT(*) FROM cohorts").fetchone()[0]
         assert count == 2  # original + new
         read_manager.close()
 
@@ -324,7 +324,7 @@ class TestMCPToolsWithDualConnection:
             )
         """)
         conn.execute("""
-            CREATE TABLE scenario_tags (
+            CREATE TABLE cohort_tags (
                 scenario_id VARCHAR NOT NULL,
                 tag VARCHAR NOT NULL,
                 PRIMARY KEY (scenario_id, tag)
@@ -476,7 +476,7 @@ class TestConcurrentAccessWithProduction:
         
         conn = duckdb.connect(str(production_db), read_only=True)
         
-        result = conn.execute("SELECT COUNT(*) FROM scenarios").fetchone()[0]
+        result = conn.execute("SELECT COUNT(*) FROM cohorts").fetchone()[0]
         
         # Just verify we can query - count may be 0 or more
         assert result >= 0

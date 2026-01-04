@@ -62,9 +62,9 @@ class TestReadOnlyConcurrency:
         
         try:
             # All should be able to query
-            result1 = conn1.execute("SELECT COUNT(*) FROM scenarios").fetchone()
-            result2 = conn2.execute("SELECT COUNT(*) FROM scenarios").fetchone()
-            result3 = conn3.execute("SELECT COUNT(*) FROM scenarios").fetchone()
+            result1 = conn1.execute("SELECT COUNT(*) FROM cohorts").fetchone()
+            result2 = conn2.execute("SELECT COUNT(*) FROM cohorts").fetchone()
+            result3 = conn3.execute("SELECT COUNT(*) FROM cohorts").fetchone()
             
             # All should return same count
             assert result1 == result2 == result3
@@ -118,7 +118,7 @@ class TestReadOnlyConcurrency:
             
             # External process (pytest) should also work
             external_conn = duckdb.connect(str(DEFAULT_DB_PATH), read_only=True)
-            result = external_conn.execute("SELECT COUNT(*) FROM scenarios").fetchone()
+            result = external_conn.execute("SELECT COUNT(*) FROM cohorts").fetchone()
             external_conn.close()
             
             assert result is not None
@@ -195,7 +195,7 @@ class TestConnectionManagerPattern:
             assert conn1 is conn2
             
             # Should work
-            result = conn1.execute("SELECT COUNT(*) FROM scenarios").fetchone()
+            result = conn1.execute("SELECT COUNT(*) FROM cohorts").fetchone()
             assert result[0] >= 0
         finally:
             manager.close()
@@ -245,11 +245,11 @@ class TestMCPToolsWithDualConnection:
         
         try:
             # Valid read query
-            result = query(QueryInput(sql="SELECT COUNT(*) as cnt FROM scenarios"))
+            result = query(QueryInput(sql="SELECT COUNT(*) as cnt FROM cohorts"))
             assert "row_count" in result
             
             # Should reject write attempts
-            result = query(QueryInput(sql="INSERT INTO scenarios VALUES (1,2,3)"))
+            result = query(QueryInput(sql="INSERT INTO cohorts VALUES (1,2,3)"))
             assert "error" in result.lower()
         finally:
             if healthsim_mcp._manager:
