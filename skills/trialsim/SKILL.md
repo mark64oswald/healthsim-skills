@@ -535,3 +535,50 @@ See [dimensional-analytics.md](../../formats/dimensional-analytics.md#trialsim-c
   ]
 }
 ```
+
+---
+
+## Generative Framework Integration
+
+TrialSim integrates with the [Generative Framework](../generation/SKILL.md) for specification-driven generation at scale.
+
+### Profile-Driven Generation
+
+Use profile specifications to generate trial subject populations:
+
+```
+"Generate 150 subjects for an oncology Phase 3 trial"
+```
+
+The Profile Executor will:
+1. Sample demographics meeting I/E criteria
+2. Generate baseline disease characteristics
+3. Apply randomization to treatment arms
+4. Create screening and baseline assessments
+
+### Journey-Driven Generation
+
+Attach protocol journey specifications to create visit sequences:
+
+```
+"Add a 6-cycle treatment protocol journey"
+```
+
+The Journey Executor will:
+1. Generate protocol visits at specified windows
+2. Create assessments per visit schedule
+3. Apply visit variance within windows
+4. Handle protocol deviations and early termination
+
+### Cross-Domain Sync
+
+When generating across products, TrialSim entities are automatically linked:
+
+| TrialSim Entity | Links To |
+|-----------------|----------|
+| Subject | PatientSim Patient (via SSN) |
+| Site | NetworkSim Facility |
+| Investigator | NetworkSim Provider |
+| Conmed | RxMemberSim Fill (if applicable) |
+
+See: [../generation/executors/cross-domain-sync.md](../generation/executors/cross-domain-sync.md)

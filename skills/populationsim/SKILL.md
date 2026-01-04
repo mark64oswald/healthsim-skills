@@ -390,3 +390,46 @@ San Diego County, CA (FIPS 06073) Population Profile:
 
 For detailed concepts and methodology, see:
 - [Population Intelligence Domain](population-intelligence-domain.md) - Geographic hierarchy, census data, SDOH frameworks
+
+---
+
+## Generative Framework Integration
+
+PopulationSim provides **real population data** that drives realistic generation in the [Generative Framework](../generation/SKILL.md).
+
+### PopulationSim's Unique Role
+
+Unlike other products that generate synthetic data, PopulationSim:
+1. **Queries real reference data** (Census, CDC PLACES, SVI/ADI)
+2. **Outputs specifications** that define cohort characteristics
+3. **Feeds the Profile Builder** with realistic distributions
+
+### Integration Flow
+
+```
+User Request
+     │
+     ▼
+┌─────────────┐     ┌─────────────────┐     ┌───────────────┐
+│ PopulationSim │──►│ Profile Builder │──►│ Profile Executor │
+│ "TX Medicare" │   │ Add conditions  │    │ Generate 100    │
+│ demographics  │   │ Add coverage    │    │ patients        │
+└─────────────┘     └─────────────────┘     └───────────────┘
+```
+
+### Example: Realistic Geographic Cohort
+
+```
+"Generate 200 Medicare diabetics in Harris County, TX with realistic demographics"
+```
+
+PopulationSim provides:
+- Age distribution from Census (mean 72.3, std 8.1)
+- Gender split (47% M, 53% F)
+- Race/ethnicity from ACS (38% Hispanic, 32% White, 22% Black, 8% Asian)
+- SDOH indicators from SVI (moderate vulnerability)
+- Diabetes prevalence from CDC PLACES (16.2%)
+
+This becomes a ProfileSpecification that the Profile Executor uses.
+
+See: [integration/](integration/) for detailed integration patterns

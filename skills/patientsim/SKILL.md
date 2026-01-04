@@ -470,3 +470,50 @@ For patients enrolled in clinical trials:
 
 ### Reference Data
 - [../../references/oncology/](../../references/oncology/) - Oncology codes, medications, regimens
+
+---
+
+## Generative Framework Integration
+
+PatientSim integrates with the [Generative Framework](../generation/SKILL.md) for specification-driven generation at scale.
+
+### Profile-Driven Generation
+
+Use profile specifications to generate patient cohorts:
+
+```
+"Use the Medicare diabetic profile to generate 100 patients"
+```
+
+The Profile Executor will:
+1. Sample demographics from profile distributions
+2. Generate clinical attributes (diagnoses, medications, labs)
+3. Link to NetworkSim providers
+4. Apply condition-specific patterns
+
+### Journey-Driven Generation
+
+Attach journey specifications to create temporal event sequences:
+
+```
+"Add the diabetic first-year journey to each patient"
+```
+
+The Journey Executor will:
+1. Generate encounters over time (PCP visits, specialist referrals)
+2. Create appropriate labs at each visit
+3. Generate medication prescriptions and changes
+4. Apply branching logic for complications
+
+### Cross-Domain Sync
+
+When generating across products, PatientSim entities are automatically linked:
+
+| PatientSim Entity | Links To |
+|-------------------|----------|
+| Patient | MemberSim Member (via SSN) |
+| Encounter | MemberSim Claim |
+| Prescription | RxMemberSim Fill |
+| Trial Subject | TrialSim Subject |
+
+See: [../generation/executors/cross-domain-sync.md](../generation/executors/cross-domain-sync.md)

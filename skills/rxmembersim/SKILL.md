@@ -551,3 +551,50 @@ NetworkSim provides realistic pharmacy entities and benefit structures for presc
 ### Reference Data
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
 - [../../references/code-systems.md](../../references/code-systems.md) - NDC, GPI, NCPDP codes
+
+---
+
+## Generative Framework Integration
+
+RxMemberSim integrates with the [Generative Framework](../generation/SKILL.md) for specification-driven generation at scale.
+
+### Profile-Driven Generation
+
+Use profile specifications to generate pharmacy member populations:
+
+```
+"Use the Medicare diabetic profile to generate 200 pharmacy members"
+```
+
+The Profile Executor will:
+1. Sample demographics from profile distributions
+2. Generate pharmacy benefit coverage
+3. Create medication profiles based on conditions
+4. Link to formulary and pharmacy network
+
+### Journey-Driven Generation
+
+Attach journey specifications to create prescription fills over time:
+
+```
+"Add the diabetic first-year journey with medication fills"
+```
+
+The Journey Executor will:
+1. Generate initial prescriptions
+2. Create refill events at appropriate intervals
+3. Apply DUR alerts when clinically appropriate
+4. Track accumulator impacts (TrOOP for Part D)
+
+### Cross-Domain Sync
+
+When generating across products, RxMemberSim entities are automatically linked:
+
+| RxMemberSim Entity | Links To |
+|--------------------|----------|
+| RxMember | MemberSim Member (via member_id) |
+| Fill | PatientSim Prescription |
+| Pharmacy | NetworkSim Pharmacy |
+| Prescriber | NetworkSim Provider |
+
+See: [../generation/executors/cross-domain-sync.md](../generation/executors/cross-domain-sync.md)

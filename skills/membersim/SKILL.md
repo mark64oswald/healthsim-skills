@@ -563,3 +563,50 @@ Members may participate in clinical trials with claims integration:
 ### Reference Data
 - [../../references/data-models.md](../../references/data-models.md) - Entity schemas
 - [../../references/oncology/](../../references/oncology/) - Oncology codes, medications, regimens
+
+---
+
+## Generative Framework Integration
+
+MemberSim integrates with the [Generative Framework](../generation/SKILL.md) for specification-driven generation at scale.
+
+### Profile-Driven Generation
+
+Use profile specifications to generate member populations:
+
+```
+"Use the commercial healthy profile to generate 500 members"
+```
+
+The Profile Executor will:
+1. Sample demographics from profile distributions
+2. Generate coverage attributes (plan type, benefits)
+3. Create accumulator records
+4. Link to NetworkSim providers for PCP assignment
+
+### Journey-Driven Generation
+
+Attach journey specifications to create claims over time:
+
+```
+"Add the new member onboarding journey to each member"
+```
+
+The Journey Executor will:
+1. Generate enrollment events
+2. Create initial utilization claims
+3. Track accumulator progression
+4. Apply branching for engagement patterns
+
+### Cross-Domain Sync
+
+When generating across products, MemberSim entities are automatically linked:
+
+| MemberSim Entity | Links To |
+|------------------|----------|
+| Member | PatientSim Patient (via SSN) |
+| Claim | PatientSim Encounter |
+| Authorization | PatientSim Referral |
+| Rx Claim | RxMemberSim Fill |
+
+See: [../generation/executors/cross-domain-sync.md](../generation/executors/cross-domain-sync.md)
