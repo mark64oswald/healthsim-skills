@@ -162,6 +162,34 @@ Load these for provider network knowledge and entity generation:
 
 See: [skills/networksim/](skills/networksim/) for detailed skills
 
+### Generative Framework
+
+Load these for batch generation and specification-driven data creation:
+
+| Scenario | Use When | Key Elements |
+|----------|----------|--------------|
+| **Profile Builder** | batch generation, cohort profile, population spec | Demographics, conditions, coverage definitions |
+| **Journey Builder** | temporal patterns, event sequences, care pathways | Timelines, triggers, branching |
+| **Quick Generate** | simple single-entity generation | Fast single patient/member/claim |
+| **Distributions** | customize statistical patterns | Age, cost, utilization distributions |
+| **Templates** | start from common patterns | Pre-built profiles and journeys |
+
+**Key Differentiator**: The Generative Framework enables **specification-driven generation** at scale. Build a profile, define a journey, then execute to generate hundreds or thousands of correlated entities across all products.
+
+See: [skills/generation/](skills/generation/) for detailed skills
+
+### Common Skills
+
+Cross-product infrastructure skills:
+
+| Skill | Use When | Key Elements |
+|-------|----------|--------------|
+| **State Management** | save scenario, load scenario, list scenarios | DuckDB persistence, scenario naming |
+| **Identity Correlation** | link patient, find member, cross-product | SSN correlation, entity linking |
+| **DuckDB Skill** | query database, SQL, schema | Direct database operations |
+
+See: [skills/common/](skills/common/) for detailed skills
+
 ## Output Formats
 
 ### Default: JSON
