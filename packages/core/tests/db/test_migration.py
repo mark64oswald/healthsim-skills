@@ -22,7 +22,7 @@ from healthsim.state.manager import StateManager, reset_manager
 @pytest.fixture
 def temp_dirs(tmp_path):
     """Create temporary directories for testing."""
-    legacy_dir = tmp_path / "scenarios"
+    legacy_dir = tmp_path / "cohorts"
     backup_dir = tmp_path / "backup"
     db_dir = tmp_path / "db"
     
@@ -37,24 +37,24 @@ def temp_dirs(tmp_path):
 
 
 @pytest.fixture
-def sample_json_scenarios(temp_dirs):
-    """Create sample JSON scenario files."""
+def sample_json_cohorts(temp_dirs):
+    """Create sample JSON cohort files."""
     legacy_dir = temp_dirs['legacy']
     
-    # Scenario 1: Simple patient
-    scenario1 = {
-        'name': 'test-scenario-1',
-        'description': 'First test scenario',
+    # Cohort 1: Simple patient
+    cohort1 = {
+        'name': 'test-cohort-1',
+        'description': 'First test cohort',
         'entities': {
             'patients': [{'patient_id': 'p1', 'given_name': 'Alice', 'family_name': 'Smith'}]
         },
         'tags': ['test']
     }
     
-    # Scenario 2: Multiple entities
-    scenario2 = {
-        'name': 'test-scenario-2',
-        'description': 'Second test scenario',
+    # Cohort 2: Multiple entities
+    cohort2 = {
+        'name': 'test-cohort-2',
+        'description': 'Second test cohort',
         'entities': {
             'patients': [
                 {'patient_id': 'p2', 'given_name': 'Bob', 'family_name': 'Jones'},
@@ -67,16 +67,16 @@ def sample_json_scenarios(temp_dirs):
         'tags': ['test', 'multi']
     }
     
-    # Scenario 3: Legacy format (entities at top level)
-    scenario3 = {
+    # Cohort 3: Legacy format (entities at top level)
+    cohort3 = {
         'name': 'legacy-format',
         'patients': [{'patient_id': 'p4', 'given_name': 'Dave'}],
         'encounters': []
     }
     
-    (legacy_dir / "test-scenario-1.json").write_text(json.dumps(scenario1))
-    (legacy_dir / "test-scenario-2.json").write_text(json.dumps(scenario2))
-    (legacy_dir / "legacy-format.json").write_text(json.dumps(scenario3))
+    (legacy_dir / "test-cohort-1.json").write_text(json.dumps(cohort1))
+    (legacy_dir / "test-cohort-2.json").write_text(json.dumps(cohort2))
+    (legacy_dir / "legacy-format.json").write_text(json.dumps(cohort3))
     
     return legacy_dir
 
@@ -126,29 +126,29 @@ class TestMigrationResult:
         assert 'dry run' in repr_str
 
 
-class TestDiscoverScenarios:
-    """Tests for scenario discovery."""
+class TestDiscoverCohorts:
+    """Tests for cohort discovery."""
     
     def test_discover_empty_directory(self, temp_dirs):
         """Empty directory returns empty list."""
-        scenarios = discover_json_cohorts(temp_dirs['legacy'])
-        assert scenarios == []
+        cohorts = discover_json_cohorts(temp_dirs['legacy'])
+        assert cohorts == []
     
-    def test_discover_finds_scenarios(self, sample_json_scenarios):
+    def test_discover_finds_cohorts(self, sample_json_cohorts):
         """Discovers all JSON files."""
-        scenarios = discover_json_cohorts(sample_json_scenarios)
+        cohorts = discover_json_cohorts(sample_json_cohorts)
         
-        assert len(scenarios) == 3
-        names = [s['name'] for s in scenarios]
-        assert 'test-scenario-1' in names
-        assert 'test-scenario-2' in names
+        assert len(cohorts) == 3
+        names = [s['name'] for s in cohorts]
+        assert 'test-cohort-1' in names
+        assert 'test-cohort-2' in names
         assert 'legacy-format' in names
     
-    def test_discover_includes_metadata(self, sample_json_scenarios):
-        """Discovered scenarios include metadata."""
-        scenarios = discover_json_cohorts(sample_json_scenarios)
+    def test_discover_includes_metadata(self, sample_json_cohorts):
+        """Discovered cohorts include metadata."""
+        cohorts = discover_json_cohorts(sample_json_cohorts)
         
-        for s in scenarios:
+        for s in cohorts:
             assert 'name' in s
             assert 'path' in s
             assert 'size_bytes' in s
@@ -157,37 +157,37 @@ class TestDiscoverScenarios:
     
     def test_discover_nonexistent_directory(self, temp_dirs):
         """Nonexistent directory returns empty list."""
-        scenarios = discover_json_cohorts(temp_dirs['backup'])  # Doesn't exist
-        assert scenarios == []
+        cohorts = discover_json_cohorts(temp_dirs['backup'])  # Doesn't exist
+        assert cohorts == []
 
 
-class TestMigrateScenario:
-    """Tests for single scenario migration."""
+class TestMigrateCohort:
+    """Tests for single cohort migration."""
     
-    def test_migrate_simple_scenario(self, sample_json_scenarios, state_manager):
-        """Migrates a simple scenario."""
-        json_path = sample_json_scenarios / "test-scenario-1.json"
+    def test_migrate_simple_cohort(self, sample_json_cohorts, state_manager):
+        """Migrates a simple cohort."""
+        json_path = sample_json_cohorts / "test-cohort-1.json"
         
         result = migrate_cohort(json_path, state_manager)
         
         assert result.success
-        assert result.name == "test-scenario-1"
+        assert result.name == "test-cohort-1"
         assert result.entity_count == 1
         assert result.error is None
     
-    def test_migrate_multi_entity_scenario(self, sample_json_scenarios, state_manager):
-        """Migrates scenario with multiple entities."""
-        json_path = sample_json_scenarios / "test-scenario-2.json"
+    def test_migrate_multi_entity_cohort(self, sample_json_cohorts, state_manager):
+        """Migrates cohort with multiple entities."""
+        json_path = sample_json_cohorts / "test-cohort-2.json"
         
         result = migrate_cohort(json_path, state_manager)
         
         assert result.success
-        assert result.name == "test-scenario-2"
+        assert result.name == "test-cohort-2"
         assert result.entity_count == 3  # 2 patients + 1 encounter
     
-    def test_migrate_legacy_format(self, sample_json_scenarios, state_manager):
-        """Migrates legacy format scenario."""
-        json_path = sample_json_scenarios / "legacy-format.json"
+    def test_migrate_legacy_format(self, sample_json_cohorts, state_manager):
+        """Migrates legacy format cohort."""
+        json_path = sample_json_cohorts / "legacy-format.json"
         
         result = migrate_cohort(json_path, state_manager)
         
@@ -195,13 +195,13 @@ class TestMigrateScenario:
         assert result.name == "legacy-format"
         assert result.entity_count == 1
     
-    def test_migrate_preserves_data(self, sample_json_scenarios, state_manager):
+    def test_migrate_preserves_data(self, sample_json_cohorts, state_manager):
         """Migration preserves entity data."""
-        json_path = sample_json_scenarios / "test-scenario-1.json"
+        json_path = sample_json_cohorts / "test-cohort-1.json"
         
         migrate_cohort(json_path, state_manager)
         
-        loaded = state_manager.load_scenario("test-scenario-1")
+        loaded = state_manager.load_cohort("test-cohort-1")
         assert len(loaded['entities']['patients']) == 1
         assert loaded['entities']['patients'][0]['given_name'] == 'Alice'
     
@@ -215,9 +215,9 @@ class TestMigrateScenario:
         assert not result.success
         assert result.error is not None
     
-    def test_migrate_duplicate_without_overwrite(self, sample_json_scenarios, state_manager):
+    def test_migrate_duplicate_without_overwrite(self, sample_json_cohorts, state_manager):
         """Duplicate name fails without overwrite."""
-        json_path = sample_json_scenarios / "test-scenario-1.json"
+        json_path = sample_json_cohorts / "test-cohort-1.json"
         
         # First migration
         result1 = migrate_cohort(json_path, state_manager)
@@ -227,9 +227,9 @@ class TestMigrateScenario:
         result2 = migrate_cohort(json_path, state_manager, overwrite=False)
         assert not result2.success
     
-    def test_migrate_duplicate_with_overwrite(self, sample_json_scenarios, state_manager):
+    def test_migrate_duplicate_with_overwrite(self, sample_json_cohorts, state_manager):
         """Duplicate name succeeds with overwrite."""
-        json_path = sample_json_scenarios / "test-scenario-1.json"
+        json_path = sample_json_cohorts / "test-cohort-1.json"
         
         # First migration
         result1 = migrate_cohort(json_path, state_manager)
@@ -253,11 +253,11 @@ class TestMigrateAll:
         assert results == []
         assert backup is None
     
-    def test_migrate_all_dry_run(self, sample_json_scenarios, temp_dirs):
+    def test_migrate_all_dry_run(self, sample_json_cohorts, temp_dirs):
         """Dry run reports but doesn't migrate."""
         results, backup = migrate_all_cohorts(
             dry_run=True,
-            legacy_path=sample_json_scenarios,
+            legacy_path=sample_json_cohorts,
             backup_path=temp_dirs['backup']
         )
         
@@ -267,29 +267,29 @@ class TestMigrateAll:
             assert r.entity_count == -1  # Dry run indicator
         
         # Original files should still exist
-        assert (sample_json_scenarios / "test-scenario-1.json").exists()
+        assert (sample_json_cohorts / "test-cohort-1.json").exists()
 
 
 class TestBackup:
     """Tests for backup functionality."""
     
-    def test_backup_creates_directory(self, sample_json_scenarios, temp_dirs):
+    def test_backup_creates_directory(self, sample_json_cohorts, temp_dirs):
         """Backup moves files to backup location."""
         backup_path = backup_json_cohorts(
-            source_path=sample_json_scenarios,
+            source_path=sample_json_cohorts,
             backup_path=temp_dirs['backup']
         )
         
         assert backup_path is not None
         assert backup_path.exists()
-        assert not sample_json_scenarios.exists()
+        assert not sample_json_cohorts.exists()
     
-    def test_backup_preserves_files(self, sample_json_scenarios, temp_dirs):
+    def test_backup_preserves_files(self, sample_json_cohorts, temp_dirs):
         """Backup preserves all files."""
-        original_files = list(sample_json_scenarios.glob("*.json"))
+        original_files = list(sample_json_cohorts.glob("*.json"))
         
         backup_path = backup_json_cohorts(
-            source_path=sample_json_scenarios,
+            source_path=sample_json_cohorts,
             backup_path=temp_dirs['backup']
         )
         
@@ -305,14 +305,14 @@ class TestBackup:
         
         assert result is None
     
-    def test_backup_existing_backup_adds_timestamp(self, sample_json_scenarios, temp_dirs):
+    def test_backup_existing_backup_adds_timestamp(self, sample_json_cohorts, temp_dirs):
         """Existing backup gets timestamped name."""
         # Create initial backup
         temp_dirs['backup'].mkdir()
         (temp_dirs['backup'] / "existing.json").write_text("{}")
         
         backup_path = backup_json_cohorts(
-            source_path=sample_json_scenarios,
+            source_path=sample_json_cohorts,
             backup_path=temp_dirs['backup']
         )
         
@@ -324,16 +324,16 @@ class TestBackup:
 class TestVerification:
     """Tests for migration verification."""
     
-    def test_verify_success(self, sample_json_scenarios, state_manager, temp_dirs):
+    def test_verify_success(self, sample_json_cohorts, state_manager, temp_dirs):
         """Verification passes when all migrated."""
-        # Migrate scenarios
-        for json_path in sample_json_scenarios.glob("*.json"):
+        # Migrate cohorts
+        for json_path in sample_json_cohorts.glob("*.json"):
             migrate_cohort(json_path, state_manager)
         
         # Verify using the same manager (proper dependency injection)
         verification = verify_migration(
             expected_count=3,
-            expected_names=['test-scenario-1', 'test-scenario-2', 'legacy-format'],
+            expected_names=['test-cohort-1', 'test-cohort-2', 'legacy-format'],
             manager=state_manager
         )
         
@@ -341,17 +341,17 @@ class TestVerification:
         assert verification['count_match']
         assert len(verification['missing']) == 0
     
-    def test_verify_missing_scenarios(self, sample_json_scenarios, state_manager):
-        """Verification reports missing scenarios."""
+    def test_verify_missing_cohorts(self, sample_json_cohorts, state_manager):
+        """Verification reports missing cohorts."""
         # Only migrate one
-        migrate_cohort(sample_json_scenarios / "test-scenario-1.json", state_manager)
+        migrate_cohort(sample_json_cohorts / "test-cohort-1.json", state_manager)
         
         verification = verify_migration(
             expected_count=3,
-            expected_names=['test-scenario-1', 'test-scenario-2', 'missing'],
+            expected_names=['test-cohort-1', 'test-cohort-2', 'missing'],
             manager=state_manager
         )
         
         assert not verification['success']
-        assert 'test-scenario-2' in verification['missing']
+        assert 'test-cohort-2' in verification['missing']
         assert 'missing' in verification['missing']

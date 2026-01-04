@@ -30,21 +30,21 @@ def state_manager(test_db):
 
 
 class TestSaveScenario:
-    """Tests for save_scenario functionality."""
+    """Tests for save_cohort functionality."""
     
-    def test_save_empty_scenario(self, state_manager):
-        """Can save a scenario with no entities."""
-        scenario_id = state_manager.save_scenario(
-            name='empty-scenario',
+    def test_save_empty_cohort(self, state_manager):
+        """Can save a cohort with no entities."""
+        cohort_id = state_manager.save_cohort(
+            name='empty-cohort',
             entities={},
-            description='An empty test scenario'
+            description='An empty test cohort'
         )
         
-        assert scenario_id is not None
-        assert len(scenario_id) == 36  # UUID format
+        assert cohort_id is not None
+        assert len(cohort_id) == 36  # UUID format
     
-    def test_save_scenario_with_patients(self, state_manager):
-        """Can save a scenario with patient entities."""
+    def test_save_cohort_with_patients(self, state_manager):
+        """Can save a cohort with patient entities."""
         entities = {
             'patients': [
                 {
@@ -66,16 +66,16 @@ class TestSaveScenario:
             ]
         }
         
-        scenario_id = state_manager.save_scenario(
-            name='patient-scenario',
+        cohort_id = state_manager.save_cohort(
+            name='patient-cohort',
             entities=entities,
             description='Test with patients'
         )
         
-        assert scenario_id is not None
+        assert cohort_id is not None
     
-    def test_save_scenario_with_multiple_entity_types(self, state_manager):
-        """Can save scenario with multiple entity types."""
+    def test_save_cohort_with_multiple_entity_types(self, state_manager):
+        """Can save cohort with multiple entity types."""
         entities = {
             'patients': [
                 {'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'John', 'family_name': 'Doe', 'birth_date': '1980-01-15', 'gender': 'male'}
@@ -85,74 +85,74 @@ class TestSaveScenario:
             ],
         }
         
-        scenario_id = state_manager.save_scenario(
-            name='multi-entity-scenario',
+        cohort_id = state_manager.save_cohort(
+            name='multi-entity-cohort',
             entities=entities,
         )
         
-        assert scenario_id is not None
+        assert cohort_id is not None
     
-    def test_save_scenario_with_tags(self, state_manager):
-        """Can save scenario with tags."""
-        scenario_id = state_manager.save_scenario(
-            name='tagged-scenario',
+    def test_save_cohort_with_tags(self, state_manager):
+        """Can save cohort with tags."""
+        cohort_id = state_manager.save_cohort(
+            name='tagged-cohort',
             entities={'patients': []},
             tags=['diabetes', 'chronic', 'test'],
         )
         
-        tags = state_manager.get_scenario_tags('tagged-scenario')
+        tags = state_manager.get_cohort_tags('tagged-cohort')
         assert 'diabetes' in tags
         assert 'chronic' in tags
         assert 'test' in tags
     
     def test_save_duplicate_name_fails(self, state_manager):
         """Saving with duplicate name raises error without overwrite."""
-        state_manager.save_scenario(name='duplicate', entities={})
+        state_manager.save_cohort(name='duplicate', entities={})
         
         with pytest.raises(ValueError, match="already exists"):
-            state_manager.save_scenario(name='duplicate', entities={})
+            state_manager.save_cohort(name='duplicate', entities={})
     
     def test_save_with_overwrite(self, state_manager):
-        """Can overwrite existing scenario."""
+        """Can overwrite existing cohort."""
         # Save original
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             name='overwrite-test',
             entities={'patients': [{'given_name': 'Original', 'family_name': 'Person', 'birth_date': '1990-01-01', 'gender': 'male'}]},
         )
         
         # Overwrite
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             name='overwrite-test',
             entities={'patients': [{'given_name': 'Updated', 'family_name': 'Person', 'birth_date': '1990-01-01', 'gender': 'male'}]},
             overwrite=True,
         )
         
         # Verify updated
-        loaded = state_manager.load_scenario('overwrite-test')
+        loaded = state_manager.load_cohort('overwrite-test')
         assert loaded['entities']['patients'][0]['given_name'] == 'Updated'
 
 
 class TestLoadScenario:
-    """Tests for load_scenario functionality."""
+    """Tests for load_cohort functionality."""
     
     def test_load_by_name(self, state_manager):
-        """Can load scenario by name."""
-        state_manager.save_scenario(name='load-by-name', entities={})
+        """Can load cohort by name."""
+        state_manager.save_cohort(name='load-by-name', entities={})
         
-        loaded = state_manager.load_scenario('load-by-name')
+        loaded = state_manager.load_cohort('load-by-name')
         assert loaded['name'] == 'load-by-name'
     
     def test_load_by_id(self, state_manager):
-        """Can load scenario by UUID."""
-        scenario_id = state_manager.save_scenario(name='load-by-id', entities={})
+        """Can load cohort by UUID."""
+        cohort_id = state_manager.save_cohort(name='load-by-id', entities={})
         
-        loaded = state_manager.load_scenario(scenario_id)
-        assert loaded['scenario_id'] == scenario_id
+        loaded = state_manager.load_cohort(cohort_id)
+        assert loaded['cohort_id'] == cohort_id
     
     def test_load_not_found(self, state_manager):
-        """Loading non-existent scenario raises error."""
+        """Loading non-existent cohort raises error."""
         with pytest.raises(ValueError, match="not found"):
-            state_manager.load_scenario('nonexistent-scenario')
+            state_manager.load_cohort('nonexistent-cohort')
     
     def test_load_preserves_entities(self, state_manager):
         """Loaded entities match saved entities."""
@@ -171,12 +171,12 @@ class TestLoadScenario:
             ]
         }
         
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             name='preserve-test',
             entities=original_entities,
         )
         
-        loaded = state_manager.load_scenario('preserve-test')
+        loaded = state_manager.load_cohort('preserve-test')
         
         assert len(loaded['entities']['patients']) == 1
         patient = loaded['entities']['patients'][0]
@@ -185,15 +185,15 @@ class TestLoadScenario:
         assert patient['mrn'] == 'MRN123'
     
     def test_load_returns_metadata(self, state_manager):
-        """Loaded scenario includes metadata."""
-        state_manager.save_scenario(
+        """Loaded cohort includes metadata."""
+        state_manager.save_cohort(
             name='metadata-test',
             entities={},
             description='Test description',
             tags=['tag1', 'tag2'],
         )
         
-        loaded = state_manager.load_scenario('metadata-test')
+        loaded = state_manager.load_cohort('metadata-test')
         
         assert loaded['name'] == 'metadata-test'
         assert loaded['description'] == 'Test description'
@@ -204,106 +204,106 @@ class TestLoadScenario:
 
 
 class TestListScenarios:
-    """Tests for list_scenarios functionality."""
+    """Tests for list_cohorts functionality."""
     
     def test_list_empty(self, state_manager):
-        """List returns empty when no scenarios."""
-        scenarios = state_manager.list_scenarios()
-        assert scenarios == []
+        """List returns empty when no cohorts."""
+        cohorts = state_manager.list_cohorts()
+        assert cohorts == []
     
     def test_list_all(self, state_manager):
-        """List returns all scenarios."""
-        state_manager.save_scenario(name='list-1', entities={})
-        state_manager.save_scenario(name='list-2', entities={})
-        state_manager.save_scenario(name='list-3', entities={})
+        """List returns all cohorts."""
+        state_manager.save_cohort(name='list-1', entities={})
+        state_manager.save_cohort(name='list-2', entities={})
+        state_manager.save_cohort(name='list-3', entities={})
         
-        scenarios = state_manager.list_scenarios()
-        names = [s['name'] for s in scenarios]
+        cohorts = state_manager.list_cohorts()
+        names = [s['name'] for s in cohorts]
         
         assert 'list-1' in names
         assert 'list-2' in names
         assert 'list-3' in names
     
     def test_list_filter_by_tag(self, state_manager):
-        """Can filter scenarios by tag."""
-        state_manager.save_scenario(name='diabetes-1', entities={}, tags=['diabetes'])
-        state_manager.save_scenario(name='diabetes-2', entities={}, tags=['diabetes', 'chronic'])
-        state_manager.save_scenario(name='cardiac-1', entities={}, tags=['cardiac'])
+        """Can filter cohorts by tag."""
+        state_manager.save_cohort(name='diabetes-1', entities={}, tags=['diabetes'])
+        state_manager.save_cohort(name='diabetes-2', entities={}, tags=['diabetes', 'chronic'])
+        state_manager.save_cohort(name='cardiac-1', entities={}, tags=['cardiac'])
         
-        diabetes_scenarios = state_manager.list_scenarios(tag='diabetes')
-        names = [s['name'] for s in diabetes_scenarios]
+        diabetes_cohorts = state_manager.list_cohorts(tag='diabetes')
+        names = [s['name'] for s in diabetes_cohorts]
         
         assert 'diabetes-1' in names
         assert 'diabetes-2' in names
         assert 'cardiac-1' not in names
     
     def test_list_search(self, state_manager):
-        """Can search scenarios by name/description."""
-        state_manager.save_scenario(name='alpha-scenario', entities={}, description='First test')
-        state_manager.save_scenario(name='beta-scenario', entities={}, description='Second alpha test')
-        state_manager.save_scenario(name='gamma-scenario', entities={}, description='Third test')
+        """Can search cohorts by name/description."""
+        state_manager.save_cohort(name='alpha-cohort', entities={}, description='First test')
+        state_manager.save_cohort(name='beta-cohort', entities={}, description='Second alpha test')
+        state_manager.save_cohort(name='gamma-cohort', entities={}, description='Third test')
         
         # Search in name
-        results = state_manager.list_scenarios(search='alpha')
+        results = state_manager.list_cohorts(search='alpha')
         names = [s['name'] for s in results]
-        assert 'alpha-scenario' in names
-        assert 'beta-scenario' in names  # 'alpha' in description
-        assert 'gamma-scenario' not in names
+        assert 'alpha-cohort' in names
+        assert 'beta-cohort' in names  # 'alpha' in description
+        assert 'gamma-cohort' not in names
     
     def test_list_with_limit(self, state_manager):
         """List respects limit parameter."""
         for i in range(10):
-            state_manager.save_scenario(name=f'limited-{i}', entities={})
+            state_manager.save_cohort(name=f'limited-{i}', entities={})
         
-        scenarios = state_manager.list_scenarios(limit=5)
-        assert len(scenarios) == 5
+        cohorts = state_manager.list_cohorts(limit=5)
+        assert len(cohorts) == 5
     
     def test_list_ordered_by_updated(self, state_manager):
-        """List returns scenarios ordered by updated_at desc."""
-        state_manager.save_scenario(name='old', entities={})
-        state_manager.save_scenario(name='newer', entities={})
-        state_manager.save_scenario(name='newest', entities={})
+        """List returns cohorts ordered by updated_at desc."""
+        state_manager.save_cohort(name='old', entities={})
+        state_manager.save_cohort(name='newer', entities={})
+        state_manager.save_cohort(name='newest', entities={})
         
-        scenarios = state_manager.list_scenarios()
+        cohorts = state_manager.list_cohorts()
         # Most recently updated should be first
-        assert scenarios[0]['name'] == 'newest'
+        assert cohorts[0]['name'] == 'newest'
 
 
 class TestDeleteScenario:
-    """Tests for delete_scenario functionality."""
+    """Tests for delete_cohort functionality."""
     
     def test_delete_by_name(self, state_manager):
-        """Can delete scenario by name."""
-        state_manager.save_scenario(name='to-delete', entities={})
+        """Can delete cohort by name."""
+        state_manager.save_cohort(name='to-delete', entities={})
         
-        result = state_manager.delete_scenario('to-delete', confirm=True)
+        result = state_manager.delete_cohort('to-delete', confirm=True)
         assert result is True
         
-        scenarios = state_manager.list_scenarios()
-        names = [s['name'] for s in scenarios]
+        cohorts = state_manager.list_cohorts()
+        names = [s['name'] for s in cohorts]
         assert 'to-delete' not in names
     
     def test_delete_by_id(self, state_manager):
-        """Can delete scenario by UUID."""
-        scenario_id = state_manager.save_scenario(name='delete-by-id', entities={})
+        """Can delete cohort by UUID."""
+        cohort_id = state_manager.save_cohort(name='delete-by-id', entities={})
         
-        result = state_manager.delete_scenario(scenario_id, confirm=True)
+        result = state_manager.delete_cohort(cohort_id, confirm=True)
         assert result is True
     
     def test_delete_not_found(self, state_manager):
-        """Delete returns False for non-existent scenario."""
-        result = state_manager.delete_scenario('nonexistent', confirm=True)
+        """Delete returns False for non-existent cohort."""
+        result = state_manager.delete_cohort('nonexistent', confirm=True)
         assert result is False
     
     def test_delete_removes_tags(self, state_manager):
         """Delete also removes associated tags."""
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             name='tagged-delete',
             entities={},
             tags=['tag1', 'tag2'],
         )
         
-        state_manager.delete_scenario('tagged-delete', confirm=True)
+        state_manager.delete_cohort('tagged-delete', confirm=True)
         
         # Verify tags are gone by checking the tags table directly
         result = state_manager.conn.execute(
@@ -313,23 +313,23 @@ class TestDeleteScenario:
 
 
 class TestScenarioExists:
-    """Tests for scenario_exists functionality."""
+    """Tests for cohort_exists functionality."""
     
     def test_exists_by_name(self, state_manager):
-        """scenario_exists returns True for existing name."""
-        state_manager.save_scenario(name='exists-test', entities={})
+        """cohort_exists returns True for existing name."""
+        state_manager.save_cohort(name='exists-test', entities={})
         
-        assert state_manager.scenario_exists('exists-test') is True
+        assert state_manager.cohort_exists('exists-test') is True
     
     def test_exists_by_id(self, state_manager):
-        """scenario_exists returns True for existing UUID."""
-        scenario_id = state_manager.save_scenario(name='exists-by-id', entities={})
+        """cohort_exists returns True for existing UUID."""
+        cohort_id = state_manager.save_cohort(name='exists-by-id', entities={})
         
-        assert state_manager.scenario_exists(scenario_id) is True
+        assert state_manager.cohort_exists(cohort_id) is True
     
     def test_not_exists(self, state_manager):
-        """scenario_exists returns False for non-existent scenario."""
-        assert state_manager.scenario_exists('nonexistent') is False
+        """cohort_exists returns False for non-existent cohort."""
+        assert state_manager.cohort_exists('nonexistent') is False
 
 
 class TestEntityRoundTrip:
@@ -358,12 +358,12 @@ class TestEntityRoundTrip:
             },
         }
         
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             name='round-trip-test',
             entities={'patients': [original]},
         )
         
-        loaded = state_manager.load_scenario('round-trip-test')
+        loaded = state_manager.load_cohort('round-trip-test')
         patient = loaded['entities']['patients'][0]
         
         # Core fields
@@ -387,12 +387,12 @@ class TestEntityRoundTrip:
             'chief_complaint': 'Chest pain',
         }
         
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             name='encounter-round-trip',
             entities={'encounters': [original]},
         )
         
-        loaded = state_manager.load_scenario('encounter-round-trip')
+        loaded = state_manager.load_cohort('encounter-round-trip')
         encounter = loaded['entities']['encounters'][0]
         
         assert encounter['patient_mrn'] == 'MRN001'
@@ -413,12 +413,12 @@ class TestEntityRoundTrip:
             ],
         }
         
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             name='multi-type-round-trip',
             entities=entities,
         )
         
-        loaded = state_manager.load_scenario('multi-type-round-trip')
+        loaded = state_manager.load_cohort('multi-type-round-trip')
         
         assert len(loaded['entities']['patients']) == 1
         assert len(loaded['entities']['encounters']) == 1
@@ -429,43 +429,43 @@ class TestTagManagement:
     """Tests for tag management functionality."""
     
     def test_get_tags(self, state_manager):
-        """Can get tags for a scenario."""
-        state_manager.save_scenario(
+        """Can get tags for a cohort."""
+        state_manager.save_cohort(
             name='get-tags-test',
             entities={},
             tags=['alpha', 'beta', 'gamma'],
         )
         
-        tags = state_manager.get_scenario_tags('get-tags-test')
+        tags = state_manager.get_cohort_tags('get-tags-test')
         
         assert 'alpha' in tags
         assert 'beta' in tags
         assert 'gamma' in tags
     
     def test_add_tags(self, state_manager):
-        """Can add tags to existing scenario."""
-        state_manager.save_scenario(
+        """Can add tags to existing cohort."""
+        state_manager.save_cohort(
             name='add-tags-test',
             entities={},
             tags=['original'],
         )
         
-        state_manager.add_scenario_tags('add-tags-test', ['new1', 'new2'])
+        state_manager.add_cohort_tags('add-tags-test', ['new1', 'new2'])
         
-        tags = state_manager.get_scenario_tags('add-tags-test')
+        tags = state_manager.get_cohort_tags('add-tags-test')
         assert 'original' in tags
         assert 'new1' in tags
         assert 'new2' in tags
     
     def test_add_duplicate_tag(self, state_manager):
         """Adding duplicate tag doesn't create duplicates."""
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             name='dup-tag-test',
             entities={},
             tags=['tag1'],
         )
         
-        state_manager.add_scenario_tags('dup-tag-test', ['tag1', 'tag1'])
+        state_manager.add_cohort_tags('dup-tag-test', ['tag1', 'tag1'])
         
-        tags = state_manager.get_scenario_tags('dup-tag-test')
+        tags = state_manager.get_cohort_tags('dup-tag-test')
         assert tags.count('tag1') == 1

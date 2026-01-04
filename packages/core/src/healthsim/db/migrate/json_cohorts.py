@@ -103,7 +103,7 @@ def migrate_cohort(
     
     try:
         cohort_id = manager.import_from_json(json_path, overwrite=overwrite)
-        cohort = manager.load_scenario(cohort_id)
+        cohort = manager.load_cohort(cohort_id)
         entity_count = sum(len(v) for v in cohort['entities'].values())
         
         logger.info(f"Migrated {name}: {entity_count} entities")
@@ -242,7 +242,7 @@ def verify_migration(
         from ...state.manager import StateManager
         manager = StateManager()
     
-    cohorts = manager.list_scenarios()
+    cohorts = manager.list_cohorts()
     
     found_names = [s['name'] for s in cohorts]
     
@@ -277,7 +277,7 @@ def get_migration_status(manager: Optional['StateManager'] = None) -> Dict:
         from ...state.manager import StateManager
         manager = StateManager()
     
-    cohorts = manager.list_scenarios()
+    cohorts = manager.list_cohorts()
     
     return {
         'legacy_exists': LEGACY_PATH.exists(),

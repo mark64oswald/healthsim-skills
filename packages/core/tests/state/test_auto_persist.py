@@ -11,7 +11,7 @@ from healthsim.state.auto_persist import (
     AutoPersistService,
     PersistResult,
     QueryResult,
-    ScenarioBrief,
+    CohortBrief,
     get_auto_persist_service,
     reset_service,
 )
@@ -39,8 +39,8 @@ def service(test_db):
 class TestPersistEntities:
     """Tests for persist_entities functionality."""
     
-    def test_persist_creates_scenario(self, service):
-        """Persisting entities creates a new scenario."""
+    def test_persist_creates_cohort(self, service):
+        """Persisting entities creates a new cohort."""
         entities = [
             {'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'John', 
              'family_name': 'Doe', 'birth_date': '1980-01-15', 'gender': 'male'}
@@ -51,12 +51,12 @@ class TestPersistEntities:
             entity_type='patient',
         )
         
-        assert result.is_new_scenario is True
+        assert result.is_new_cohort is True
         assert result.entities_persisted == 1
-        assert result.scenario_id is not None
+        assert result.cohort_id is not None
     
     def test_persist_uses_context_keywords(self, service):
-        """Scenario name uses context keywords."""
+        """Cohort name uses context keywords."""
         entities = [
             {'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'Jane',
              'family_name': 'Doe', 'birth_date': '1990-06-15', 'gender': 'female'}
@@ -68,10 +68,10 @@ class TestPersistEntities:
             context_keywords=['diabetes', 'elderly'],
         )
         
-        assert 'diabetes' in result.scenario_name or 'elderly' in result.scenario_name
+        assert 'diabetes' in result.cohort_name or 'elderly' in result.cohort_name
     
-    def test_persist_uses_existing_scenario(self, service):
-        """Can add entities to existing scenario."""
+    def test_persist_uses_existing_cohort(self, service):
+        """Can add entities to existing cohort."""
         # Create first batch
         result1 = service.persist_entities(
             entities=[{'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'First',
@@ -79,16 +79,16 @@ class TestPersistEntities:
             entity_type='patient',
         )
         
-        # Add more to same scenario
+        # Add more to same cohort
         result2 = service.persist_entities(
             entities=[{'patient_id': str(uuid4()), 'mrn': 'MRN002', 'given_name': 'Second',
                       'family_name': 'Patient', 'birth_date': '1985-06-15', 'gender': 'female'}],
             entity_type='patient',
-            scenario_id=result1.scenario_id,
+            cohort_id=result1.cohort_id,
         )
         
-        assert result2.is_new_scenario is False
-        assert result2.scenario_id == result1.scenario_id
+        assert result2.is_new_cohort is False
+        assert result2.cohort_id == result1.cohort_id
         assert result2.summary.entity_counts['patients'] == 2
     
     def test_persist_returns_summary_not_data(self, service):
@@ -116,35 +116,35 @@ class TestPersistEntities:
             service.persist_entities(entities=[], entity_type='patient')
 
 
-class TestGetScenarioSummary:
-    """Tests for get_scenario_summary functionality."""
+class TestGetCohortSummary:
+    """Tests for get_cohort_summary functionality."""
     
     def test_get_summary_by_id(self, service):
-        """Can get summary by scenario ID."""
-        # Create scenario
+        """Can get summary by cohort ID."""
+        # Create cohort
         result = service.persist_entities(
             entities=[{'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'Test',
                       'family_name': 'Patient', 'birth_date': '1980-01-01', 'gender': 'male'}],
             entity_type='patient',
         )
         
-        summary = service.get_scenario_summary(scenario_id=result.scenario_id)
+        summary = service.get_cohort_summary(cohort_id=result.cohort_id)
         
-        assert summary.scenario_id == result.scenario_id
+        assert summary.cohort_id == result.cohort_id
         assert summary.entity_counts['patients'] == 1
     
     def test_get_summary_by_name(self, service):
-        """Can get summary by scenario name."""
+        """Can get summary by cohort name."""
         result = service.persist_entities(
             entities=[{'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'Test',
                       'family_name': 'Patient', 'birth_date': '1980-01-01', 'gender': 'male'}],
             entity_type='patient',
-            scenario_name='my-test-scenario',
+            cohort_name='my-test-cohort',
         )
         
-        summary = service.get_scenario_summary(scenario_name='my-test-scenario')
+        summary = service.get_cohort_summary(cohort_name='my-test-cohort')
         
-        assert summary.name == 'my-test-scenario'
+        assert summary.name == 'my-test-cohort'
     
     def test_get_summary_without_samples(self, service):
         """Can get summary without samples."""
@@ -154,25 +154,25 @@ class TestGetScenarioSummary:
             entity_type='patient',
         )
         
-        summary = service.get_scenario_summary(
-            scenario_id=result.scenario_id,
+        summary = service.get_cohort_summary(
+            cohort_id=result.cohort_id,
             include_samples=False
         )
         
         assert summary.samples == {}
     
     def test_get_summary_not_found(self, service):
-        """Getting non-existent scenario raises error."""
+        """Getting non-existent cohort raises error."""
         with pytest.raises(ValueError, match="not found"):
-            service.get_scenario_summary(scenario_name='nonexistent')
+            service.get_cohort_summary(cohort_name='nonexistent')
 
 
-class TestQueryScenario:
-    """Tests for query_scenario functionality."""
+class TestQueryCohort:
+    """Tests for query_cohort functionality."""
     
     def test_basic_query(self, service):
         """Can execute basic SELECT query."""
-        # Create scenario with data
+        # Create cohort with data
         entities = [
             {'patient_id': str(uuid4()), 'mrn': f'MRN{i:03d}', 'given_name': f'Patient{i}',
              'family_name': 'Test', 'birth_date': '1980-01-01', 'gender': 'male' if i % 2 == 0 else 'female'}
@@ -180,8 +180,8 @@ class TestQueryScenario:
         ]
         result = service.persist_entities(entities=entities, entity_type='patient')
         
-        query_result = service.query_scenario(
-            scenario_id=result.scenario_id,
+        query_result = service.query_cohort(
+            cohort_id=result.cohort_id,
             query="SELECT * FROM patients",
         )
         
@@ -197,8 +197,8 @@ class TestQueryScenario:
         ]
         result = service.persist_entities(entities=entities, entity_type='patient')
         
-        query_result = service.query_scenario(
-            scenario_id=result.scenario_id,
+        query_result = service.query_cohort(
+            cohort_id=result.cohort_id,
             query="SELECT * FROM patients WHERE gender = 'male'",
         )
         
@@ -214,8 +214,8 @@ class TestQueryScenario:
         result = service.persist_entities(entities=entities, entity_type='patient')
         
         # First page
-        page1 = service.query_scenario(
-            scenario_id=result.scenario_id,
+        page1 = service.query_cohort(
+            cohort_id=result.cohort_id,
             query="SELECT * FROM patients",
             limit=10,
             offset=0,
@@ -226,8 +226,8 @@ class TestQueryScenario:
         assert page1.page == 0
         
         # Second page
-        page2 = service.query_scenario(
-            scenario_id=result.scenario_id,
+        page2 = service.query_cohort(
+            cohort_id=result.cohort_id,
             query="SELECT * FROM patients",
             limit=10,
             offset=10,
@@ -245,8 +245,8 @@ class TestQueryScenario:
         )
         
         with pytest.raises(ValueError, match="SELECT"):
-            service.query_scenario(
-                scenario_id=result.scenario_id,
+            service.query_cohort(
+                cohort_id=result.cohort_id,
                 query="DELETE FROM patients",
             )
     
@@ -259,70 +259,70 @@ class TestQueryScenario:
         )
         
         with pytest.raises(ValueError):
-            service.query_scenario(
-                scenario_id=result.scenario_id,
+            service.query_cohort(
+                cohort_id=result.cohort_id,
                 query="SELECT * FROM patients; DROP TABLE patients;",
             )
 
 
-class TestListScenarios:
-    """Tests for list_scenarios functionality."""
+class TestListCohorts:
+    """Tests for list_cohorts functionality."""
     
     def test_list_empty(self, service):
-        """List returns empty when no scenarios."""
-        scenarios = service.list_scenarios()
-        assert scenarios == []
+        """List returns empty when no cohorts."""
+        cohorts = service.list_cohorts()
+        assert cohorts == []
     
     def test_list_all(self, service):
-        """List returns all scenarios."""
-        # Create multiple scenarios
+        """List returns all cohorts."""
+        # Create multiple cohorts
         for i in range(3):
             service.persist_entities(
                 entities=[{'patient_id': str(uuid4()), 'mrn': f'MRN{i:03d}', 'given_name': f'Patient{i}',
                           'family_name': 'Test', 'birth_date': '1980-01-01', 'gender': 'male'}],
                 entity_type='patient',
-                scenario_name=f'scenario-{i}',
+                cohort_name=f'cohort-{i}',
             )
         
-        scenarios = service.list_scenarios()
+        cohorts = service.list_cohorts()
         
-        assert len(scenarios) == 3
+        assert len(cohorts) == 3
     
     def test_list_filter_by_pattern(self, service):
-        """Can filter scenarios by name pattern."""
+        """Can filter cohorts by name pattern."""
         service.persist_entities(
             entities=[{'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'P1',
                       'family_name': 'Test', 'birth_date': '1980-01-01', 'gender': 'male'}],
             entity_type='patient',
-            scenario_name='diabetes-test',
+            cohort_name='diabetes-test',
         )
         service.persist_entities(
             entities=[{'patient_id': str(uuid4()), 'mrn': 'MRN002', 'given_name': 'P2',
                       'family_name': 'Test', 'birth_date': '1980-01-01', 'gender': 'male'}],
             entity_type='patient',
-            scenario_name='cardiac-test',
+            cohort_name='cardiac-test',
         )
         
-        scenarios = service.list_scenarios(filter_pattern='diabetes')
+        cohorts = service.list_cohorts(filter_pattern='diabetes')
         
-        assert len(scenarios) == 1
-        assert scenarios[0].name == 'diabetes-test'
+        assert len(cohorts) == 1
+        assert cohorts[0].name == 'diabetes-test'
 
 
-class TestRenameScenario:
-    """Tests for rename_scenario functionality."""
+class TestRenameCohort:
+    """Tests for rename_cohort functionality."""
     
-    def test_rename_scenario(self, service):
-        """Can rename a scenario."""
+    def test_rename_cohort(self, service):
+        """Can rename a cohort."""
         result = service.persist_entities(
             entities=[{'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'Test',
                       'family_name': 'Patient', 'birth_date': '1980-01-01', 'gender': 'male'}],
             entity_type='patient',
-            scenario_name='original-name',
+            cohort_name='original-name',
         )
         
-        old_name, new_name = service.rename_scenario(
-            scenario_id=result.scenario_id,
+        old_name, new_name = service.rename_cohort(
+            cohort_id=result.cohort_id,
             new_name='new-name',
         )
         
@@ -330,16 +330,16 @@ class TestRenameScenario:
         assert new_name == 'new-name'
     
     def test_rename_not_found(self, service):
-        """Renaming non-existent scenario raises error."""
+        """Renaming non-existent cohort raises error."""
         with pytest.raises(ValueError, match="not found"):
-            service.rename_scenario(
-                scenario_id=str(uuid4()),
+            service.rename_cohort(
+                cohort_id=str(uuid4()),
                 new_name='new-name',
             )
 
 
-class TestDeleteScenario:
-    """Tests for delete_scenario functionality."""
+class TestDeleteCohort:
+    """Tests for delete_cohort functionality."""
     
     def test_delete_requires_confirm(self, service):
         """Delete requires confirm=True."""
@@ -350,36 +350,36 @@ class TestDeleteScenario:
         )
         
         with pytest.raises(ValueError, match="confirm"):
-            service.delete_scenario(
-                scenario_id=result.scenario_id,
+            service.delete_cohort(
+                cohort_id=result.cohort_id,
                 confirm=False,
             )
     
-    def test_delete_removes_scenario(self, service):
-        """Delete removes scenario and entities."""
+    def test_delete_removes_cohort(self, service):
+        """Delete removes cohort and entities."""
         result = service.persist_entities(
             entities=[{'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'Test',
                       'family_name': 'Patient', 'birth_date': '1980-01-01', 'gender': 'male'}],
             entity_type='patient',
-            scenario_name='to-delete',
+            cohort_name='to-delete',
         )
         
-        delete_result = service.delete_scenario(
-            scenario_id=result.scenario_id,
+        delete_result = service.delete_cohort(
+            cohort_id=result.cohort_id,
             confirm=True,
         )
         
         assert delete_result['name'] == 'to-delete'
         
         # Verify it's gone
-        scenarios = service.list_scenarios(filter_pattern='to-delete')
-        assert len(scenarios) == 0
+        cohorts = service.list_cohorts(filter_pattern='to-delete')
+        assert len(cohorts) == 0
     
     def test_delete_not_found(self, service):
-        """Deleting non-existent scenario raises error."""
+        """Deleting non-existent cohort raises error."""
         with pytest.raises(ValueError, match="not found"):
-            service.delete_scenario(
-                scenario_id=str(uuid4()),
+            service.delete_cohort(
+                cohort_id=str(uuid4()),
                 confirm=True,
             )
 
@@ -397,7 +397,7 @@ class TestGetEntitySamples:
         result = service.persist_entities(entities=entities, entity_type='patient')
         
         samples = service.get_entity_samples(
-            scenario_id=result.scenario_id,
+            cohort_id=result.cohort_id,
             entity_type='patient',
             count=5,
         )
@@ -405,7 +405,7 @@ class TestGetEntitySamples:
         assert len(samples) == 5
     
     def test_samples_exclude_internal_fields(self, service):
-        """Samples exclude internal fields like scenario_id."""
+        """Samples exclude internal fields like cohort_id."""
         entities = [
             {'patient_id': str(uuid4()), 'mrn': 'MRN001', 'given_name': 'Test',
              'family_name': 'Patient', 'birth_date': '1980-01-01', 'gender': 'male'}
@@ -413,12 +413,12 @@ class TestGetEntitySamples:
         result = service.persist_entities(entities=entities, entity_type='patient')
         
         samples = service.get_entity_samples(
-            scenario_id=result.scenario_id,
+            cohort_id=result.cohort_id,
             entity_type='patient',
             count=1,
         )
         
-        assert 'scenario_id' not in samples[0]
+        assert 'cohort_id' not in samples[0]
     
     def test_samples_diverse_strategy(self, service):
         """Diverse strategy returns evenly spaced samples."""
@@ -430,7 +430,7 @@ class TestGetEntitySamples:
         result = service.persist_entities(entities=entities, entity_type='patient')
         
         samples = service.get_entity_samples(
-            scenario_id=result.scenario_id,
+            cohort_id=result.cohort_id,
             entity_type='patient',
             count=3,
             strategy='diverse',

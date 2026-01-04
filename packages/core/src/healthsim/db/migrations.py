@@ -19,56 +19,56 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
         CREATE SEQUENCE IF NOT EXISTS scenario_tags_seq START 1;
     """),
     
-    # Add scenario_id columns to canonical tables for auto-persist feature
-    # This enables direct SQL queries on canonical tables filtered by scenario
-    ("1.2", "Add scenario_id columns to canonical tables for auto-persist", """
+    # Legacy migration: Add cohort_id columns (renamed to cohort_id in 1.5)
+    # For new databases, schema.py already uses cohort_id
+    ("1.2", "Add cohort_id columns to canonical tables for auto-persist", """
         -- PatientSim tables
-        ALTER TABLE patients ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE encounters ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE diagnoses ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE medications ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE lab_results ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE vital_signs ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE orders ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE clinical_notes ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
+        ALTER TABLE patients ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE encounters ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE diagnoses ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE medications ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE lab_results ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE vital_signs ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE orders ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE clinical_notes ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
         
         -- MemberSim tables
-        ALTER TABLE members ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE claims ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE claim_lines ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
+        ALTER TABLE members ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE claims ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE claim_lines ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
         
         -- RxMemberSim tables
-        ALTER TABLE prescriptions ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE pharmacy_claims ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
+        ALTER TABLE prescriptions ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE pharmacy_claims ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
         
         -- TrialSim tables
-        ALTER TABLE subjects ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE trial_visits ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE adverse_events ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
-        ALTER TABLE exposures ADD COLUMN IF NOT EXISTS scenario_id VARCHAR;
+        ALTER TABLE subjects ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE trial_visits ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE adverse_events ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
+        ALTER TABLE exposures ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
         
         -- Indexes for scenario filtering
-        CREATE INDEX IF NOT EXISTS idx_patients_scenario ON patients(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_encounters_scenario ON encounters(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_diagnoses_scenario ON diagnoses(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_medications_scenario ON medications(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_lab_results_scenario ON lab_results(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_vital_signs_scenario ON vital_signs(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_orders_scenario ON orders(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_clinical_notes_scenario ON clinical_notes(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_members_scenario ON members(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_claims_scenario ON claims(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_claim_lines_scenario ON claim_lines(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_prescriptions_scenario ON prescriptions(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_pharmacy_claims_scenario ON pharmacy_claims(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_subjects_scenario ON subjects(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_trial_visits_scenario ON trial_visits(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_adverse_events_scenario ON adverse_events(scenario_id);
-        CREATE INDEX IF NOT EXISTS idx_exposures_scenario ON exposures(scenario_id);
+        CREATE INDEX IF NOT EXISTS idx_patients_scenario ON patients(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_encounters_scenario ON encounters(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_diagnoses_scenario ON diagnoses(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_medications_scenario ON medications(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_lab_results_scenario ON lab_results(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_vital_signs_scenario ON vital_signs(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_orders_scenario ON orders(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_clinical_notes_scenario ON clinical_notes(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_members_scenario ON members(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_claims_scenario ON claims(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_claim_lines_scenario ON claim_lines(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_prescriptions_scenario ON prescriptions(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_pharmacy_claims_scenario ON pharmacy_claims(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_subjects_scenario ON subjects(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_trial_visits_scenario ON trial_visits(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_adverse_events_scenario ON adverse_events(cohort_id);
+        CREATE INDEX IF NOT EXISTS idx_exposures_scenario ON exposures(cohort_id);
     """),
     
-    # Rename scenario_id to id in scenarios table for consistency
-    ("1.4", "Rename scenarios.scenario_id to scenarios.id for consistency", """
+    # Rename cohort_id to id in scenarios table for consistency
+    ("1.4", "Rename scenarios.cohort_id to scenarios.id for consistency", """
         -- DuckDB doesn't support RENAME COLUMN directly, so we recreate the table
         -- Step 1: Create new table with correct schema
         CREATE TABLE scenarios_new (
@@ -82,7 +82,7 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
         
         -- Step 2: Copy data from old table
         INSERT INTO scenarios_new (id, name, description, created_at, updated_at, metadata)
-        SELECT scenario_id, name, description, created_at, updated_at, metadata
+        SELECT cohort_id, name, description, created_at, updated_at, metadata
         FROM scenarios;
         
         -- Step 3: Drop foreign key constraints by recreating child tables
@@ -91,12 +91,12 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
         -- Recreate scenario_entities with updated FK reference
         CREATE TABLE scenario_entities_new (
             id              INTEGER PRIMARY KEY,
-            scenario_id     VARCHAR NOT NULL,
+            cohort_id     VARCHAR NOT NULL,
             entity_type     VARCHAR NOT NULL,
             entity_id       VARCHAR NOT NULL,
             entity_data     JSON,
             created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(scenario_id, entity_type, entity_id)
+            UNIQUE(cohort_id, entity_type, entity_id)
         );
         INSERT INTO scenario_entities_new SELECT * FROM scenario_entities;
         DROP TABLE scenario_entities;
@@ -105,9 +105,9 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
         -- Recreate scenario_tags with updated FK reference  
         CREATE TABLE scenario_tags_new (
             id              INTEGER PRIMARY KEY,
-            scenario_id     VARCHAR NOT NULL,
+            cohort_id     VARCHAR NOT NULL,
             tag             VARCHAR NOT NULL,
-            UNIQUE(scenario_id, tag)
+            UNIQUE(cohort_id, tag)
         );
         INSERT INTO scenario_tags_new SELECT * FROM scenario_tags;
         DROP TABLE scenario_tags;
@@ -118,9 +118,9 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
         ALTER TABLE scenarios_new RENAME TO scenarios;
         
         -- Step 5: Recreate indexes
-        CREATE INDEX IF NOT EXISTS idx_scenario_entities_scenario ON scenario_entities(scenario_id);
+        CREATE INDEX IF NOT EXISTS idx_scenario_entities_scenario ON scenario_entities(cohort_id);
         CREATE INDEX IF NOT EXISTS idx_scenario_entities_type ON scenario_entities(entity_type);
-        CREATE INDEX IF NOT EXISTS idx_scenario_tags_scenario ON scenario_tags(scenario_id);
+        CREATE INDEX IF NOT EXISTS idx_scenario_tags_scenario ON scenario_tags(cohort_id);
         CREATE INDEX IF NOT EXISTS idx_scenario_tags_tag ON scenario_tags(tag);
     """),
     
@@ -152,7 +152,7 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
             UNIQUE(cohort_id, entity_type, entity_id)
         );
         INSERT INTO cohort_entities (id, cohort_id, entity_type, entity_id, entity_data, created_at)
-        SELECT id, scenario_id, entity_type, entity_id, entity_data, created_at 
+        SELECT id, cohort_id, entity_type, entity_id, entity_data, created_at 
         FROM scenario_entities WHERE NOT EXISTS (SELECT 1 FROM cohort_entities LIMIT 1);
         
         -- Create cohort_tags table (copy of scenario_tags)
@@ -163,9 +163,9 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
             UNIQUE(cohort_id, tag)
         );
         INSERT INTO cohort_tags (id, cohort_id, tag)
-        SELECT id, scenario_id, tag FROM scenario_tags WHERE NOT EXISTS (SELECT 1 FROM cohort_tags LIMIT 1);
+        SELECT id, cohort_id, tag FROM scenario_tags WHERE NOT EXISTS (SELECT 1 FROM cohort_tags LIMIT 1);
         
-        -- Add cohort_id column to all canonical tables (alongside scenario_id for backward compat)
+        -- Add cohort_id column to all canonical tables (alongside cohort_id for backward compat)
         ALTER TABLE patients ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
         ALTER TABLE encounters ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
         ALTER TABLE diagnoses ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
@@ -184,24 +184,24 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
         ALTER TABLE adverse_events ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
         ALTER TABLE exposures ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
         
-        -- Copy scenario_id values to cohort_id
-        UPDATE patients SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE encounters SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE diagnoses SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE medications SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE lab_results SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE vital_signs SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE orders SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE clinical_notes SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE members SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE claims SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE claim_lines SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE prescriptions SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE pharmacy_claims SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE subjects SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE trial_visits SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE adverse_events SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
-        UPDATE exposures SET cohort_id = scenario_id WHERE cohort_id IS NULL AND scenario_id IS NOT NULL;
+        -- Copy cohort_id values to cohort_id
+        UPDATE patients SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE encounters SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE diagnoses SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE medications SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE lab_results SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE vital_signs SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE orders SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE clinical_notes SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE members SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE claims SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE claim_lines SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE prescriptions SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE pharmacy_claims SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE subjects SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE trial_visits SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE adverse_events SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
+        UPDATE exposures SET cohort_id = cohort_id WHERE cohort_id IS NULL AND cohort_id IS NOT NULL;
         
         -- Create indexes on cohort_id columns
         CREATE INDEX IF NOT EXISTS idx_patients_cohort ON patients(cohort_id);

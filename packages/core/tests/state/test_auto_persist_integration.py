@@ -52,11 +52,11 @@ class TestParquetExport:
         ]
 
         result = service.persist_entities(
-            entities=patients, entity_type="patient", scenario_name="parquet-test"
+            entities=patients, entity_type="patient", cohort_name="parquet-test"
         )
 
         with tempfile.TemporaryDirectory() as export_dir:
-            exp = service.export_scenario(result.scenario_id, "parquet", export_dir)
+            exp = service.export_cohort(result.cohort_id, "parquet", export_dir)
 
             # Verify export succeeded
             assert Path(exp.file_path).exists()
@@ -96,7 +96,7 @@ class TestPerformance:
 
         start = time.time()
         result = service.persist_entities(
-            entities=patients, entity_type="patient", scenario_name="perf-test"
+            entities=patients, entity_type="patient", cohort_name="perf-test"
         )
         elapsed = time.time() - start
 
@@ -117,11 +117,11 @@ class TestPerformance:
         ]
 
         result = service.persist_entities(
-            entities=patients, entity_type="patient", scenario_name="clone-perf-test"
+            entities=patients, entity_type="patient", cohort_name="clone-perf-test"
         )
 
         start = time.time()
-        clone = service.clone_scenario(result.scenario_id, "cloned-1000")
+        clone = service.clone_cohort(result.cohort_id, "cloned-1000")
         elapsed = time.time() - start
 
         assert clone.total_entities == 1000
@@ -141,21 +141,21 @@ class TestPerformance:
         ]
 
         result = service.persist_entities(
-            entities=patients, entity_type="patient", scenario_name="export-perf-test"
+            entities=patients, entity_type="patient", cohort_name="export-perf-test"
         )
 
         with tempfile.TemporaryDirectory() as export_dir:
             # JSON export
             start = time.time()
-            exp_json = service.export_scenario(result.scenario_id, "json", export_dir)
+            exp_json = service.export_cohort(result.cohort_id, "json", export_dir)
             json_time = time.time() - start
             assert Path(exp_json.file_path).exists()
             assert json_time < 2.0, f"JSON export took {json_time:.2f}s"
 
             # CSV export
             start = time.time()
-            exp_csv = service.export_scenario(
-                result.scenario_id, "csv", f"{export_dir}/csv"
+            exp_csv = service.export_cohort(
+                result.cohort_id, "csv", f"{export_dir}/csv"
             )
             csv_time = time.time() - start
             assert Path(exp_csv.file_path).exists()
@@ -163,8 +163,8 @@ class TestPerformance:
 
             # Parquet export
             start = time.time()
-            exp_pq = service.export_scenario(
-                result.scenario_id, "parquet", f"{export_dir}/pq"
+            exp_pq = service.export_cohort(
+                result.cohort_id, "parquet", f"{export_dir}/pq"
             )
             pq_time = time.time() - start
             assert Path(exp_pq.file_path).exists()
@@ -172,10 +172,10 @@ class TestPerformance:
 
 
 class TestCrossProductIntegration:
-    """Test scenarios with multiple entity types."""
+    """Test cohorts with multiple entity types."""
 
-    def test_scenario_with_patients_and_encounters(self, service):
-        """Create scenario with patients and encounters, then clone and merge."""
+    def test_cohort_with_patients_and_encounters(self, service):
+        """Create cohort with patients and encounters, then clone and merge."""
         # Create patients with MRNs
         mrns = [f"MRN-{i:04d}" for i in range(5)]
         patients = [
@@ -193,7 +193,7 @@ class TestCrossProductIntegration:
         result = service.persist_entities(
             entities=patients,
             entity_type="patient",
-            scenario_name="multi-entity-test",
+            cohort_name="multi-entity-test",
             tags=["integration-test"],
         )
         assert result.entities_persisted == 5
@@ -214,28 +214,28 @@ class TestCrossProductIntegration:
                 )
 
         result2 = service.persist_entities(
-            entities=encounters, entity_type="encounter", scenario_id=result.scenario_id
+            entities=encounters, entity_type="encounter", cohort_id=result.cohort_id
         )
         assert result2.entities_persisted == 15
 
         # Verify summary
-        summary = service.get_scenario_summary(result.scenario_id)
+        summary = service.get_cohort_summary(result.cohort_id)
         assert summary.entity_counts == {"patients": 5, "encounters": 15}
 
         # Clone and verify IDs are different
-        clone = service.clone_scenario(result.scenario_id, "multi-entity-clone")
+        clone = service.clone_cohort(result.cohort_id, "multi-entity-clone")
         assert clone.total_entities == 20
 
-        orig_patients = service.query_scenario(result.scenario_id, "SELECT id FROM patients")
-        clone_patients = service.query_scenario(clone.new_scenario_id, "SELECT id FROM patients")
+        orig_patients = service.query_cohort(result.cohort_id, "SELECT id FROM patients")
+        clone_patients = service.query_cohort(clone.new_cohort_id, "SELECT id FROM patients")
         
         orig_ids = {r["id"] for r in orig_patients.results}
         clone_ids = {r["id"] for r in clone_patients.results}
         assert orig_ids != clone_ids, "Cloned IDs should be different"
 
-    def test_merge_scenarios_with_different_entity_types(self, service):
-        """Merge scenarios where one has encounters and one doesn't."""
-        # First scenario: patients + encounters
+    def test_merge_cohorts_with_different_entity_types(self, service):
+        """Merge cohorts where one has encounters and one doesn't."""
+        # First cohort: patients + encounters
         patients1 = [
             {
                 "id": str(uuid4()),
@@ -248,7 +248,7 @@ class TestCrossProductIntegration:
             for i in range(3)
         ]
         result1 = service.persist_entities(
-            entities=patients1, entity_type="patient", scenario_name="scenario-a"
+            entities=patients1, entity_type="patient", cohort_name="cohort-a"
         )
 
         encounters = [
@@ -262,10 +262,10 @@ class TestCrossProductIntegration:
             for i in range(3)
         ]
         service.persist_entities(
-            entities=encounters, entity_type="encounter", scenario_id=result1.scenario_id
+            entities=encounters, entity_type="encounter", cohort_id=result1.cohort_id
         )
 
-        # Second scenario: patients only
+        # Second cohort: patients only
         patients2 = [
             {
                 "id": str(uuid4()),
@@ -278,20 +278,20 @@ class TestCrossProductIntegration:
             for i in range(2)
         ]
         result2 = service.persist_entities(
-            entities=patients2, entity_type="patient", scenario_name="scenario-b"
+            entities=patients2, entity_type="patient", cohort_name="cohort-b"
         )
 
         # Merge
-        merged = service.merge_scenarios(
-            [result1.scenario_id, result2.scenario_id], "merged-scenario"
+        merged = service.merge_cohorts(
+            [result1.cohort_id, result2.cohort_id], "merged-cohort"
         )
 
         # Verify counts
         assert merged.entities_merged["patients"] == 5  # 3 + 2
-        assert merged.entities_merged["encounters"] == 3  # only from scenario-a
+        assert merged.entities_merged["encounters"] == 3  # only from cohort-a
 
-    def test_export_multi_entity_scenario(self, service):
-        """Export scenario with multiple entity types."""
+    def test_export_multi_entity_cohort(self, service):
+        """Export cohort with multiple entity types."""
         # Create patients
         patients = [
             {
@@ -305,7 +305,7 @@ class TestCrossProductIntegration:
             for i in range(3)
         ]
         result = service.persist_entities(
-            entities=patients, entity_type="patient", scenario_name="export-multi-test"
+            entities=patients, entity_type="patient", cohort_name="export-multi-test"
         )
 
         # Add encounters
@@ -320,12 +320,12 @@ class TestCrossProductIntegration:
             for i in range(3)
         ]
         service.persist_entities(
-            entities=encounters, entity_type="encounter", scenario_id=result.scenario_id
+            entities=encounters, entity_type="encounter", cohort_id=result.cohort_id
         )
 
         with tempfile.TemporaryDirectory() as export_dir:
             # JSON export
-            exp = service.export_scenario(result.scenario_id, "json", export_dir)
+            exp = service.export_cohort(result.cohort_id, "json", export_dir)
             with open(exp.file_path) as f:
                 data = json.load(f)
 
@@ -336,8 +336,8 @@ class TestCrossProductIntegration:
             assert len(entities["encounters"]) == 3
 
             # CSV export
-            exp_csv = service.export_scenario(
-                result.scenario_id, "csv", f"{export_dir}/csv"
+            exp_csv = service.export_cohort(
+                result.cohort_id, "csv", f"{export_dir}/csv"
             )
             csv_files = list(Path(exp_csv.file_path).glob("*.csv"))
             csv_names = [f.name for f in csv_files]
@@ -362,30 +362,30 @@ class TestFullWorkflow:
             for i in range(5)
         ]
         result = service.persist_entities(
-            entities=patients, entity_type="patient", scenario_name="workflow-test"
+            entities=patients, entity_type="patient", cohort_name="workflow-test"
         )
-        scenario_id = result.scenario_id
+        cohort_id = result.cohort_id
         assert result.entities_persisted == 5
 
         # Step 2: Add tags
-        service.add_tag(scenario_id, "diabetes-cohort")
-        service.add_tag(scenario_id, "2024-study")
-        tags = service.get_tags(scenario_id)
+        service.add_tag(cohort_id, "diabetes-cohort")
+        service.add_tag(cohort_id, "2024-study")
+        tags = service.get_tags(cohort_id)
         assert "diabetes-cohort" in tags
         assert "2024-study" in tags
 
         # Step 3: Clone for A/B testing
-        clone_a = service.clone_scenario(scenario_id, "control-group")
-        clone_b = service.clone_scenario(scenario_id, "treatment-group")
-        service.add_tag(clone_a.new_scenario_id, "control")
-        service.add_tag(clone_b.new_scenario_id, "treatment")
+        clone_a = service.clone_cohort(cohort_id, "control-group")
+        clone_b = service.clone_cohort(cohort_id, "treatment-group")
+        service.add_tag(clone_a.new_cohort_id, "control")
+        service.add_tag(clone_b.new_cohort_id, "treatment")
 
         # Step 4: Verify clones are independent
-        control_count = service.query_scenario(
-            clone_a.new_scenario_id, "SELECT COUNT(*) as cnt FROM patients"
+        control_count = service.query_cohort(
+            clone_a.new_cohort_id, "SELECT COUNT(*) as cnt FROM patients"
         )
-        treatment_count = service.query_scenario(
-            clone_b.new_scenario_id, "SELECT COUNT(*) as cnt FROM patients"
+        treatment_count = service.query_cohort(
+            clone_b.new_cohort_id, "SELECT COUNT(*) as cnt FROM patients"
         )
         assert control_count.results[0]["cnt"] == 5
         assert treatment_count.results[0]["cnt"] == 5
@@ -404,19 +404,19 @@ class TestFullWorkflow:
         additional = service.persist_entities(
             entities=more_patients,
             entity_type="patient",
-            scenario_name="additional-cohort",
+            cohort_name="additional-cohort",
         )
 
         # Step 6: Merge cohorts
-        merged = service.merge_scenarios(
-            [clone_a.new_scenario_id, additional.scenario_id], "combined-study"
+        merged = service.merge_cohorts(
+            [clone_a.new_cohort_id, additional.cohort_id], "combined-study"
         )
         assert merged.total_entities == 8  # 5 + 3
 
         # Step 7: Export final dataset
         with tempfile.TemporaryDirectory() as export_dir:
-            exp = service.export_scenario(
-                merged.target_scenario_id, "json", export_dir
+            exp = service.export_cohort(
+                merged.target_cohort_id, "json", export_dir
             )
             assert Path(exp.file_path).exists()
 
@@ -425,6 +425,6 @@ class TestFullWorkflow:
             assert len(data["entities"]["patients"]) == 8
 
         # Verify tag filtering works
-        diabetes_scenarios = service.scenarios_by_tag("diabetes-cohort")
-        scenario_ids = [s.scenario_id for s in diabetes_scenarios]
-        assert scenario_id in scenario_ids
+        diabetes_cohorts = service.cohorts_by_tag("diabetes-cohort")
+        cohort_ids = [s.cohort_id for s in diabetes_cohorts]
+        assert cohort_id in cohort_ids

@@ -24,7 +24,7 @@ class TestSkillType:
     def test_values(self) -> None:
         """Test enum values."""
         assert SkillType.DOMAIN_KNOWLEDGE.value == "domain-knowledge"
-        assert SkillType.SCENARIO_TEMPLATE.value == "scenario-template"
+        assert SkillType.COHORT_TEMPLATE.value == "cohort-template"
         assert SkillType.FORMAT_SPEC.value == "format-spec"
         assert SkillType.VALIDATION_RULES.value == "validation-rules"
         assert SkillType.GENERATION_GUIDE.value == "generation-guide"

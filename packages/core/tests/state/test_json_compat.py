@@ -55,7 +55,7 @@ class TestExportToJson:
     
     def test_export_creates_file(self, state_manager, sample_entities, tmp_path):
         """Export creates a valid JSON file."""
-        state_manager.save_scenario('export-test', sample_entities)
+        state_manager.save_cohort('export-test', sample_entities)
         
         output_path = tmp_path / "exported.json"
         result_path = state_manager.export_to_json('export-test', output_path)
@@ -65,7 +65,7 @@ class TestExportToJson:
     
     def test_export_valid_json(self, state_manager, sample_entities, tmp_path):
         """Exported file contains valid JSON."""
-        state_manager.save_scenario('export-test', sample_entities)
+        state_manager.save_cohort('export-test', sample_entities)
         
         output_path = tmp_path / "exported.json"
         state_manager.export_to_json('export-test', output_path)
@@ -78,20 +78,20 @@ class TestExportToJson:
         assert 'entities' in data
     
     def test_export_preserves_name(self, state_manager, sample_entities, tmp_path):
-        """Exported JSON includes scenario name."""
-        state_manager.save_scenario('my-scenario', sample_entities)
+        """Exported JSON includes cohort name."""
+        state_manager.save_cohort('my-cohort', sample_entities)
         
         output_path = tmp_path / "exported.json"
-        state_manager.export_to_json('my-scenario', output_path)
+        state_manager.export_to_json('my-cohort', output_path)
         
         with open(output_path) as f:
             data = json.load(f)
         
-        assert data['name'] == 'my-scenario'
+        assert data['name'] == 'my-cohort'
     
     def test_export_preserves_entities(self, state_manager, sample_entities, tmp_path):
         """Exported JSON includes all entities."""
-        state_manager.save_scenario('entity-test', sample_entities)
+        state_manager.save_cohort('entity-test', sample_entities)
         
         output_path = tmp_path / "exported.json"
         state_manager.export_to_json('entity-test', output_path)
@@ -108,7 +108,7 @@ class TestExportToJson:
     
     def test_export_default_path(self, state_manager, sample_entities):
         """Export uses Downloads folder by default."""
-        state_manager.save_scenario('default-path-test', sample_entities)
+        state_manager.save_cohort('default-path-test', sample_entities)
         
         result_path = state_manager.export_to_json('default-path-test')
         
@@ -122,11 +122,11 @@ class TestExportToJson:
                 result_path.unlink()
     
     def test_export_by_id(self, state_manager, sample_entities, tmp_path):
-        """Can export by scenario ID."""
-        scenario_id = state_manager.save_scenario('id-export-test', sample_entities)
+        """Can export by cohort ID."""
+        cohort_id = state_manager.save_cohort('id-export-test', sample_entities)
         
         output_path = tmp_path / "exported.json"
-        result_path = state_manager.export_to_json(scenario_id, output_path)
+        result_path = state_manager.export_to_json(cohort_id, output_path)
         
         assert result_path.exists()
 
@@ -134,10 +134,10 @@ class TestExportToJson:
 class TestImportFromJson:
     """Tests for JSON import functionality."""
     
-    def test_import_creates_scenario(self, state_manager, tmp_path):
-        """Import creates a new scenario."""
+    def test_import_creates_cohort(self, state_manager, tmp_path):
+        """Import creates a new cohort."""
         json_data = {
-            'name': 'imported-scenario',
+            'name': 'imported-cohort',
             'description': 'Test import',
             'entities': {
                 'patients': [{
@@ -152,9 +152,9 @@ class TestImportFromJson:
         with open(json_path, 'w') as f:
             json.dump(json_data, f)
         
-        scenario_id = state_manager.import_from_json(json_path)
+        cohort_id = state_manager.import_from_json(json_path)
         
-        assert state_manager.scenario_exists(scenario_id)
+        assert state_manager.cohort_exists(cohort_id)
     
     def test_import_preserves_name(self, state_manager, tmp_path):
         """Import uses embedded name."""
@@ -167,8 +167,8 @@ class TestImportFromJson:
         with open(json_path, 'w') as f:
             json.dump(json_data, f)
         
-        scenario_id = state_manager.import_from_json(json_path)
-        loaded = state_manager.load_scenario(scenario_id)
+        cohort_id = state_manager.import_from_json(json_path)
+        loaded = state_manager.load_cohort(cohort_id)
         
         assert loaded['name'] == 'embedded-name'
     
@@ -183,8 +183,8 @@ class TestImportFromJson:
         with open(json_path, 'w') as f:
             json.dump(json_data, f)
         
-        scenario_id = state_manager.import_from_json(json_path, name='override-name')
-        loaded = state_manager.load_scenario(scenario_id)
+        cohort_id = state_manager.import_from_json(json_path, name='override-name')
+        loaded = state_manager.load_cohort(cohort_id)
         
         assert loaded['name'] == 'override-name'
     
@@ -194,14 +194,14 @@ class TestImportFromJson:
             'entities': {'patients': []}
         }
         
-        json_path = tmp_path / "my-scenario-file.json"
+        json_path = tmp_path / "my-cohort-file.json"
         with open(json_path, 'w') as f:
             json.dump(json_data, f)
         
-        scenario_id = state_manager.import_from_json(json_path)
-        loaded = state_manager.load_scenario(scenario_id)
+        cohort_id = state_manager.import_from_json(json_path)
+        loaded = state_manager.load_cohort(cohort_id)
         
-        assert loaded['name'] == 'my-scenario-file'
+        assert loaded['name'] == 'my-cohort-file'
     
     def test_import_preserves_entities(self, state_manager, tmp_path):
         """Import preserves all entity data."""
@@ -226,8 +226,8 @@ class TestImportFromJson:
         with open(json_path, 'w') as f:
             json.dump(json_data, f)
         
-        scenario_id = state_manager.import_from_json(json_path)
-        loaded = state_manager.load_scenario(scenario_id)
+        cohort_id = state_manager.import_from_json(json_path)
+        loaded = state_manager.load_cohort(cohort_id)
         
         assert len(loaded['entities']['patients']) == 1
         assert loaded['entities']['patients'][0]['given_name'] == 'Alice'
@@ -236,7 +236,7 @@ class TestImportFromJson:
     def test_import_preserves_tags(self, state_manager, tmp_path):
         """Import preserves tags."""
         json_data = {
-            'name': 'tagged-scenario',
+            'name': 'tagged-cohort',
             'tags': ['test', 'diabetes', 'chronic'],
             'entities': {'patients': []}
         }
@@ -245,17 +245,17 @@ class TestImportFromJson:
         with open(json_path, 'w') as f:
             json.dump(json_data, f)
         
-        scenario_id = state_manager.import_from_json(json_path)
-        tags = state_manager.get_scenario_tags(scenario_id)
+        cohort_id = state_manager.import_from_json(json_path)
+        tags = state_manager.get_cohort_tags(cohort_id)
         
         assert 'test' in tags
         assert 'diabetes' in tags
         assert 'chronic' in tags
     
     def test_import_with_overwrite(self, state_manager, tmp_path):
-        """Import can overwrite existing scenario."""
-        # Create initial scenario
-        state_manager.save_scenario('overwrite-test', {'patients': [{'given_name': 'Original'}]})
+        """Import can overwrite existing cohort."""
+        # Create initial cohort
+        state_manager.save_cohort('overwrite-test', {'patients': [{'given_name': 'Original'}]})
         
         # Import with same name
         json_data = {
@@ -267,8 +267,8 @@ class TestImportFromJson:
         with open(json_path, 'w') as f:
             json.dump(json_data, f)
         
-        scenario_id = state_manager.import_from_json(json_path, overwrite=True)
-        loaded = state_manager.load_scenario(scenario_id)
+        cohort_id = state_manager.import_from_json(json_path, overwrite=True)
+        loaded = state_manager.load_cohort(cohort_id)
         
         assert loaded['entities']['patients'][0]['given_name'] == 'Replacement'
 
@@ -279,7 +279,7 @@ class TestLegacyFormat:
     def test_import_entities_at_top_level(self, state_manager, tmp_path):
         """Import handles old format with entities at top level."""
         legacy_json = {
-            'name': 'legacy-scenario',
+            'name': 'legacy-cohort',
             'patients': [{'given_name': 'Legacy', 'family_name': 'Patient'}],
             'encounters': [{'encounter_type': 'outpatient'}]
         }
@@ -288,8 +288,8 @@ class TestLegacyFormat:
         with open(json_path, 'w') as f:
             json.dump(legacy_json, f)
         
-        scenario_id = state_manager.import_from_json(json_path)
-        loaded = state_manager.load_scenario(scenario_id)
+        cohort_id = state_manager.import_from_json(json_path)
+        loaded = state_manager.load_cohort(cohort_id)
         
         assert 'patients' in loaded['entities']
         assert loaded['entities']['patients'][0]['given_name'] == 'Legacy'
@@ -306,8 +306,8 @@ class TestLegacyFormat:
         with open(json_path, 'w') as f:
             json.dump(legacy_json, f)
         
-        scenario_id = state_manager.import_from_json(json_path)
-        loaded = state_manager.load_scenario(scenario_id)
+        cohort_id = state_manager.import_from_json(json_path)
+        loaded = state_manager.load_cohort(cohort_id)
         
         # Should normalize to plural
         assert 'patients' in loaded['entities']
@@ -320,20 +320,20 @@ class TestRoundTrip:
     def test_round_trip_preserves_data(self, state_manager, sample_entities, tmp_path):
         """Export then import preserves all data."""
         # Save original
-        state_manager.save_scenario('round-trip-test', sample_entities)
+        state_manager.save_cohort('round-trip-test', sample_entities)
         
         # Export
         json_path = tmp_path / "round-trip.json"
         state_manager.export_to_json('round-trip-test', json_path)
         
         # Delete original
-        state_manager.delete_scenario('round-trip-test', confirm=True)
+        state_manager.delete_cohort('round-trip-test', confirm=True)
         
         # Import
         state_manager.import_from_json(json_path, name='round-trip-restored')
         
         # Verify
-        restored = state_manager.load_scenario('round-trip-restored')
+        restored = state_manager.load_cohort('round-trip-restored')
         
         assert len(restored['entities']['patients']) == 1
         assert restored['entities']['patients'][0]['given_name'] == 'Test'
@@ -344,7 +344,7 @@ class TestRoundTrip:
     
     def test_round_trip_with_tags(self, state_manager, sample_entities, tmp_path):
         """Round-trip preserves tags."""
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             'tagged-round-trip',
             sample_entities,
             tags=['important', 'test']
@@ -353,28 +353,28 @@ class TestRoundTrip:
         # Export and re-import
         json_path = tmp_path / "tagged.json"
         state_manager.export_to_json('tagged-round-trip', json_path)
-        state_manager.delete_scenario('tagged-round-trip', confirm=True)
+        state_manager.delete_cohort('tagged-round-trip', confirm=True)
         state_manager.import_from_json(json_path)
         
         # Verify tags
-        tags = state_manager.get_scenario_tags('tagged-round-trip')
+        tags = state_manager.get_cohort_tags('tagged-round-trip')
         assert 'important' in tags
         assert 'test' in tags
     
     def test_round_trip_with_description(self, state_manager, sample_entities, tmp_path):
         """Round-trip preserves description."""
-        state_manager.save_scenario(
+        state_manager.save_cohort(
             'described-round-trip',
             sample_entities,
-            description='A detailed description of this scenario'
+            description='A detailed description of this cohort'
         )
         
         # Export and re-import
         json_path = tmp_path / "described.json"
         state_manager.export_to_json('described-round-trip', json_path)
-        state_manager.delete_scenario('described-round-trip', confirm=True)
+        state_manager.delete_cohort('described-round-trip', confirm=True)
         state_manager.import_from_json(json_path)
         
         # Verify
-        restored = state_manager.load_scenario('described-round-trip')
-        assert restored['description'] == 'A detailed description of this scenario'
+        restored = state_manager.load_cohort('described-round-trip')
+        assert restored['description'] == 'A detailed description of this cohort'

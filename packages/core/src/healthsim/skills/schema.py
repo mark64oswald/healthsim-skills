@@ -15,14 +15,14 @@ class SkillType(str, Enum):
 
     Attributes:
         DOMAIN_KNOWLEDGE: Domain expertise and reference information
-        SCENARIO_TEMPLATE: Template for generating specific scenarios
+        COHORT_TEMPLATE: Template for generating specific cohorts
         FORMAT_SPEC: Specification for output formats
         VALIDATION_RULES: Rules for validating generated data
         GENERATION_GUIDE: Guidelines for data generation
     """
 
     DOMAIN_KNOWLEDGE = "domain-knowledge"
-    SCENARIO_TEMPLATE = "scenario-template"
+    COHORT_TEMPLATE = "cohort-template"
     FORMAT_SPEC = "format-spec"
     VALIDATION_RULES = "validation-rules"
     GENERATION_GUIDE = "generation-guide"
@@ -63,7 +63,7 @@ class SkillMetadata(BaseModel):
         requires_version: Minimum HealthSim version required
     """
 
-    type: SkillType = SkillType.SCENARIO_TEMPLATE
+    type: SkillType = SkillType.COHORT_TEMPLATE
     version: str = "1.0"
     author: str | None = None
     tags: list[str] = Field(default_factory=list)

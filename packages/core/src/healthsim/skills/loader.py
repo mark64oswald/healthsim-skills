@@ -154,11 +154,11 @@ class SkillLoader:
             SkillMetadata object
         """
         # Map string to SkillType enum
-        type_str = frontmatter.get("type", "scenario-template")
+        type_str = frontmatter.get("type", "cohort-template")
         try:
             skill_type = SkillType(type_str)
         except ValueError:
-            skill_type = SkillType.SCENARIO_TEMPLATE
+            skill_type = SkillType.COHORT_TEMPLATE
 
         return SkillMetadata(
             type=skill_type,

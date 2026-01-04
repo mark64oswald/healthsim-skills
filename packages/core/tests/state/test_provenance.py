@@ -36,10 +36,10 @@ class TestProvenance:
 
     def test_generated_factory(self):
         """Test generated() factory method."""
-        prov = Provenance.generated(skill_used="diabetes_scenario", severity="moderate")
+        prov = Provenance.generated(skill_used="diabetes_cohort", severity="moderate")
 
         assert prov.source_type == SourceType.GENERATED
-        assert prov.skill_used == "diabetes_scenario"
+        assert prov.skill_used == "diabetes_cohort"
         assert prov.generation_params == {"severity": "moderate"}
 
     def test_generated_factory_no_skill(self):

@@ -123,8 +123,8 @@ class SkillComposer:
 
         # Check type compatibility
         types = {s.metadata.type for s in skills}
-        if SkillType.SCENARIO_TEMPLATE in types and SkillType.DOMAIN_KNOWLEDGE in types:
-            # This is fine - domain knowledge can enhance scenarios
+        if SkillType.COHORT_TEMPLATE in types and SkillType.DOMAIN_KNOWLEDGE in types:
+            # This is fine - domain knowledge can enhance cohorts
             pass
         elif len(types) > 1:
             # Other combinations might be problematic but allow them
