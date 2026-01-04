@@ -146,6 +146,29 @@ Create realistic end-to-end test data spanning multiple products.
 
 ---
 
+### Level 8: Generative Framework (20-30 minutes) ⭐ NEW
+
+Build structured specifications through conversation, then generate at scale.
+
+| Scenario | Example Prompt | Guide |
+|----------|----------------|-------|
+| **Quick Generate** | "Generate a diabetic patient" | [Generation Example 1](generation-examples.md#example-1-quick-generate---single-patient) |
+| **Profile Builder** | "Build a profile for 50 Medicare diabetics" | [Generation Example 3](generation-examples.md#example-3-build-a-simple-profile) |
+| **Profile + Journey** | "Create 100 newly diagnosed diabetics with first year journey" | [Generation Example 4](generation-examples.md#example-4-profile-with-journey-attached) |
+| **Surgical Episode** | "Create a knee replacement journey for 25 patients" | [Generation Example 5](generation-examples.md#example-5-surgical-episode-journey) |
+| **Member Onboarding** | "Generate 200 new MA members with onboarding journey" | [Generation Example 6](generation-examples.md#example-6-new-member-onboarding-journey) |
+| **Use Template** | "Use the Medicare diabetic template" | [Generation Example 8](generation-examples.md#example-8-using-a-pre-built-template) |
+
+**Key Concepts:**
+- **Profiles** define *who* (demographics, conditions, coverage)
+- **Journeys** define *what happens* (events over time)
+- **Templates** provide ready-to-use starting points
+- **Two phases**: Specification (conversational) → Execution (deterministic)
+
+See: [Profile Builder](../../skills/generation/builders/profile-builder.md), [Journey Builder](../../skills/generation/builders/journey-builder.md), [Templates](../../skills/generation/templates/)
+
+---
+
 ## Example Files by Product
 
 | Guide | Description | Examples |
@@ -160,6 +183,7 @@ Create realistic end-to-end test data spanning multiple products.
 | [Cross-Domain Examples](cross-domain-examples.md) | Multi-product scenarios | End-to-end test data |
 | [Format Examples](format-examples.md) | Output transformations | FHIR, HL7v2, X12, C-CDA, SDTM, CSV |
 | [Auto-Persist Examples](auto-persist-examples.md) | Token-efficient batch ops | Large cohorts, queries, summaries |
+| [Generation Examples](generation-examples.md) | **⭐ Generative Framework** | Profiles, journeys, templates, at-scale generation |
 
 ---
 
@@ -252,6 +276,21 @@ Show me a summary of my diabetes cohort
 Get 3 sample patients from my trial scenario
 Rename my scenario to training-cohort-q4
 List my scenarios tagged with training
+```
+
+### Generation Framework (Profiles & Journeys) ⭐ NEW
+
+```text
+Generate a diabetic patient
+Generate a Medicare patient with CHF who had a recent hospitalization
+Build a profile for 50 Medicare diabetics in Texas
+Create 100 newly diagnosed diabetics with first year journey
+Use the Medicare diabetic template with 25 patients
+Create a knee replacement surgical journey for 25 patients
+Generate 200 new MA members with onboarding journey
+Use the commercial healthy template for a tech company
+Show me the profile JSON
+Execute this profile
 ```
 
 ---
