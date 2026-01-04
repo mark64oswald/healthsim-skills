@@ -205,8 +205,8 @@ class TestMCPToolsReadThenWrite:
     """
     Test MCP tool functions with the read-then-write pattern.
     
-    This simulates the actual failure scenario: query reference data,
-    then try to save a scenario.
+    This simulates the actual failure case: query reference data,
+    then try to save a cohort.
     """
     
     @pytest.fixture
@@ -218,7 +218,7 @@ class TestMCPToolsReadThenWrite:
         
         # Main schema - must match what StateManager expects
         conn.execute("""
-            CREATE TABLE scenarios (
+            CREATE TABLE cohorts (
                 id VARCHAR PRIMARY KEY,
                 name VARCHAR UNIQUE NOT NULL,
                 description VARCHAR,
@@ -229,15 +229,15 @@ class TestMCPToolsReadThenWrite:
         """)
         conn.execute("""
             CREATE TABLE cohort_tags (
-                scenario_id VARCHAR NOT NULL,
+                cohort_id VARCHAR NOT NULL,
                 tag VARCHAR NOT NULL,
-                PRIMARY KEY (scenario_id, tag)
+                PRIMARY KEY (cohort_id, tag)
             )
         """)
         conn.execute("""
             CREATE TABLE cohort_entities (
                 id INTEGER PRIMARY KEY,
-                scenario_id VARCHAR NOT NULL,
+                cohort_id VARCHAR NOT NULL,
                 entity_type VARCHAR NOT NULL,
                 entity_id VARCHAR NOT NULL,
                 entity_data JSON NOT NULL,
@@ -264,12 +264,12 @@ class TestMCPToolsReadThenWrite:
         conn.close()
         return db_path
     
-    def test_query_then_save_scenario(self, mock_db):
+    def test_query_then_save_cohort(self, mock_db):
         """
-        Test the exact failure scenario: query reference data, then save.
+        Test the exact failure case: query reference data, then save.
         
         This is the bug that was reported - querying places_county followed
-        by save_scenario caused a connection configuration conflict.
+        by save_cohort caused a connection configuration conflict.
         
         Note: We test with empty entities to avoid schema complexity.
         The key validation is that the connection pattern allows read → write → read.
@@ -289,10 +289,10 @@ class TestMCPToolsReadThenWrite:
                 data = json.loads(query_result)
                 assert data["row_count"] == 2
                 
-                # Step 2: Save scenario with empty entities (focus on connection pattern)
+                # Step 2: Save cohort with empty entities (focus on connection pattern)
                 # The important thing is that this doesn't fail with connection conflict
-                save_result = mcp_module.save_scenario(SaveCohortInput(
-                    name="Test Scenario",
+                save_result = mcp_module.save_cohort(SaveCohortInput(
+                    name="Test Cohort",
                     entities={},  # Empty - we're testing connection pattern, not full save
                     description="Created after query"
                 ))
@@ -300,7 +300,7 @@ class TestMCPToolsReadThenWrite:
                 
                 # Verify save succeeded
                 assert save_data.get("status") == "saved", f"Save failed: {save_data}"
-                assert "scenario_id" in save_data
+                assert "cohort_id" in save_data
                 
                 # Step 3: Query again to verify (read connection should reopen)
                 query_result2 = mcp_module.query(QueryInput(
@@ -334,7 +334,7 @@ class TestMCPToolsReadThenWrite:
                     assert "rows" in result
                 
                 # Then save
-                save_result = mcp_module.save_scenario(SaveCohortInput(
+                save_result = mcp_module.save_cohort(SaveCohortInput(
                     name="After Multiple Queries",
                     entities={"patients": []},
                 ))
@@ -365,34 +365,34 @@ class TestMCPToolsReadThenWrite:
                 mcp_module.query(QueryInput(sql="SELECT 1"))
                 
                 # Write 1
-                mcp_module.save_scenario(SaveCohortInput(
+                mcp_module.save_cohort(SaveCohortInput(
                     name="Scenario 1",
                     entities={"patients": [{"id": "P1"}]},
                 ))
                 
                 # Read
-                result = mcp_module.list_scenarios(ListCohortsInput())
+                result = mcp_module.list_cohorts(ListCohortsInput())
                 assert "Scenario 1" in result
                 
                 # Write 2
-                mcp_module.save_scenario(SaveCohortInput(
+                mcp_module.save_cohort(SaveCohortInput(
                     name="Scenario 2",
                     entities={"patients": [{"id": "P2"}]},
                 ))
                 
                 # Read
-                result = mcp_module.list_scenarios(ListCohortsInput())
+                result = mcp_module.list_cohorts(ListCohortsInput())
                 assert "Scenario 1" in result
                 assert "Scenario 2" in result
                 
                 # Write 3 (delete)
-                mcp_module.delete_scenario(DeleteScenarioInput(
+                mcp_module.delete_cohort(DeleteScenarioInput(
                     name_or_id="Scenario 1",
                     confirm=True
                 ))
                 
                 # Read
-                result = mcp_module.list_scenarios(ListCohortsInput())
+                result = mcp_module.list_cohorts(ListCohortsInput())
                 assert "Scenario 1" not in result
                 assert "Scenario 2" in result
                 

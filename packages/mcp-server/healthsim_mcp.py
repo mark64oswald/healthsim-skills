@@ -14,13 +14,13 @@ the same process.
 See docs/mcp/duckdb-connection-architecture.md for design details.
 
 Tools provided:
-- healthsim_list_cohorts: List all saved scenarios
-- healthsim_load_cohort: Load a scenario by name/ID
-- healthsim_save_cohort: Save a new scenario (full replacement)
+- healthsim_list_cohorts: List all saved cohorts
+- healthsim_load_cohort: Load a cohort by name/ID
+- healthsim_save_cohort: Save a new cohort (full replacement)
 - healthsim_add_entities: Add entities incrementally (recommended for large datasets)
-- healthsim_delete_cohort: Delete a scenario
+- healthsim_delete_cohort: Delete a cohort
 - healthsim_query: Execute read-only SQL queries
-- healthsim_get_cohort_summary: Get token-efficient scenario summary
+- healthsim_get_cohort_summary: Get token-efficient cohort summary
 - healthsim_query_reference: Query PopulationSim reference data
 - healthsim_search_providers: Search real NPPES provider data
 - healthsim_tables: List all tables in the database
@@ -69,10 +69,10 @@ from healthsim.state.serializers import get_serializer, get_table_info
 
 
 # =============================================================================
-# Entity Type Taxonomy - Defines what can be stored in scenarios
+# Entity Type Taxonomy - Defines what can be stored in cohorts
 # =============================================================================
 
-# SCENARIO DATA: Synthetic PHI entities that are generated per-scenario
+# SCENARIO DATA: Synthetic PHI entities that are generated per-cohort
 # These are the ONLY entity types that should be stored in cohort_entities
 SCENARIO_ENTITY_TYPES = {
     "patients",      # Synthetic patient demographics
@@ -84,7 +84,7 @@ SCENARIO_ENTITY_TYPES = {
     "subjects",      # Clinical trial subjects
 }
 
-# RELATIONSHIP ENTITIES: Link scenario data to reference data via IDs/NPIs
+# RELATIONSHIP ENTITIES: Link cohort data to reference data via IDs/NPIs
 # These store relationships, not copies of reference data
 RELATIONSHIP_ENTITY_TYPES = {
     "pcp_assignments",      # member_id → provider_npi
@@ -94,7 +94,7 @@ RELATIONSHIP_ENTITY_TYPES = {
     "facility_assignments", # member_id → facility_npi
 }
 
-# REFERENCE DATA: Real-world data that should NEVER be copied into scenarios
+# REFERENCE DATA: Real-world data that should NEVER be copied into cohorts
 # These exist in shared reference tables (network.providers, population.*, etc.)
 REFERENCE_ENTITY_TYPES = {
     "providers",    # → Query network.providers (8.9M NPPES records)
@@ -246,7 +246,7 @@ class ConnectionManager:
         
         Usage:
             with manager.write_manager() as state_mgr:
-                state_mgr.save_scenario(...)
+                state_mgr.save_cohort(...)
         """
         with self.write_connection() as conn:
             yield StateManager(connection=conn)
@@ -363,7 +363,7 @@ class SaveCohortInput(BaseModel):
 
 
 class AddEntitiesInput(BaseModel):
-    """Input for adding entities incrementally to a scenario.
+    """Input for adding entities incrementally to a cohort.
     
     This is the RECOMMENDED approach for large datasets. It:
     - Adds entities without deleting existing ones
@@ -374,13 +374,13 @@ class AddEntitiesInput(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
     
     # Scenario identification - use ONE of these
-    scenario_id: Optional[str] = Field(
+    cohort_id: Optional[str] = Field(
         default=None, 
-        description="Existing cohort UUID to add entities to. If provided, entities are added to this scenario."
+        description="Existing cohort UUID to add entities to. If provided, entities are added to this cohort."
     )
-    scenario_name: Optional[str] = Field(
+    cohort_name: Optional[str] = Field(
         default=None,
-        description="Cohort name. If scenario_id not provided, creates new scenario with this name or auto-generates one."
+        description="Cohort name. If cohort_id not provided, creates new cohort with this name or auto-generates one."
     )
     
     # Entities to add
@@ -389,9 +389,9 @@ class AddEntitiesInput(BaseModel):
         description="Entity dict: {type: [entities]}. Example: {'patients': [...], 'members': [...]}"
     )
     
-    # Optional metadata (only used when creating new scenario)
-    description: Optional[str] = Field(default=None, description="Cohort description (for new scenarios)")
-    tags: Optional[List[str]] = Field(default=None, description="Tags for filtering (for new scenarios)")
+    # Optional metadata (only used when creating new cohort)
+    description: Optional[str] = Field(default=None, description="Cohort description (for new cohorts)")
+    tags: Optional[List[str]] = Field(default=None, description="Tags for filtering (for new cohorts)")
     
     # Batch tracking (optional, for progress reporting)
     batch_number: Optional[int] = Field(default=None, description="Current batch number (e.g., 1, 2, 3)")
@@ -425,7 +425,7 @@ class GetSummaryInput(BaseModel):
     """Input for getting cohort summary."""
     model_config = ConfigDict(str_strip_whitespace=True)
     
-    scenario_id_or_name: str = Field(..., description="Cohort name or UUID", min_length=1)
+    cohort_id_or_name: str = Field(..., description="Cohort name or UUID", min_length=1)
     include_samples: bool = Field(default=True, description="Include sample entities")
     samples_per_type: int = Field(default=3, description="Samples per entity type", ge=1, le=10)
 
@@ -480,7 +480,7 @@ class SearchProvidersInput(BaseModel):
 
 def insert_into_canonical_table(
     conn,
-    scenario_id: str,
+    cohort_id: str,
     entity_type: str,
     entity: Dict[str, Any]
 ) -> tuple:
@@ -492,7 +492,7 @@ def insert_into_canonical_table(
     
     Args:
         conn: DuckDB connection
-        scenario_id: Scenario UUID
+        cohort_id: Scenario UUID
         entity_type: Normalized entity type (e.g., 'patients', 'members')
         entity: Entity data dict
         
@@ -517,8 +517,8 @@ def insert_into_canonical_table(
         # Serialize entity to canonical format
         data = serializer(entity, provenance)
         
-        # Add scenario_id to data
-        data['scenario_id'] = scenario_id
+        # Add cohort_id to data
+        data['cohort_id'] = cohort_id
         
         # Filter to only columns that exist in the table
         schema_result = conn.execute(f"""
@@ -573,7 +573,7 @@ def validate_entity_types(
     allow_reference_override: bool = False
 ) -> Optional[str]:
     """
-    Validate that entity types are appropriate for scenario storage.
+    Validate that entity types are appropriate for cohort storage.
     
     Args:
         entities: Dict of entity_type -> list of entities
@@ -587,7 +587,7 @@ def validate_entity_types(
         if not normalized.endswith('s'):
             normalized += 's'
         
-        # Check if it's reference data (should NOT be stored in scenarios by default)
+        # Check if it's reference data (should NOT be stored in cohorts by default)
         if normalized in REFERENCE_ENTITY_TYPES:
             if allow_reference_override:
                 # User explicitly requested synthetic reference data - allow with info
@@ -603,17 +603,17 @@ def validate_entity_types(
                     f"set allow_reference_entities=True in your request.\n\n"
                     f"Example with override:\n"
                     f"  healthsim_add_entities(\n"
-                    f"    scenario_id='...',\n"
+                    f"    cohort_id='...',\n"
                     f"    entities={{'{entity_type}': [...]}},\n"
                     f"    allow_reference_entities=True  # Explicit override\n"
                     f"  )"
                 )
         
-        # Check if it's an allowed type (scenario data, relationships, or overridden reference)
+        # Check if it's an allowed type (cohort data, relationships, or overridden reference)
         if normalized not in ALLOWED_ENTITY_TYPES and normalized not in REFERENCE_ENTITY_TYPES:
             return (
                 f"⚠️ Unknown entity type: '{entity_type}'\n\n"
-                f"Allowed scenario entity types:\n"
+                f"Allowed cohort entity types:\n"
                 f"  Scenario data: {sorted(SCENARIO_ENTITY_TYPES)}\n"
                 f"  Relationships: {sorted(RELATIONSHIP_ENTITY_TYPES)}\n"
                 f"  Reference (with override): {sorted(REFERENCE_ENTITY_TYPES)}\n\n"
@@ -643,12 +643,12 @@ def list_cohorts(params: ListCohortsInput) -> str:
     Use this to discover available cohorts before loading them.
     
     Returns:
-        JSON list of cohort summaries with: scenario_id, name, description,
+        JSON list of cohort summaries with: cohort_id, name, description,
         created_at, updated_at, entity_count, tags
     """
     manager = _get_manager().get_read_manager()
     
-    scenarios = manager.list_scenarios(
+    cohorts = manager.list_cohorts(
         tag=params.tag,
         search=params.search,
         limit=params.limit,
@@ -656,9 +656,9 @@ def list_cohorts(params: ListCohortsInput) -> str:
     
     # Format for readability
     result = []
-    for s in scenarios:
+    for s in cohorts:
         result.append({
-            "scenario_id": s["scenario_id"],
+            "cohort_id": s["cohort_id"],
             "name": s["name"],
             "description": s.get("description"),
             "entity_count": s.get("entity_count", 0),
@@ -680,24 +680,24 @@ def list_cohorts(params: ListCohortsInput) -> str:
     }
 )
 def load_cohort(params: LoadCohortInput) -> str:
-    """Load a scenario by name or ID.
+    """Load a cohort by name or ID.
     
-    Returns full scenario data including all entities. For large scenarios,
+    Returns full cohort data including all entities. For large cohorts,
     consider using healthsim_get_cohort_summary instead for a token-efficient summary.
     
     Returns:
-        JSON with scenario metadata and entities dict
+        JSON with cohort metadata and entities dict
     """
     manager = _get_manager().get_read_manager()
     
     try:
-        scenario = manager.load_scenario(params.name_or_id)
+        cohort = manager.load_cohort(params.name_or_id)
         
         if not params.include_entities:
             # Return metadata only
-            scenario.pop("entities", None)
+            cohort.pop("entities", None)
         
-        return json.dumps(scenario, indent=2, default=str)
+        return json.dumps(cohort, indent=2, default=str)
     except ValueError as e:
         return json.dumps({"error": str(e)})
 
@@ -775,9 +775,9 @@ def query(params: QueryInput) -> str:
     }
 )
 def get_summary(params: GetSummaryInput) -> str:
-    """Get a token-efficient summary of a scenario.
+    """Get a token-efficient summary of a cohort.
     
-    Use this instead of load_scenario when you need context about a scenario
+    Use this instead of load_cohort when you need context about a cohort
     without loading all entities (~500 tokens vs potentially 10K+).
     
     Returns:
@@ -787,7 +787,7 @@ def get_summary(params: GetSummaryInput) -> str:
     
     try:
         summary = manager.get_summary(
-            params.scenario_id_or_name,
+            params.cohort_id_or_name,
             include_samples=params.include_samples,
             samples_per_type=params.samples_per_type,
         )
@@ -933,7 +933,7 @@ def list_tables() -> str:
     Returns table names grouped by category:
     - Reference tables (ref_*): PopulationSim demographic/health data
     - Entity tables: patients, members, encounters, claims, etc.
-    - System tables: scenarios, cohort_entities, schema_migrations
+    - System tables: cohorts, cohort_entities, schema_migrations
     
     Returns:
         JSON with categorized table names
@@ -945,7 +945,7 @@ def list_tables() -> str:
     
     # Categorize
     reference = [t for t in tables if t.startswith("ref_")]
-    system = ["scenarios", "cohort_entities", "cohort_tags", "schema_migrations"]
+    system = ["cohorts", "cohort_entities", "cohort_tags", "schema_migrations"]
     entity = [t for t in tables if t not in reference and t not in system]
     
     return json.dumps({
@@ -968,7 +968,7 @@ def list_tables() -> str:
 def search_providers(params: SearchProvidersInput) -> str:
     """Search real healthcare providers from NPPES data (8.9M records).
     
-    ⚠️ USE THIS TOOL FIRST when providers are needed for a scenario.
+    ⚠️ USE THIS TOOL FIRST when providers are needed for a cohort.
     Returns REAL, registered healthcare providers with valid NPIs.
     Only generate synthetic providers if real data is unavailable or explicitly requested.
     
@@ -1130,12 +1130,12 @@ def search_providers(params: SearchProvidersInput) -> str:
     }
 )
 def save_cohort(params: SaveCohortInput) -> str:
-    """Save a scenario to the HealthSim database.
+    """Save a cohort to the HealthSim database.
     
     ⚠️  USE healthsim_add_entities INSTEAD when:
     - Total entity count exceeds 50 (to avoid token limit truncation)
-    - Building scenarios incrementally across multiple calls
-    - Adding entities to an existing scenario
+    - Building cohorts incrementally across multiple calls
+    - Adding entities to an existing cohort
     
     This tool REPLACES ALL entities in one atomic operation.
     Only use for small, complete datasets (≤50 entities total).
@@ -1151,7 +1151,7 @@ def save_cohort(params: SaveCohortInput) -> str:
     claim_lines, prescriptions, subjects, etc.
     
     Returns:
-        JSON with scenario_id and status
+        JSON with cohort_id and status
     """
     try:
         # Validate entity types - suggest real data unless override is set
@@ -1164,7 +1164,7 @@ def save_cohort(params: SaveCohortInput) -> str:
         
         # Use write connection for the save operation
         with _get_manager().write_manager() as manager:
-            scenario_id = manager.save_scenario(
+            cohort_id = manager.save_cohort(
                 name=params.name,
                 entities=params.entities,
                 description=params.description,
@@ -1177,7 +1177,7 @@ def save_cohort(params: SaveCohortInput) -> str:
         
         return json.dumps({
             "status": "saved",
-            "scenario_id": scenario_id,
+            "cohort_id": cohort_id,
             "name": params.name,
             "entity_counts": entity_counts,
             "total_entities": sum(entity_counts.values()),
@@ -1198,7 +1198,7 @@ def save_cohort(params: SaveCohortInput) -> str:
     }
 )
 def add_entities(params: AddEntitiesInput) -> str:
-    """Add entities incrementally to a scenario (RECOMMENDED for most use cases).
+    """Add entities incrementally to a cohort (RECOMMENDED for most use cases).
     
     ⚠️ REAL vs SYNTHETIC DATA DECISION:
     - For PROVIDERS/FACILITIES: Use healthsim_search_providers FIRST to get real NPPES data
@@ -1207,8 +1207,8 @@ def add_entities(params: AddEntitiesInput) -> str:
     
     ✅ USE THIS TOOL when:
     - Total entity count exceeds 50 (avoids token limit truncation)
-    - Building scenarios in batches across multiple calls
-    - Adding new entity types to existing scenarios
+    - Building cohorts in batches across multiple calls
+    - Adding new entity types to existing cohorts
     - Updating specific entities without affecting others
     
     This tool uses UPSERT logic:
@@ -1221,25 +1221,25 @@ def add_entities(params: AddEntitiesInput) -> str:
     Usage patterns:
     
     1. CREATE NEW SCENARIO (first batch):
-       {"scenario_name": "My Scenario", "entities": {"patients": [...]}}
+       {"cohort_name": "My Scenario", "entities": {"patients": [...]}}
        
     2. ADD TO EXISTING (subsequent batches):
-       {"scenario_id": "uuid-from-first-call", "entities": {"patients": [...]}}
+       {"cohort_id": "uuid-from-first-call", "entities": {"patients": [...]}}
        
     3. ADD DIFFERENT ENTITY TYPES:
-       {"scenario_id": "uuid", "entities": {"members": [...]}}
+       {"cohort_id": "uuid", "entities": {"members": [...]}}
     
     Batch tracking (optional):
-       {"scenario_id": "uuid", "entities": {...}, "batch_number": 2, "total_batches": 4}
+       {"cohort_id": "uuid", "entities": {...}, "batch_number": 2, "total_batches": 4}
     
     Returns:
-        JSON with scenario_id, entity counts, and summary (NOT full entity data)
+        JSON with cohort_id, entity counts, and summary (NOT full entity data)
     """
     try:
-        # Validate: need at least one of scenario_id or scenario_name for new scenarios
-        if not params.scenario_id and not params.scenario_name and not params.entities:
+        # Validate: need at least one of cohort_id or cohort_name for new cohorts
+        if not params.cohort_id and not params.cohort_name and not params.entities:
             return json.dumps({
-                "error": "Must provide scenario_id (to add to existing) or scenario_name (to create new), plus entities"
+                "error": "Must provide cohort_id (to add to existing) or cohort_name (to create new), plus entities"
             })
         
         # Validate entity types - suggest real data unless override is set
@@ -1252,32 +1252,32 @@ def add_entities(params: AddEntitiesInput) -> str:
         
         # Use write connection for the add operation
         with _get_manager().write_auto_persist() as service:
-            # Determine scenario context
-            scenario_id = params.scenario_id
-            scenario_name = params.scenario_name
-            is_new_scenario = False
+            # Determine cohort context
+            cohort_id = params.cohort_id
+            cohort_name = params.cohort_name
+            is_new_cohort = False
             
-            # If no scenario_id provided, we need to create or find the scenario
-            if not scenario_id:
-                if scenario_name:
-                    # Check if scenario exists
+            # If no cohort_id provided, we need to create or find the cohort
+            if not cohort_id:
+                if cohort_name:
+                    # Check if cohort exists
                     existing = service.conn.execute(
                         "SELECT id FROM cohorts WHERE name = ?",
-                        [scenario_name]
+                        [cohort_name]
                     ).fetchone()
                     
                     if existing:
-                        scenario_id = existing[0]
+                        cohort_id = existing[0]
                     else:
-                        # Create new scenario
-                        is_new_scenario = True
-                        scenario_id = str(uuid4())
+                        # Create new cohort
+                        is_new_cohort = True
+                        cohort_id = str(uuid4())
                         now = datetime.utcnow()
                         
                         service.conn.execute("""
                             INSERT INTO cohorts (id, name, description, created_at, updated_at)
                             VALUES (?, ?, ?, ?, ?)
-                        """, [scenario_id, scenario_name, params.description, now, now])
+                        """, [cohort_id, cohort_name, params.description, now, now])
                         
                         # Add tags if provided
                         if params.tags:
@@ -1285,29 +1285,29 @@ def add_entities(params: AddEntitiesInput) -> str:
                                 service.conn.execute("""
                                     INSERT INTO cohort_tags (id, cohort_id, tag)
                                     VALUES (nextval('cohort_tags_seq'), ?, ?)
-                                """, [scenario_id, tag.lower()])
+                                """, [cohort_id, tag.lower()])
                 else:
-                    # Auto-generate scenario name
-                    is_new_scenario = True
-                    scenario_id = str(uuid4())
-                    scenario_name = f"scenario-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}"
+                    # Auto-generate cohort name
+                    is_new_cohort = True
+                    cohort_id = str(uuid4())
+                    cohort_name = f"cohort-{datetime.utcnow().strftime('%Y%m%d-%H%M%S')}"
                     now = datetime.utcnow()
                     
                     service.conn.execute("""
                         INSERT INTO cohorts (id, name, description, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?)
-                    """, [scenario_id, scenario_name, params.description, now, now])
+                    """, [cohort_id, cohort_name, params.description, now, now])
             else:
-                # Verify scenario exists
+                # Verify cohort exists
                 existing = service.conn.execute(
                     "SELECT name FROM cohorts WHERE id = ?",
-                    [scenario_id]
+                    [cohort_id]
                 ).fetchone()
                 
                 if not existing:
-                    return json.dumps({"error": f"Scenario not found: {scenario_id}"})
+                    return json.dumps({"error": f"Cohort not found: {cohort_id}"})
                 
-                scenario_name = existing[0]
+                cohort_name = existing[0]
             
             # Now add entities to cohort_entities table
             entity_counts = {}
@@ -1342,7 +1342,7 @@ def add_entities(params: AddEntitiesInput) -> str:
                     existing_entity = service.conn.execute("""
                         SELECT id FROM cohort_entities 
                         WHERE cohort_id = ? AND entity_type = ? AND entity_id = ?
-                    """, [scenario_id, entity_type_normalized, entity_id]).fetchone()
+                    """, [cohort_id, entity_type_normalized, entity_id]).fetchone()
                     
                     if existing_entity:
                         # Update existing
@@ -1350,19 +1350,19 @@ def add_entities(params: AddEntitiesInput) -> str:
                             UPDATE cohort_entities 
                             SET entity_data = ?, created_at = ?
                             WHERE cohort_id = ? AND entity_type = ? AND entity_id = ?
-                        """, [entity_json, datetime.utcnow(), scenario_id, entity_type_normalized, entity_id])
+                        """, [entity_json, datetime.utcnow(), cohort_id, entity_type_normalized, entity_id])
                     else:
                         # Insert new (use sequence for id like core manager does)
                         service.conn.execute("""
                             INSERT INTO cohort_entities 
                             VALUES (nextval('cohort_entities_seq'), ?, ?, ?, ?, ?)
-                        """, [scenario_id, entity_type_normalized, entity_id, entity_json, datetime.utcnow()])
+                        """, [cohort_id, entity_type_normalized, entity_id, entity_json, datetime.utcnow()])
                     
                     # Also insert into canonical table for query consistency
                     # This ensures get_summary and direct table queries work correctly
                     success, error = insert_into_canonical_table(
                         service.conn,
-                        scenario_id,
+                        cohort_id,
                         entity_type_normalized,
                         entity
                     )
@@ -1376,18 +1376,18 @@ def add_entities(params: AddEntitiesInput) -> str:
                 if canonical_failures:
                     canonical_errors[entity_type_normalized] = canonical_failures
             
-            # Update scenario timestamp
+            # Update cohort timestamp
             service.conn.execute("""
                 UPDATE cohorts SET updated_at = ? WHERE id = ?
-            """, [datetime.utcnow(), scenario_id])
+            """, [datetime.utcnow(), cohort_id])
             
-            # Get total entity count for scenario
+            # Get total entity count for cohort
             total_result = service.conn.execute("""
                 SELECT entity_type, COUNT(*) as count 
                 FROM cohort_entities 
                 WHERE cohort_id = ? 
                 GROUP BY entity_type
-            """, [scenario_id]).fetchall()
+            """, [cohort_id]).fetchall()
             
             total_by_type = {row[0]: row[1] for row in total_result}
             total_entities = sum(total_by_type.values())
@@ -1395,12 +1395,12 @@ def add_entities(params: AddEntitiesInput) -> str:
         # Build response
         response = {
             "status": "added",
-            "scenario_id": scenario_id,
-            "scenario_name": scenario_name,
-            "is_new_scenario": is_new_scenario,
+            "cohort_id": cohort_id,
+            "cohort_name": cohort_name,
+            "is_new_cohort": is_new_cohort,
             "entities_added_this_batch": entity_counts,
             "sample_ids": entity_ids_added,
-            "scenario_totals": {
+            "cohort_totals": {
                 "by_type": total_by_type,
                 "total_entities": total_entities,
             },
@@ -1435,9 +1435,9 @@ def add_entities(params: AddEntitiesInput) -> str:
     }
 )
 def delete_cohort(params: DeleteCohortInput) -> str:
-    """Delete a scenario from the database.
+    """Delete a cohort from the database.
     
-    CAUTION: This permanently removes the scenario and all linked entities.
+    CAUTION: This permanently removes the cohort and all linked entities.
     You must set confirm=True to actually delete.
     
     Returns:
@@ -1446,17 +1446,17 @@ def delete_cohort(params: DeleteCohortInput) -> str:
     if not params.confirm:
         return json.dumps({
             "error": "Must set confirm=True to delete. This action is permanent.",
-            "scenario": params.name_or_id,
+            "cohort": params.name_or_id,
         })
     
     try:
         # Use write connection for the delete operation
         with _get_manager().write_manager() as manager:
-            deleted = manager.delete_scenario(params.name_or_id, confirm=True)
+            deleted = manager.delete_cohort(params.name_or_id, confirm=True)
         
         return json.dumps({
             "status": "deleted" if deleted else "not_found",
-            "scenario": params.name_or_id,
+            "cohort": params.name_or_id,
         })
     except ValueError as e:
         return json.dumps({"error": str(e)})

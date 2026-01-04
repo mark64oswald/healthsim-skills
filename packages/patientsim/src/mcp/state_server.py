@@ -1,13 +1,13 @@
 """MCP Server for PatientSim state management capabilities.
 
 This module implements a Model Context Protocol (MCP) server that exposes
-scenario save/load tools for workspace persistence.
+cohort save/load tools for workspace persistence.
 
 Tools:
-- save_scenario: Save workspace to a named scenario
-- load_scenario: Load a scenario into workspace
-- list_saved_scenarios: List saved scenarios with filtering
-- delete_scenario: Delete a saved scenario
+- save_cohort: Save workspace to a named cohort
+- load_cohort: Load a cohort into workspace
+- list_saved_cohorts: List saved scenarios with filtering
+- delete_cohort: Delete a saved cohort
 """
 
 import logging
@@ -31,25 +31,25 @@ app = Server("patientsim-state")
 session_manager = SessionManager()
 
 
-def format_scenario_saved(scenario: Any) -> str:
-    """Format scenario save confirmation."""
+def format_cohort_saved(cohort: Any) -> str:
+    """Format cohort save confirmation."""
     lines = [
-        f'**Saved: "{scenario.metadata.name}"**',
+        f'**Saved: "{cohort.metadata.name}"**',
         "",
         "**Scenario Summary:**",
-        f"- Scenario ID: `{scenario.metadata.workspace_id}`",
-        f"- Patients: {scenario.get_entity_count('patients')}",
-        f"- Total entities: {scenario.get_entity_count()}",
+        f"- Cohort ID: `{cohort.metadata.workspace_id}`",
+        f"- Patients: {cohort.get_entity_count('patients')}",
+        f"- Total entities: {cohort.get_entity_count()}",
     ]
 
-    if scenario.metadata.description:
-        lines.append(f"- Description: {scenario.metadata.description}")
+    if cohort.metadata.description:
+        lines.append(f"- Description: {cohort.metadata.description}")
 
-    if scenario.metadata.tags:
-        lines.append(f"- Tags: {', '.join(scenario.metadata.tags)}")
+    if cohort.metadata.tags:
+        lines.append(f"- Tags: {', '.join(cohort.metadata.tags)}")
 
     # Provenance breakdown
-    prov = scenario.provenance_summary
+    prov = cohort.provenance_summary
     if prov.by_source_type:
         lines.append("")
         lines.append("**Provenance:**")
@@ -64,15 +64,15 @@ def format_scenario_saved(scenario: Any) -> str:
         lines.append(f"- Skills used: {', '.join(prov.skills_used)}")
 
     lines.append("")
-    lines.append(f'You can load this anytime with: `load "{scenario.metadata.name}"`')
+    lines.append(f'You can load this anytime with: `load "{cohort.metadata.name}"`')
 
     return "\n".join(lines)
 
 
-def format_scenario_loaded(scenario: Any, summary: dict) -> str:
+def format_scenario_loaded(cohort: Any, summary: dict) -> str:
     """Format scenario load confirmation."""
     lines = [
-        f'**Loaded: "{scenario.metadata.name}"**',
+        f'**Loaded: "{cohort.metadata.name}"**',
         "",
         f"- Patients loaded: {summary['patients_loaded']}",
         f"- Total entities: {summary['total_entities']}",
@@ -192,7 +192,7 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="list_saved_scenarios",
+            name="list_saved_cohorts",
             description="List saved scenarios with optional filtering by name, description, or tags.",
             inputSchema={
                 "type": "object",
@@ -254,7 +254,7 @@ async def call_tool(name: str, arguments: dict) -> list[TextContent]:
             return await handle_save_scenario(arguments)
         elif name == "load_scenario":
             return await handle_load_scenario(arguments)
-        elif name == "list_saved_scenarios":
+        elif name == "list_saved_cohorts":
             return await handle_list_scenarios(arguments)
         elif name == "delete_scenario":
             return await handle_delete_scenario(arguments)
@@ -296,7 +296,7 @@ async def handle_save_scenario(arguments: dict) -> list[TextContent]:
             tags=tags,
             patient_ids=patient_ids,
         )
-        return [TextContent(type="text", text=format_scenario_saved(scenario))]
+        return [TextContent(type="text", text=format_cohort_saved(scenario))]
 
     except Exception as e:
         return [TextContent(type="text", text=format_error(f"Failed to save scenario: {e}"))]
@@ -366,7 +366,7 @@ async def handle_load_scenario(arguments: dict) -> list[TextContent]:
 
 
 async def handle_list_scenarios(arguments: dict) -> list[TextContent]:
-    """Handle list_saved_scenarios tool call."""
+    """Handle list_saved_cohorts tool call."""
     search = arguments.get("search")
     tags = arguments.get("tags")
     limit = arguments.get("limit", 20)

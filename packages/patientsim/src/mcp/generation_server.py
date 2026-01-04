@@ -22,8 +22,8 @@ from patientsim.mcp.formatters import (
     format_cohort_summary,
     format_error,
     format_patient_summary,
-    format_scenario_details,
-    format_scenario_list,
+    format_cohort_details,
+    format_cohort_list,
     format_success,
 )
 from patientsim.mcp.session import SessionManager
@@ -53,9 +53,9 @@ async def list_tools() -> list[Tool]:
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "scenario": {
+                    "cohort": {
                         "type": "string",
-                        "description": "Optional scenario skill to use for generation",
+                        "description": "Optional cohort skill to use for generation",
                     },
                     "age_range": {
                         "type": "array",
@@ -93,9 +93,9 @@ async def list_tools() -> list[Tool]:
                         "minimum": 1,
                         "maximum": 1000,
                     },
-                    "scenario": {
+                    "cohort": {
                         "type": "string",
-                        "description": "Optional scenario skill to use",
+                        "description": "Optional cohort skill to use",
                     },
                     "parameters": {
                         "type": "object",
@@ -110,25 +110,25 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="list_scenarios",
-            description="List available scenario templates with descriptions",
+            name="list_cohorts",
+            description="List available cohort templates with descriptions",
             inputSchema={
                 "type": "object",
                 "properties": {},
             },
         ),
         Tool(
-            name="describe_scenario",
-            description="Get detailed information about a specific scenario",
+            name="describe_cohort",
+            description="Get detailed information about a specific cohort",
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "scenario_name": {
+                    "cohort_name": {
                         "type": "string",
-                        "description": "Name of the scenario to describe",
+                        "description": "Name of the cohort to describe",
                     },
                 },
-                "required": ["scenario_name"],
+                "required": ["cohort_name"],
             },
         ),
         Tool(
@@ -170,19 +170,19 @@ async def list_tools() -> list[Tool]:
         ),
         # State Management Tools
         Tool(
-            name="save_scenario",
-            description="Save the current workspace as a named scenario. Captures all patients and clinical data with provenance tracking.",
+            name="save_cohort",
+            description="Save the current workspace as a named cohort. Captures all patients and clinical data with provenance tracking.",
             inputSchema={
                 "type": "object",
                 "properties": {
                     "name": {
                         "type": "string",
-                        "description": "Name for the scenario (e.g., 'diabetes-cohort', 'ed-testing')",
+                        "description": "Name for the cohort (e.g., 'diabetes-cohort', 'ed-testing')",
                         "minLength": 1,
                     },
                     "description": {
                         "type": "string",
-                        "description": "Optional description of what this scenario contains",
+                        "description": "Optional description of what this cohort contains",
                     },
                     "tags": {
                         "type": "array",
@@ -199,14 +199,14 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="load_scenario",
-            description="Load a saved scenario into the workspace. Can replace or merge with existing patients.",
+            name="load_cohort",
+            description="Load a saved cohort into the workspace. Can replace or merge with existing patients.",
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "scenario_id": {
+                    "cohort_id": {
                         "type": "string",
-                        "description": "UUID of scenario to load (if known)",
+                        "description": "UUID of cohort to load (if known)",
                     },
                     "name": {
                         "type": "string",
@@ -227,8 +227,8 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="list_saved_scenarios",
-            description="List saved scenarios with optional filtering by name, description, or tags.",
+            name="list_saved_cohorts",
+            description="List saved cohorts with optional filtering by name, description, or tags.",
             inputSchema={
                 "type": "object",
                 "properties": {
@@ -238,12 +238,12 @@ async def list_tools() -> list[Tool]:
                     },
                     "tags": {
                         "type": "array",
-                        "description": "Filter by tags (scenarios must have ALL specified tags)",
+                        "description": "Filter by tags (cohorts must have ALL specified tags)",
                         "items": {"type": "string"},
                     },
                     "limit": {
                         "type": "integer",
-                        "description": "Maximum scenarios to return",
+                        "description": "Maximum cohorts to return",
                         "default": 20,
                         "minimum": 1,
                         "maximum": 100,
@@ -252,21 +252,21 @@ async def list_tools() -> list[Tool]:
             },
         ),
         Tool(
-            name="delete_scenario",
-            description="Delete a saved scenario. This action cannot be undone.",
+            name="delete_cohort",
+            description="Delete a saved cohort. This action cannot be undone.",
             inputSchema={
                 "type": "object",
                 "properties": {
-                    "scenario_id": {
+                    "cohort_id": {
                         "type": "string",
-                        "description": "UUID of scenario to delete",
+                        "description": "UUID of cohort to delete",
                     },
                     "confirm": {
                         "type": "boolean",
                         "description": "Must be true to confirm deletion",
                     },
                 },
-                "required": ["scenario_id", "confirm"],
+                "required": ["cohort_id", "confirm"],
             },
         ),
         Tool(
@@ -288,29 +288,29 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
             return await _generate_patient_tool(arguments)
         elif name == "generate_cohort":
             return await _generate_cohort_tool(arguments)
-        elif name == "list_scenarios":
-            return await _list_scenarios_tool(arguments)
-        elif name == "describe_scenario":
-            return await _describe_scenario_tool(arguments)
+        elif name == "list_cohorts":
+            return await _list_cohorts_tool(arguments)
+        elif name == "describe_cohort":
+            return await _describe_cohort_tool(arguments)
         elif name == "modify_patient":
             return await _modify_patient_tool(arguments)
         elif name == "get_patient_details":
             return await _get_patient_details_tool(arguments)
         # State Management Tools
-        elif name == "save_scenario":
-            return await _save_scenario_tool(arguments)
-        elif name == "load_scenario":
-            return await _load_scenario_tool(arguments)
-        elif name == "list_saved_scenarios":
-            return await _list_saved_scenarios_tool(arguments)
-        elif name == "delete_scenario":
-            return await _delete_scenario_tool(arguments)
+        elif name == "save_cohort":
+            return await _save_cohort_tool(arguments)
+        elif name == "load_cohort":
+            return await _load_cohort_tool(arguments)
+        elif name == "list_saved_cohorts":
+            return await _list_saved_cohorts_tool(arguments)
+        elif name == "delete_cohort":
+            return await _delete_cohort_tool(arguments)
         elif name == "workspace_summary":
             return await _workspace_summary_tool(arguments)
         else:
             error_msg = format_error(
                 f"Unknown tool: {name}",
-                "Available tools: generate_patient, generate_cohort, list_scenarios, describe_scenario, modify_patient, get_patient_details, save_scenario, load_scenario, list_saved_scenarios, delete_scenario, workspace_summary",
+                "Available tools: generate_patient, generate_cohort, list_cohorts, describe_cohort, modify_patient, get_patient_details, save_cohort, load_cohort, list_saved_cohorts, delete_cohort, workspace_summary",
             )
             return [TextContent(type="text", text=error_msg)]
     except Exception as e:
@@ -324,7 +324,7 @@ async def call_tool(name: str, arguments: dict[str, Any]) -> list[TextContent]:
 async def _generate_patient_tool(arguments: dict[str, Any]) -> list[TextContent]:
     """Generate a single patient with enhanced conversational output."""
     # Extract arguments
-    _scenario = arguments.get("scenario")  # TODO: implement scenario-based generation
+    _cohort = arguments.get("cohort")  # TODO: implement cohort-based generation
     age_range = arguments.get("age_range", [18, 85])
     gender_str = arguments.get("gender")
     conditions = arguments.get("conditions", [])
@@ -391,7 +391,7 @@ async def _generate_patient_tool(arguments: dict[str, Any]) -> list[TextContent]
 async def _generate_cohort_tool(arguments: dict[str, Any]) -> list[TextContent]:
     """Generate a cohort of patients with enhanced output."""
     count = arguments["count"]
-    _scenario = arguments.get("scenario")  # TODO: implement scenario-based generation
+    _cohort = arguments.get("cohort")  # TODO: implement cohort-based generation
     parameters = arguments.get("parameters", {})
     seed = arguments.get("seed")
 
@@ -434,7 +434,7 @@ async def _generate_cohort_tool(arguments: dict[str, Any]) -> list[TextContent]:
         sessions.append(session)
 
     # Format human-readable response
-    response = format_cohort_summary(sessions, _scenario)
+    response = format_cohort_summary(sessions, _cohort)
 
     # Add helpful next steps
     next_steps = [
@@ -448,12 +448,12 @@ async def _generate_cohort_tool(arguments: dict[str, Any]) -> list[TextContent]:
     return [TextContent(type="text", text=response)]
 
 
-async def _list_scenarios_tool(_arguments: dict[str, Any]) -> list[TextContent]:
-    """List available scenario templates with human-readable format."""
+async def _list_cohorts_tool(_arguments: dict[str, Any]) -> list[TextContent]:
+    """List available cohort templates with human-readable format."""
     # Look for skills in the skills directory
     skills_dir = Path(__file__).parent.parent.parent / "skills" / "library"
 
-    scenarios = {}
+    cohorts_list = {}
     if skills_dir.exists():
         for skill_file in skills_dir.glob("*.yaml"):
             try:
@@ -462,7 +462,7 @@ async def _list_scenarios_tool(_arguments: dict[str, Any]) -> list[TextContent]:
                 with open(skill_file) as f:
                     skill_data = yaml.safe_load(f)
 
-                scenarios[skill_file.stem] = {
+                cohorts_list[skill_file.stem] = {
                     "description": skill_data.get("description", "No description"),
                     "category": skill_data.get("category", "general"),
                     "file": str(skill_file),
@@ -470,39 +470,39 @@ async def _list_scenarios_tool(_arguments: dict[str, Any]) -> list[TextContent]:
             except Exception as e:
                 logger.warning(f"Error loading skill {skill_file}: {e}")
 
-    if not scenarios:
+    if not cohorts_list:
         response = format_error(
-            "No scenarios found", f"Check that scenario files exist in: {skills_dir}"
+            "No cohorts found", f"Check that cohort files exist in: {skills_dir}"
         )
     else:
-        response = format_scenario_list(scenarios)
+        response = format_cohort_list(cohorts_list)
         response += "\n\n" + format_success(
-            f"Found {len(scenarios)} available scenarios",
-            ["Use describe_scenario(scenario_name='<name>') for details"],
+            f"Found {len(cohorts_list)} available cohorts",
+            ["Use describe_cohort(cohort_name='<name>') for details"],
         )
 
     return [TextContent(type="text", text=response)]
 
 
-async def _describe_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
-    """Get detailed information about a specific scenario."""
-    scenario_name = arguments["scenario_name"]
+async def _describe_cohort_tool(arguments: dict[str, Any]) -> list[TextContent]:
+    """Get detailed information about a specific cohort."""
+    cohort_name = arguments["cohort_name"]
 
-    # Look for the scenario file
+    # Look for the cohort file
     skills_dir = Path(__file__).parent.parent.parent / "skills" / "library"
-    scenario_file = skills_dir / f"{scenario_name}.yaml"
+    cohort_file = skills_dir / f"{cohort_name}.yaml"
 
-    if not scenario_file.exists():
+    if not cohort_file.exists():
         error_msg = format_error(
-            f"Scenario '{scenario_name}' not found",
-            "Use list_scenarios() to see available scenarios",
+            f"Cohort '{cohort_name}' not found",
+            "Use list_cohorts() to see available cohorts",
         )
         return [TextContent(type="text", text=error_msg)]
 
     try:
         import yaml
 
-        with open(scenario_file) as f:
+        with open(cohort_file) as f:
             skill_data = yaml.safe_load(f)
 
         metadata = {
@@ -512,13 +512,13 @@ async def _describe_scenario_tool(arguments: dict[str, Any]) -> list[TextContent
             "category": skill_data.get("category", "general"),
         }
 
-        response = format_scenario_details(scenario_name, metadata)
+        response = format_cohort_details(cohort_name, metadata)
         return [TextContent(type="text", text=response)]
 
     except Exception as e:
-        logger.exception(f"Error loading scenario {scenario_name}")
+        logger.exception(f"Error loading cohort {cohort_name}")
         error_msg = format_error(
-            f"Failed to load scenario: {str(e)}", "Check that the scenario file is valid YAML"
+            f"Failed to load cohort: {str(e)}", "Check that the cohort file is valid YAML"
         )
         return [TextContent(type="text", text=error_msg)]
 
@@ -614,25 +614,25 @@ async def _get_patient_details_tool(arguments: dict[str, Any]) -> list[TextConte
 # === State Management Tool Handlers ===
 
 
-def _format_scenario_saved(scenario: Any) -> str:
-    """Format scenario save confirmation."""
+def _format_cohort_saved(cohort: Any) -> str:
+    """Format cohort save confirmation."""
     lines = [
-        f'**Saved: "{scenario.metadata.name}"**',
+        f'**Saved: "{cohort.metadata.name}"**',
         "",
         "**Scenario Summary:**",
-        f"- Scenario ID: `{scenario.metadata.workspace_id}`",
-        f"- Patients: {scenario.get_entity_count('patients')}",
-        f"- Total entities: {scenario.get_entity_count()}",
+        f"- Cohort ID: `{cohort.metadata.workspace_id}`",
+        f"- Patients: {cohort.get_entity_count('patients')}",
+        f"- Total entities: {cohort.get_entity_count()}",
     ]
 
-    if scenario.metadata.description:
-        lines.append(f"- Description: {scenario.metadata.description}")
+    if cohort.metadata.description:
+        lines.append(f"- Description: {cohort.metadata.description}")
 
-    if scenario.metadata.tags:
-        lines.append(f"- Tags: {', '.join(scenario.metadata.tags)}")
+    if cohort.metadata.tags:
+        lines.append(f"- Tags: {', '.join(cohort.metadata.tags)}")
 
     # Provenance breakdown
-    prov = scenario.provenance_summary
+    prov = cohort.provenance_summary
     if prov.by_source_type:
         lines.append("")
         lines.append("**Provenance:**")
@@ -648,16 +648,16 @@ def _format_scenario_saved(scenario: Any) -> str:
 
     lines.append("")
     lines.append(
-        f'You can load this anytime with: `load_scenario(name="{scenario.metadata.name}")`'
+        f'You can load this anytime with: `load_cohort(name="{cohort.metadata.name}")`'
     )
 
     return "\n".join(lines)
 
 
-def _format_scenario_loaded(scenario: Any, summary: dict) -> str:
-    """Format scenario load confirmation."""
+def _format_cohort_loaded(cohort: Any, summary: dict) -> str:
+    """Format cohort load confirmation."""
     lines = [
-        f'**Loaded: "{scenario.metadata.name}"**',
+        f'**Loaded: "{cohort.metadata.name}"**',
         "",
         f"- Patients loaded: {summary['patients_loaded']}",
         f"- Total entities: {summary['total_entities']}",
@@ -678,14 +678,14 @@ def _format_scenario_loaded(scenario: Any, summary: dict) -> str:
     return "\n".join(lines)
 
 
-def _format_saved_scenario_list(scenarios: list[dict]) -> str:
-    """Format list of saved scenarios."""
-    if not scenarios:
-        return "No saved scenarios found.\n\nGenerate some patients and use `save_scenario` to save your work."
+def _format_saved_cohort_list(cohorts: list[dict]) -> str:
+    """Format list of saved cohorts."""
+    if not cohorts_list:
+        return "No saved cohorts found.\n\nGenerate some patients and use `save_cohort` to save your work."
 
     lines = ["**Your Saved Scenarios:**", ""]
 
-    for s in scenarios:
+    for s in cohorts:
         name = s["name"]
         created = s["created_at"][:10]  # Just the date
         patient_count = s["patient_count"]
@@ -700,13 +700,13 @@ def _format_saved_scenario_list(scenarios: list[dict]) -> str:
         lines.append(line)
 
     lines.append("")
-    lines.append("Use `load_scenario` with a name to restore a scenario.")
+    lines.append("Use `load_cohort` with a name to restore a cohort.")
 
     return "\n".join(lines)
 
 
-async def _save_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
-    """Handle save_scenario tool call."""
+async def _save_cohort_tool(arguments: dict[str, Any]) -> list[TextContent]:
+    """Handle save_cohort tool call."""
     name = arguments.get("name")
     if not name:
         return [TextContent(type="text", text=format_error("Scenario name is required", ""))]
@@ -728,43 +728,43 @@ async def _save_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
     patient_ids = arguments.get("patient_ids")
 
     try:
-        scenario = session_manager.save_scenario(
+        cohort = session_manager.save_cohort(
             name=name,
             description=description,
             tags=tags,
             patient_ids=patient_ids,
         )
-        return [TextContent(type="text", text=_format_scenario_saved(scenario))]
+        return [TextContent(type="text", text=_format_cohort_saved(cohort))]
 
     except Exception as e:
-        return [TextContent(type="text", text=format_error(f"Failed to save scenario: {e}", ""))]
+        return [TextContent(type="text", text=format_error(f"Failed to save cohort: {e}", ""))]
 
 
-async def _load_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
-    """Handle load_scenario tool call."""
-    scenario_id = arguments.get("scenario_id")
+async def _load_cohort_tool(arguments: dict[str, Any]) -> list[TextContent]:
+    """Handle load_cohort tool call."""
+    cohort_id = arguments.get("cohort_id")
     name = arguments.get("name")
     mode = arguments.get("mode", "replace")
     patient_ids = arguments.get("patient_ids")
 
-    if not scenario_id and not name:
-        # List recent scenarios to help user choose
-        scenarios = session_manager.list_scenarios(limit=5)
-        if scenarios:
+    if not cohort_id and not name:
+        # List recent cohorts to help user choose
+        cohorts = session_manager.list_cohorts(limit=5)
+        if cohorts:
             lines = [
-                "Please specify a scenario to load. Recent scenarios:",
+                "Please specify a cohort to load. Recent cohorts:",
                 "",
             ]
-            for s in scenarios:
+            for s in cohorts:
                 lines.append(f"- **{s['name']}** ({s['created_at'][:10]})")
             lines.append("")
-            lines.append("Use `load_scenario` with `name` or `scenario_id`.")
+            lines.append("Use `load_cohort` with `name` or `cohort_id`.")
             return [TextContent(type="text", text="\n".join(lines))]
         else:
             return [
                 TextContent(
                     type="text",
-                    text="No scenarios found. Save your work first with `save_scenario`.",
+                    text="No cohorts found. Save your work first with `save_cohort`.",
                 )
             ]
 
@@ -772,14 +772,14 @@ async def _load_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
         # Warn if replacing non-empty workspace
         current_count = session_manager.count()
 
-        scenario, summary = session_manager.load_scenario(
-            scenario_id=scenario_id,
+        cohort, summary = session_manager.load_cohort(
+            cohort_id=cohort_id,
             name=name,
             mode=mode,
             patient_ids=patient_ids,
         )
 
-        result = _format_scenario_loaded(scenario, summary)
+        result = _format_cohort_loaded(cohort, summary)
 
         if mode == "replace" and current_count > 0:
             result = f"_Replaced {current_count} existing patients._\n\n" + result
@@ -790,40 +790,40 @@ async def _load_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
         return [
             TextContent(
                 type="text",
-                text=format_error(f"Scenario not found: {scenario_id or name}", ""),
+                text=format_error(f"Cohort not found: {cohort_id or name}", ""),
             )
         ]
     except ValueError as e:
         return [TextContent(type="text", text=format_error(str(e), ""))]
     except Exception as e:
-        return [TextContent(type="text", text=format_error(f"Failed to load scenario: {e}", ""))]
+        return [TextContent(type="text", text=format_error(f"Failed to load cohort: {e}", ""))]
 
 
-async def _list_saved_scenarios_tool(arguments: dict[str, Any]) -> list[TextContent]:
-    """Handle list_saved_scenarios tool call."""
+async def _list_saved_cohorts_tool(arguments: dict[str, Any]) -> list[TextContent]:
+    """Handle list_saved_cohorts tool call."""
     search = arguments.get("search")
     tags = arguments.get("tags")
     limit = arguments.get("limit", 20)
 
-    scenarios = session_manager.list_scenarios(
+    cohorts = session_manager.list_cohorts(
         search=search,
         tags=tags,
         limit=limit,
     )
 
-    return [TextContent(type="text", text=_format_saved_scenario_list(scenarios))]
+    return [TextContent(type="text", text=_format_saved_cohort_list(cohorts))]
 
 
-async def _delete_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
-    """Handle delete_scenario tool call."""
-    scenario_id = arguments.get("scenario_id")
+async def _delete_cohort_tool(arguments: dict[str, Any]) -> list[TextContent]:
+    """Handle delete_cohort tool call."""
+    cohort_id = arguments.get("cohort_id")
     confirm = arguments.get("confirm", False)
 
-    if not scenario_id:
+    if not cohort_id:
         return [
             TextContent(
                 type="text",
-                text=format_error("scenario_id is required", ""),
+                text=format_error("cohort_id is required", ""),
             )
         ]
 
@@ -835,7 +835,7 @@ async def _delete_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
             )
         ]
 
-    info = session_manager.delete_scenario(scenario_id)
+    info = session_manager.delete_cohort(cohort_id)
 
     if info:
         return [
@@ -848,7 +848,7 @@ async def _delete_scenario_tool(arguments: dict[str, Any]) -> list[TextContent]:
         return [
             TextContent(
                 type="text",
-                text=format_error(f"Scenario not found: {scenario_id}", ""),
+                text=format_error(f"Cohort not found: {cohort_id}", ""),
             )
         ]
 
@@ -861,7 +861,7 @@ async def _workspace_summary_tool(_arguments: dict[str, Any]) -> list[TextConten
         return [
             TextContent(
                 type="text",
-                text="**Workspace is empty.**\n\nGenerate patients with `generate_patient` or load a scenario with `load_scenario`.",
+                text="**Workspace is empty.**\n\nGenerate patients with `generate_patient` or load a cohort with `load_cohort`.",
             )
         ]
 

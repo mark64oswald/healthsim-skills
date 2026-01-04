@@ -7,9 +7,9 @@ The core classes (Provenance, EntityWithProvenance, etc.) are now
 defined in healthsim.state and shared across all HealthSim products.
 
 PatientSim-specific aliases:
-- Scenario -> Workspace (cross-product term)
-- ScenarioMetadata -> WorkspaceMetadata (cross-product term)
-- SCENARIOS_DIR -> WORKSPACES_DIR (cross-product location)
+- Cohort -> Workspace (cross-product term)
+- CohortMetadata -> WorkspaceMetadata (cross-product term)
+- COHORTS_DIR -> WORKSPACES_DIR (cross-product location)
 """
 
 from pathlib import Path
@@ -28,11 +28,11 @@ from healthsim.state import (
 )
 
 # Legacy aliases for backwards compatibility
-Scenario = Workspace
-ScenarioMetadata = WorkspaceMetadata
+Cohort = Workspace
+CohortMetadata = WorkspaceMetadata
 
 # Legacy location (deprecated, use WORKSPACES_DIR)
-SCENARIOS_DIR = Path.home() / ".healthsim" / "scenarios"
+COHORTS_DIR = Path.home() / ".healthsim" / "cohorts"
 
 __all__ = [
     # Core types (from healthsim.state)
@@ -47,7 +47,7 @@ __all__ = [
     "WorkspaceMetadata",
     "WORKSPACES_DIR",
     # Legacy aliases (deprecated, use cross-product names)
-    "Scenario",
-    "ScenarioMetadata",
-    "SCENARIOS_DIR",
+    "Cohort",
+    "CohortMetadata",
+    "COHORTS_DIR",
 ]

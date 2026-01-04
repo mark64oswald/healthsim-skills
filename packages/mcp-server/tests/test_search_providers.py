@@ -2,7 +2,7 @@
 Tests for the healthsim_search_providers MCP tool.
 
 This tool searches REAL NPPES provider data (8.9M records) and should be used
-BEFORE generating synthetic providers for scenarios.
+BEFORE generating synthetic providers for cohorts.
 
 Tests cover:
 - Tool existence and configuration

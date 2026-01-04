@@ -1,29 +1,29 @@
-"""Tests for Scenario and Timeline Engine."""
+"""Tests for Cohort and Timeline Engine."""
 
 from datetime import date, timedelta
 
 from healthsim.temporal import EventStatus
 
 from membersim import Member
-from membersim.scenarios import (
+from membersim.cohorts import (
     BUILTIN_SCENARIOS,
     MemberTimeline,
-    ScenarioDefinition,
-    ScenarioEngine,
-    ScenarioLibrary,
+    CohortDefinition,
+    CohortEngine,
+    CohortLibrary,
     TimelineEvent,
     create_default_engine,
-    register_builtin_scenarios,
+    register_builtin_cohorts,
 )
-from membersim.scenarios.events import (
+from membersim.cohorts.events import (
     DelayUnit,
     EventCategory,
     EventCondition,
     EventDelay,
     EventType,
-    ScenarioEvent,
+    CohortEvent,
 )
-from membersim.scenarios.templates import (
+from membersim.cohorts.templates import (
     DIABETIC_MEMBER_SCENARIO,
     NEW_EMPLOYEE_SCENARIO,
     PREVENTIVE_CARE_SCENARIO,
@@ -106,12 +106,12 @@ class TestEventCondition:
         assert condition.value == 18
 
 
-class TestScenarioEvent:
-    """Test scenario event model."""
+class TestCohortEvent:
+    """Test cohort event model."""
 
     def test_event_creation(self) -> None:
-        """Test creating a scenario event."""
-        event = ScenarioEvent(
+        """Test creating a cohort event."""
+        event = CohortEvent(
             event_id="evt_001",
             event_type=EventType.NEW_ENROLLMENT,
             name="New Enrollment",
@@ -123,7 +123,7 @@ class TestScenarioEvent:
 
     def test_event_with_dependencies(self) -> None:
         """Test event with dependencies."""
-        event = ScenarioEvent(
+        event = CohortEvent(
             event_id="evt_002",
             event_type=EventType.DEMOGRAPHIC_UPDATE,
             name="PCP Assignment",
@@ -134,7 +134,7 @@ class TestScenarioEvent:
 
     def test_event_closes_gaps(self) -> None:
         """Test event that closes care gaps."""
-        event = ScenarioEvent(
+        event = CohortEvent(
             event_id="evt_003",
             event_type=EventType.CLAIM_PROFESSIONAL,
             name="Preventive Visit",
@@ -145,48 +145,48 @@ class TestScenarioEvent:
         assert "WCV" in event.closes_gaps
 
 
-class TestScenarioDefinition:
-    """Test scenario definition model."""
+class TestCohortDefinition:
+    """Test cohort definition model."""
 
-    def test_scenario_definition_creation(self) -> None:
-        """Test creating a scenario definition."""
-        assert NEW_EMPLOYEE_SCENARIO.metadata.scenario_id == "new_employee_enrollment"
+    def test_cohort_definition_creation(self) -> None:
+        """Test creating a cohort definition."""
+        assert NEW_EMPLOYEE_SCENARIO.metadata.cohort_id == "new_employee_enrollment"
         assert NEW_EMPLOYEE_SCENARIO.metadata.name == "New Employee Enrollment"
         assert len(NEW_EMPLOYEE_SCENARIO.events) > 0
 
-    def test_scenario_has_events(self) -> None:
-        """Test that scenarios have defined events."""
-        for scenario in BUILTIN_SCENARIOS:
-            assert len(scenario.events) > 0
-            assert scenario.metadata.scenario_id is not None
+    def test_cohort_has_events(self) -> None:
+        """Test that cohorts have defined events."""
+        for cohort in BUILTIN_SCENARIOS:
+            assert len(cohort.events) > 0
+            assert cohort.metadata.cohort_id is not None
 
 
-class TestScenarioLibrary:
-    """Test scenario library registry."""
+class TestCohortLibrary:
+    """Test cohort library registry."""
 
     def test_register_and_get(self) -> None:
-        """Test registering and retrieving scenarios."""
-        register_builtin_scenarios()
+        """Test registering and retrieving cohorts."""
+        register_builtin_cohorts()
 
-        scenario = ScenarioLibrary.get("new_employee_enrollment")
-        assert scenario is not None
-        assert scenario.metadata.scenario_id == "new_employee_enrollment"
+        cohort = CohortLibrary.get("new_employee_enrollment")
+        assert cohort is not None
+        assert cohort.metadata.cohort_id == "new_employee_enrollment"
 
-    def test_list_scenarios(self) -> None:
-        """Test listing all registered scenarios."""
-        register_builtin_scenarios()
+    def test_list_cohorts(self) -> None:
+        """Test listing all registered cohorts."""
+        register_builtin_cohorts()
 
-        all_metadata = ScenarioLibrary.list_all()
-        all_ids = [m.scenario_id for m in all_metadata]
+        all_metadata = CohortLibrary.list_all()
+        all_ids = [m.cohort_id for m in all_metadata]
         assert "new_employee_enrollment" in all_ids
         assert "diabetic_member" in all_ids
 
     def test_list_by_category(self) -> None:
         """Test filtering by category."""
-        register_builtin_scenarios()
+        register_builtin_cohorts()
 
-        enrollment_scenarios = ScenarioLibrary.list_by_category("enrollment")
-        assert len(enrollment_scenarios) > 0
+        enrollment_cohorts = CohortLibrary.list_by_category("enrollment")
+        assert len(enrollment_cohorts) > 0
 
 
 class TestTimelineEvent:
@@ -196,7 +196,7 @@ class TestTimelineEvent:
         """Test creating a timeline event."""
         event = TimelineEvent(
             timeline_event_id="tl_001",
-            scenario_id="new_employee_enrollment",
+            cohort_id="new_employee_enrollment",
             event_definition_id="evt_001",
             scheduled_date=date(2024, 1, 15),
             event_type=EventType.NEW_ENROLLMENT,
@@ -227,7 +227,7 @@ class TestMemberTimeline:
         )
         event = TimelineEvent(
             timeline_event_id="tl_001",
-            scenario_id="test",
+            cohort_id="test",
             event_definition_id="evt_001",
             scheduled_date=date(2024, 1, 15),
             event_type=EventType.NEW_ENROLLMENT,
@@ -244,7 +244,7 @@ class TestMemberTimeline:
             events=[
                 TimelineEvent(
                     timeline_event_id="tl_001",
-                    scenario_id="test",
+                    cohort_id="test",
                     event_definition_id="evt_001",
                     scheduled_date=date(2024, 1, 15),
                     event_type=EventType.NEW_ENROLLMENT,
@@ -253,7 +253,7 @@ class TestMemberTimeline:
                 ),
                 TimelineEvent(
                     timeline_event_id="tl_002",
-                    scenario_id="test",
+                    cohort_id="test",
                     event_definition_id="evt_002",
                     scheduled_date=date(2024, 2, 15),
                     event_type=EventType.CLAIM_PROFESSIONAL,
@@ -274,7 +274,7 @@ class TestMemberTimeline:
             events=[
                 TimelineEvent(
                     timeline_event_id="tl_001",
-                    scenario_id="test",
+                    cohort_id="test",
                     event_definition_id="evt_001",
                     scheduled_date=date(2024, 1, 15),
                     event_type=EventType.NEW_ENROLLMENT,
@@ -282,7 +282,7 @@ class TestMemberTimeline:
                 ),
                 TimelineEvent(
                     timeline_event_id="tl_002",
-                    scenario_id="test",
+                    cohort_id="test",
                     event_definition_id="evt_002",
                     scheduled_date=date(2024, 3, 15),
                     event_type=EventType.CLAIM_PROFESSIONAL,
@@ -298,12 +298,12 @@ class TestMemberTimeline:
         assert events[0].timeline_event_id == "tl_001"
 
 
-class TestScenarioEngine:
-    """Test scenario execution engine."""
+class TestCohortEngine:
+    """Test cohort execution engine."""
 
     def test_engine_creation(self) -> None:
         """Test creating an engine."""
-        engine = ScenarioEngine(seed=42)
+        engine = CohortEngine(seed=42)
         assert engine is not None
 
     def test_create_default_engine(self) -> None:
@@ -311,14 +311,14 @@ class TestScenarioEngine:
         engine = create_default_engine(seed=42)
         assert engine is not None
 
-    def test_create_timeline_from_scenario(self, sample_member: Member) -> None:
-        """Test creating a timeline from a scenario."""
-        engine = ScenarioEngine(seed=42)
-        register_builtin_scenarios()
+    def test_create_timeline_from_cohort(self, sample_member: Member) -> None:
+        """Test creating a timeline from a cohort."""
+        engine = CohortEngine(seed=42)
+        register_builtin_cohorts()
 
         timeline = engine.create_timeline(
             member=sample_member,
-            scenario=NEW_EMPLOYEE_SCENARIO,
+            cohort=NEW_EMPLOYEE_SCENARIO,
             start_date=date(2024, 1, 1),
         )
 
@@ -328,11 +328,11 @@ class TestScenarioEngine:
 
     def test_timeline_events_ordered_by_date(self, sample_member: Member) -> None:
         """Test that timeline events are ordered by date."""
-        engine = ScenarioEngine(seed=42)
+        engine = CohortEngine(seed=42)
 
         timeline = engine.create_timeline(
             member=sample_member,
-            scenario=NEW_EMPLOYEE_SCENARIO,
+            cohort=NEW_EMPLOYEE_SCENARIO,
             start_date=date(2024, 1, 1),
         )
 
@@ -341,7 +341,7 @@ class TestScenarioEngine:
 
     def test_execute_single_event(self, sample_member: Member) -> None:
         """Test executing a single event."""
-        engine = ScenarioEngine(seed=42)
+        engine = CohortEngine(seed=42)
         outputs: list[dict] = []
 
         def capture_handler(member: Member, event: TimelineEvent, context: dict) -> dict:
@@ -352,7 +352,7 @@ class TestScenarioEngine:
 
         timeline = engine.create_timeline(
             member=sample_member,
-            scenario=NEW_EMPLOYEE_SCENARIO,
+            cohort=NEW_EMPLOYEE_SCENARIO,
             start_date=date(2024, 1, 1),
         )
 
@@ -372,50 +372,50 @@ class TestScenarioEngine:
         assert executed_event.status == EventStatus.EXECUTED
 
 
-class TestBuiltinScenarios:
-    """Test built-in scenario templates."""
+class TestBuiltinCohorts:
+    """Test built-in cohort templates."""
 
-    def test_all_scenarios_valid(self) -> None:
-        """Test that all built-in scenarios are valid definitions."""
-        for scenario in BUILTIN_SCENARIOS:
-            assert isinstance(scenario, ScenarioDefinition)
-            assert scenario.metadata.scenario_id is not None
-            assert scenario.metadata.name is not None
-            assert len(scenario.events) > 0
+    def test_all_cohorts_valid(self) -> None:
+        """Test that all built-in cohorts are valid definitions."""
+        for cohort in BUILTIN_SCENARIOS:
+            assert isinstance(cohort, CohortDefinition)
+            assert cohort.metadata.cohort_id is not None
+            assert cohort.metadata.name is not None
+            assert len(cohort.events) > 0
 
-    def test_new_employee_scenario(self) -> None:
-        """Test new employee scenario structure."""
-        scenario = NEW_EMPLOYEE_SCENARIO
-        assert scenario.metadata.category == "enrollment"
+    def test_new_employee_cohort(self) -> None:
+        """Test new employee cohort structure."""
+        cohort = NEW_EMPLOYEE_SCENARIO
+        assert cohort.metadata.category == "enrollment"
 
         # Should start with enrollment event
-        first_event = scenario.events[0]
+        first_event = cohort.events[0]
         assert first_event.event_type == EventType.NEW_ENROLLMENT
 
-    def test_diabetic_member_scenario(self) -> None:
-        """Test diabetic member scenario structure."""
-        scenario = DIABETIC_MEMBER_SCENARIO
-        assert scenario.metadata.category == "chronic"
+    def test_diabetic_member_cohort(self) -> None:
+        """Test diabetic member cohort structure."""
+        cohort = DIABETIC_MEMBER_SCENARIO
+        assert cohort.metadata.category == "chronic"
 
         # Should have professional claim events
-        event_types = [e.event_type for e in scenario.events]
+        event_types = [e.event_type for e in cohort.events]
         assert EventType.CLAIM_PROFESSIONAL in event_types
 
-    def test_preventive_care_scenario(self) -> None:
-        """Test preventive care scenario structure."""
-        scenario = PREVENTIVE_CARE_SCENARIO
-        assert scenario.metadata.category == "preventive"
+    def test_preventive_care_cohort(self) -> None:
+        """Test preventive care cohort structure."""
+        cohort = PREVENTIVE_CARE_SCENARIO
+        assert cohort.metadata.category == "preventive"
 
         # Should have claim events
-        event_types = [e.event_type for e in scenario.events]
+        event_types = [e.event_type for e in cohort.events]
         assert EventType.CLAIM_PROFESSIONAL in event_types
 
-    def test_scenario_event_dependencies_valid(self) -> None:
+    def test_cohort_event_dependencies_valid(self) -> None:
         """Test that event dependencies reference valid events."""
-        for scenario in BUILTIN_SCENARIOS:
-            event_ids = {e.event_id for e in scenario.events}
-            for event in scenario.events:
+        for cohort in BUILTIN_SCENARIOS:
+            event_ids = {e.event_id for e in cohort.events}
+            for event in cohort.events:
                 if event.depends_on:
                     assert event.depends_on in event_ids, (
-                        f"Invalid dependency {event.depends_on} in {scenario.metadata.scenario_id}"
+                        f"Invalid dependency {event.depends_on} in {cohort.metadata.cohort_id}"
                     )

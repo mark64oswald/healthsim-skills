@@ -153,8 +153,8 @@ class TestConnectionManager:
         # Initialize with schema
         conn = duckdb.connect(str(db_path))
         conn.execute("""
-            CREATE TABLE scenarios (
-                scenario_id VARCHAR PRIMARY KEY,
+            CREATE TABLE cohorts (
+                cohort_id VARCHAR PRIMARY KEY,
                 name VARCHAR UNIQUE NOT NULL,
                 description VARCHAR,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -164,7 +164,7 @@ class TestConnectionManager:
         conn.execute("""
             CREATE TABLE cohort_entities (
                 id INTEGER PRIMARY KEY,
-                scenario_id VARCHAR NOT NULL,
+                cohort_id VARCHAR NOT NULL,
                 entity_type VARCHAR NOT NULL,
                 entity_id VARCHAR NOT NULL,
                 entity_data JSON NOT NULL
@@ -172,7 +172,7 @@ class TestConnectionManager:
         """)
         conn.execute("""
             INSERT INTO cohorts (id, name, description)
-            VALUES ('test-123', 'Test Scenario', 'A test scenario')
+            VALUES ('test-123', 'Test Cohort', 'A test cohort')
         """)
         conn.close()
         
@@ -242,14 +242,14 @@ class TestConnectionManager:
         with manager.write_connection() as conn:
             conn.execute("""
                 INSERT INTO cohorts (id, name)
-                VALUES ('scenario-1', 'First')
+                VALUES ('cohort-1', 'First')
             """)
         
         # Second write should work (lock was released)
         with manager.write_connection() as conn:
             conn.execute("""
                 INSERT INTO cohorts (id, name)
-                VALUES ('scenario-2', 'Second')
+                VALUES ('cohort-2', 'Second')
             """)
         
         # Verify both exist
@@ -315,8 +315,8 @@ class TestMCPToolsWithDualConnection:
         # Initialize full schema (simplified version for testing)
         conn = duckdb.connect(str(db_path))
         conn.execute("""
-            CREATE TABLE scenarios (
-                scenario_id VARCHAR PRIMARY KEY,
+            CREATE TABLE cohorts (
+                cohort_id VARCHAR PRIMARY KEY,
                 name VARCHAR UNIQUE NOT NULL,
                 description VARCHAR,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -325,15 +325,15 @@ class TestMCPToolsWithDualConnection:
         """)
         conn.execute("""
             CREATE TABLE cohort_tags (
-                scenario_id VARCHAR NOT NULL,
+                cohort_id VARCHAR NOT NULL,
                 tag VARCHAR NOT NULL,
-                PRIMARY KEY (scenario_id, tag)
+                PRIMARY KEY (cohort_id, tag)
             )
         """)
         conn.execute("""
             CREATE TABLE cohort_entities (
                 id INTEGER PRIMARY KEY,
-                scenario_id VARCHAR NOT NULL,
+                cohort_id VARCHAR NOT NULL,
                 entity_type VARCHAR NOT NULL,
                 entity_id VARCHAR NOT NULL,
                 entity_data JSON NOT NULL
@@ -449,7 +449,7 @@ class TestConcurrentAccessWithProduction:
         tables = [row[0] for row in result]
         
         assert len(tables) > 0
-        assert "scenarios" in tables or "ref_places_county" in tables
+        assert "cohorts" in tables or "ref_places_county" in tables
         
         conn.close()
     
@@ -470,8 +470,8 @@ class TestConcurrentAccessWithProduction:
         conn1.close()
         conn2.close()
     
-    def test_query_scenarios_read_only(self, production_db):
-        """Can query scenarios table with read-only connection."""
+    def test_query_cohorts_read_only(self, production_db):
+        """Can query cohorts table with read-only connection."""
         self._check_can_connect(production_db)
         
         conn = duckdb.connect(str(production_db), read_only=True)
@@ -684,7 +684,7 @@ class TestMultiProcessConcurrency:
         tables = [
             "ref_places_county",
             "ref_svi_county",
-            "scenarios",
+            "cohorts",
         ]
         
         args = [(production_db, t) for t in tables]

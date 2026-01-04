@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-HealthSim Scenario Loader
+HealthSim Cohort Loader
 
-Loads JSON scenario files into DuckDB canonical tables.
+Loads JSON cohort files into DuckDB canonical tables.
 
 Usage:
-    python scenario_loader.py <scenario_path> [--db <duckdb_path>]
+    python cohort_loader.py <cohort_path> [--db <duckdb_path>]
 
 Example:
-    python scenario_loader.py scenarios/saved/bob-thompson-er-visit
+    python cohort_loader.py cohorts/saved/bob-thompson-er-visit
 """
 
 import argparse
@@ -125,8 +125,8 @@ ENTITY_PK_MAP = {
 }
 
 
-class ScenarioLoader:
-    """Loads JSON scenarios into DuckDB."""
+class CohortLoader:
+    """Loads JSON cohorts into DuckDB."""
     
     def __init__(self, db_path: str):
         """Initialize with database path."""
@@ -215,29 +215,29 @@ class ScenarioLoader:
         
         return count
     
-    def load_scenario(self, scenario_path: str, scenario_name: Optional[str] = None) -> Dict[str, Any]:
-        """Load all JSON files from a scenario directory."""
-        path = Path(scenario_path)
+    def load_cohort(self, cohort_path: str, cohort_name: Optional[str] = None) -> Dict[str, Any]:
+        """Load all JSON files from a cohort directory."""
+        path = Path(cohort_path)
         
         if not path.exists():
-            raise FileNotFoundError(f"Scenario path not found: {scenario_path}")
+            raise FileNotFoundError(f"Cohort path not found: {cohort_path}")
         
-        # Determine scenario name
-        if scenario_name is None:
-            scenario_name = path.name
+        # Determine cohort name
+        if cohort_name is None:
+            cohort_name = path.name
         
-        # Generate scenario ID
-        scenario_id = f"SCN-{datetime.now().strftime('%Y%m%d%H%M%S')}"
+        # Generate cohort ID
+        cohort_id = f"SCN-{datetime.now().strftime('%Y%m%d%H%M%S')}"
         
-        print(f"\nLoading scenario: {scenario_name}")
-        print(f"Scenario ID: {scenario_id}")
+        print(f"\nLoading cohort: {cohort_name}")
+        print(f"Cohort ID: {cohort_id}")
         print("-" * 50)
         
         # Find all JSON files
         json_files = list(path.glob("*.json"))
         
         if not json_files:
-            raise ValueError(f"No JSON files found in {scenario_path}")
+            raise ValueError(f"No JSON files found in {cohort_path}")
         
         total_count = 0
         file_counts = {}
@@ -249,40 +249,40 @@ class ScenarioLoader:
             total_count += count
             print(f"  Loaded {count} entities")
         
-        # Create scenario record
+        # Create cohort record
         self.conn.execute("""
-            INSERT INTO scenarios (scenario_id, name, description, entity_count, is_active, schema_version)
+            INSERT INTO cohorts (cohort_id, name, description, entity_count, is_active, schema_version)
             VALUES (?, ?, ?, ?, TRUE, '1.0')
-        """, [scenario_id, scenario_name, f"Loaded from {scenario_path}", total_count])
+        """, [cohort_id, cohort_name, f"Loaded from {cohort_path}", total_count])
         
-        # Link entities to scenario
+        # Link entities to cohort
         for entity_type, entity_id in self.loaded_entities:
             self.conn.execute("""
-                INSERT INTO scenario_entities (scenario_id, entity_type, entity_id)
+                INSERT INTO cohort_entities (cohort_id, entity_type, entity_id)
                 VALUES (?, ?, ?)
-            """, [scenario_id, entity_type, entity_id])
+            """, [cohort_id, entity_type, entity_id])
         
         # Commit
         self.conn.commit()
         
         print("\n" + "=" * 50)
-        print(f"Scenario loaded successfully!")
+        print(f"Cohort loaded successfully!")
         print(f"  Total entities: {total_count}")
         print(f"  Files processed: {len(json_files)}")
         
         return {
-            "scenario_id": scenario_id,
-            "scenario_name": scenario_name,
+            "cohort_id": cohort_id,
+            "cohort_name": cohort_name,
             "total_entities": total_count,
             "file_counts": file_counts
         }
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Load HealthSim scenario into DuckDB")
-    parser.add_argument("scenario_path", help="Path to scenario directory")
+    parser = argparse.ArgumentParser(description="Load HealthSim cohort into DuckDB")
+    parser.add_argument("cohort_path", help="Path to cohort directory")
     parser.add_argument("--db", default="healthsim.duckdb", help="DuckDB database path")
-    parser.add_argument("--name", help="Override scenario name")
+    parser.add_argument("--name", help="Override cohort name")
     
     args = parser.parse_args()
     
@@ -298,11 +298,11 @@ def main():
             print(f"Error: Database not found at {db_path}")
             sys.exit(1)
     
-    loader = ScenarioLoader(db_path)
+    loader = CohortLoader(db_path)
     
     try:
-        result = loader.load_scenario(args.scenario_path, args.name)
-        print(f"\nScenario ID: {result['scenario_id']}")
+        result = loader.load_cohort(args.cohort_path, args.name)
+        print(f"\nCohort ID: {result['cohort_id']}")
     except Exception as e:
         print(f"Error: {e}")
         sys.exit(1)

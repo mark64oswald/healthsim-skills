@@ -10,13 +10,13 @@ import pytest
 
 # Import the MCP server functions
 from patientsim.mcp.generation_server import (
-    _delete_scenario_tool,
+    _delete_cohort_tool,
     _generate_cohort_tool,
     _generate_patient_tool,
-    _list_saved_scenarios_tool,
-    _list_scenarios_tool,
-    _load_scenario_tool,
-    _save_scenario_tool,
+    _list_saved_cohorts_tool,
+    _list_cohorts_tool,
+    _load_cohort_tool,
+    _save_cohort_tool,
     _workspace_summary_tool,
     list_tools,
     session_manager,
@@ -37,8 +37,8 @@ class TestToolListing:
         tool_names = [tool.name for tool in tools]
         assert "generate_patient" in tool_names
         assert "generate_cohort" in tool_names
-        assert "list_scenarios" in tool_names
-        assert "describe_scenario" in tool_names
+        assert "list_cohorts" in tool_names
+        assert "describe_cohort" in tool_names
 
     @pytest.mark.asyncio
     async def test_tools_have_descriptions(self) -> None:
@@ -118,19 +118,19 @@ class TestGenerateCohortTool:
 
 
 class TestListScenariosTool:
-    """Tests for list_scenarios tool."""
+    """Tests for list_cohorts tool."""
 
     @pytest.mark.asyncio
-    async def test_list_scenarios_basic(self) -> None:
-        """Test basic scenario listing."""
+    async def test_list_cohorts_basic(self) -> None:
+        """Test basic cohort listing."""
         arguments = {}
 
-        result = await _list_scenarios_tool(arguments)
+        result = await _list_cohorts_tool(arguments)
 
         assert len(result) == 1
         text_content = result[0]
         assert text_content.type == "text"
-        # Should return information about available scenarios
+        # Should return information about available cohorts
         assert len(text_content.text) > 0
 
 
@@ -175,22 +175,22 @@ class TestStateManagementTools:
         assert "1" in result[0].text
 
     @pytest.mark.asyncio
-    async def test_save_scenario_empty_workspace(self) -> None:
+    async def test_save_cohort_empty_workspace(self) -> None:
         """Test saving empty workspace returns error."""
-        result = await _save_scenario_tool({"name": "test"})
+        result = await _save_cohort_tool({"name": "test"})
 
         assert len(result) == 1
         assert "Nothing to save" in result[0].text or "Error" in result[0].text
 
     @pytest.mark.asyncio
-    async def test_save_scenario_success(self) -> None:
+    async def test_save_cohort_success(self) -> None:
         """Test saving scenario with patients."""
         # Generate a patient first
         await _generate_patient_tool({})
 
-        result = await _save_scenario_tool(
+        result = await _save_cohort_tool(
             {
-                "name": "test-scenario",
+                "name": "test-cohort",
                 "description": "Test description",
                 "tags": ["test"],
             }
@@ -198,55 +198,55 @@ class TestStateManagementTools:
 
         assert len(result) == 1
         assert "Saved" in result[0].text
-        assert "test-scenario" in result[0].text
+        assert "test-cohort" in result[0].text
 
     @pytest.mark.asyncio
-    async def test_list_saved_scenarios_empty(self) -> None:
-        """Test listing scenarios when none saved."""
-        result = await _list_saved_scenarios_tool({})
+    async def test_list_saved_cohorts_empty(self) -> None:
+        """Test listing cohorts when none saved."""
+        result = await _list_saved_cohorts_tool({})
 
         assert len(result) == 1
-        assert "No saved scenarios" in result[0].text
+        assert "No saved cohorts" in result[0].text
 
     @pytest.mark.asyncio
-    async def test_list_saved_scenarios_with_data(self) -> None:
-        """Test listing saved scenarios."""
+    async def test_list_saved_cohorts_with_data(self) -> None:
+        """Test listing saved cohorts."""
         # Generate and save
         await _generate_patient_tool({})
-        await _save_scenario_tool({"name": "list-test"})
+        await _save_cohort_tool({"name": "list-test"})
 
-        result = await _list_saved_scenarios_tool({})
+        result = await _list_saved_cohorts_tool({})
 
         assert len(result) == 1
         assert "list-test" in result[0].text
 
     @pytest.mark.asyncio
-    async def test_load_scenario_not_found(self) -> None:
+    async def test_load_cohort_not_found(self) -> None:
         """Test loading non-existent scenario."""
-        result = await _load_scenario_tool({"name": "nonexistent"})
+        result = await _load_cohort_tool({"name": "nonexistent"})
 
         assert len(result) == 1
         assert "not found" in result[0].text.lower() or "error" in result[0].text.lower()
 
     @pytest.mark.asyncio
-    async def test_load_scenario_success(self) -> None:
+    async def test_load_cohort_success(self) -> None:
         """Test loading a saved scenario."""
         # Generate, save, then clear
         await _generate_patient_tool({})
-        await _save_scenario_tool({"name": "load-test"})
+        await _save_cohort_tool({"name": "load-test"})
         session_manager.clear()
 
         # Load it back
-        result = await _load_scenario_tool({"name": "load-test"})
+        result = await _load_cohort_tool({"name": "load-test"})
 
         assert len(result) == 1
         assert "Loaded" in result[0].text
         assert session_manager.count() == 1
 
     @pytest.mark.asyncio
-    async def test_delete_scenario_requires_confirm(self) -> None:
+    async def test_delete_cohort_requires_confirm(self) -> None:
         """Test delete requires confirmation."""
-        result = await _delete_scenario_tool(
+        result = await _delete_cohort_tool(
             {
                 "scenario_id": "some-id",
                 "confirm": False,
@@ -257,9 +257,9 @@ class TestStateManagementTools:
         assert "confirm" in result[0].text.lower()
 
     @pytest.mark.asyncio
-    async def test_delete_scenario_not_found(self) -> None:
+    async def test_delete_cohort_not_found(self) -> None:
         """Test deleting non-existent scenario."""
-        result = await _delete_scenario_tool(
+        result = await _delete_cohort_tool(
             {
                 "scenario_id": "nonexistent-id",
                 "confirm": True,
@@ -275,8 +275,8 @@ class TestStateManagementTools:
         tools = await list_tools()
         tool_names = [tool.name for tool in tools]
 
-        assert "save_scenario" in tool_names
-        assert "load_scenario" in tool_names
-        assert "list_saved_scenarios" in tool_names
-        assert "delete_scenario" in tool_names
+        assert "save_cohort" in tool_names
+        assert "load_cohort" in tool_names
+        assert "list_saved_cohorts" in tool_names
+        assert "delete_cohort" in tool_names
         assert "workspace_summary" in tool_names

@@ -25,7 +25,7 @@ from healthsim_mcp import (
 class TestEntityTypeTaxonomy:
     """Tests for the entity type taxonomy constants."""
     
-    def test_scenario_entity_types_defined(self):
+    def test_cohort_entity_types_defined(self):
         """Scenario entity types should include PHI data types."""
         assert "patients" in SCENARIO_ENTITY_TYPES
         assert "members" in SCENARIO_ENTITY_TYPES
@@ -33,7 +33,7 @@ class TestEntityTypeTaxonomy:
         assert "encounters" in SCENARIO_ENTITY_TYPES
     
     def test_relationship_entity_types_defined(self):
-        """Relationship types should link scenario to reference data."""
+        """Relationship types should link cohort to reference data."""
         assert "pcp_assignments" in RELATIONSHIP_ENTITY_TYPES
         assert "network_contracts" in RELATIONSHIP_ENTITY_TYPES
     
@@ -44,7 +44,7 @@ class TestEntityTypeTaxonomy:
         assert "pharmacies" in REFERENCE_ENTITY_TYPES
     
     def test_allowed_types_is_union(self):
-        """Allowed types should be scenario data + relationships."""
+        """Allowed types should be cohort data + relationships."""
         expected = SCENARIO_ENTITY_TYPES | RELATIONSHIP_ENTITY_TYPES
         assert ALLOWED_ENTITY_TYPES == expected
     
@@ -60,17 +60,17 @@ class TestValidateEntityTypes:
     # === Tests for VALID entity types ===
     
     def test_patients_allowed(self):
-        """Patients should be allowed (scenario data)."""
+        """Patients should be allowed (cohort data)."""
         entities = {"patients": [{"patient_id": "P001"}]}
         assert validate_entity_types(entities) is None
     
     def test_members_allowed(self):
-        """Members should be allowed (scenario data)."""
+        """Members should be allowed (cohort data)."""
         entities = {"members": [{"member_id": "M001"}]}
         assert validate_entity_types(entities) is None
     
     def test_claims_allowed(self):
-        """Claims should be allowed (scenario data)."""
+        """Claims should be allowed (cohort data)."""
         entities = {"claims": [{"claim_id": "C001"}]}
         assert validate_entity_types(entities) is None
     
@@ -164,7 +164,7 @@ class TestValidateEntityTypes:
         assert error is None
     
     def test_mixed_types_allowed_with_override(self):
-        """Mixed scenario + reference types should be allowed with override."""
+        """Mixed cohort + reference types should be allowed with override."""
         entities = {
             "patients": [{"patient_id": "P001"}],
             "providers": [{"npi": "123", "name": "Dr. Test"}],
@@ -214,7 +214,7 @@ class TestValidationInTools:
         from healthsim_mcp import add_entities, AddEntitiesInput
         
         params = AddEntitiesInput(
-            scenario_name="test-scenario",
+            cohort_name="test-cohort",
             entities={"providers": [{"npi": "1234567890", "name": "Dr. Test"}]}
         )
         
@@ -229,7 +229,7 @@ class TestValidationInTools:
         
         # Just test the input accepts the parameter
         params = AddEntitiesInput(
-            scenario_name="test-scenario",
+            cohort_name="test-cohort",
             entities={"providers": [{"npi": "1234567890", "name": "Dr. Test"}]},
             allow_reference_entities=True
         )
@@ -243,34 +243,34 @@ class TestValidationInTools:
         from healthsim_mcp import AddEntitiesInput
         
         params = AddEntitiesInput(
-            scenario_name="test-scenario",
+            cohort_name="test-cohort",
             entities={"patients": [{"patient_id": "P001", "name": "Test Patient"}]}
         )
         
         error = validate_entity_types(params.entities)
         assert error is None
     
-    def test_save_scenario_suggests_real_data_for_facilities(self):
-        """save_scenario should suggest real data for facilities."""
-        from healthsim_mcp import save_scenario, SaveCohortInput
+    def test_save_cohort_suggests_real_data_for_facilities(self):
+        """save_cohort should suggest real data for facilities."""
+        from healthsim_mcp import save_cohort, SaveCohortInput
         
         params = SaveCohortInput(
-            name="test-scenario",
+            name="test-cohort",
             entities={"facilities": [{"npi": "1234567890", "name": "Test Hospital"}]}
         )
         
-        result = json.loads(save_scenario(params))
+        result = json.loads(save_cohort(params))
         
         assert "error" in result
         assert "allow_reference_entities" in result["error"]
     
-    def test_save_scenario_accepts_override_parameter(self):
-        """save_scenario should accept allow_reference_entities parameter."""
+    def test_save_cohort_accepts_override_parameter(self):
+        """save_cohort should accept allow_reference_entities parameter."""
         from healthsim_mcp import SaveCohortInput
         
         # Just test the input model accepts the parameter
         params = SaveCohortInput(
-            name="test-scenario",
+            name="test-cohort",
             entities={"providers": [{"npi": "123"}]},
             allow_reference_entities=True
         )

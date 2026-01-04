@@ -50,7 +50,7 @@ CREATE TABLE IF NOT EXISTS patients (
     source_system VARCHAR,
     skill_used VARCHAR,
     generation_seed INTEGER,
-    scenario_id VARCHAR
+    cohort_id VARCHAR
 );
 """
 
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS members (
     source_system VARCHAR,
     skill_used VARCHAR,
     generation_seed INTEGER,
-    scenario_id VARCHAR
+    cohort_id VARCHAR
 );
 """
 
@@ -94,12 +94,12 @@ def test_canonical_insert_end_to_end():
     temp_dir = tempfile.mkdtemp()
     test_db_path = Path(temp_dir) / "test.duckdb"
     
-    test_scenario_id = f"test-canonical-{uuid.uuid4().hex[:8]}"
+    test_cohort_id = f"test-canonical-{uuid.uuid4().hex[:8]}"
     test_patient_id = f"PAT-TEST-{uuid.uuid4().hex[:8]}"
     test_member_id = f"MBR-TEST-{uuid.uuid4().hex[:8]}"
     
     print(f"Test DB: {test_db_path}")
-    print(f"Test scenario ID: {test_scenario_id}")
+    print(f"Test cohort ID: {test_cohort_id}")
     
     conn = duckdb.connect(str(test_db_path), read_only=False)
     
@@ -140,11 +140,11 @@ def test_canonical_insert_end_to_end():
         from healthsim_mcp import insert_into_canonical_table
         
         print("\n=== Testing Patient Canonical Insert ===")
-        patient_result = insert_into_canonical_table(conn, test_scenario_id, 'patients', test_patient)
+        patient_result = insert_into_canonical_table(conn, test_cohort_id, 'patients', test_patient)
         print(f"Patient insert result: {patient_result}")
         
         print("\n=== Testing Member Canonical Insert ===")
-        member_result = insert_into_canonical_table(conn, test_scenario_id, 'members', test_member)
+        member_result = insert_into_canonical_table(conn, test_cohort_id, 'members', test_member)
         print(f"Member insert result: {member_result}")
         
         # Verify data in canonical tables
@@ -152,13 +152,13 @@ def test_canonical_insert_end_to_end():
         
         patient_check = conn.execute(
             "SELECT id, given_name, family_name, city, cohort_id FROM patients WHERE id = ?",
-            [test_scenario_id]
+            [test_cohort_id]
         ).fetchall()
         print(f"Patients in canonical table: {patient_check}")
         
         member_check = conn.execute(
             "SELECT id, member_id, given_name, family_name, plan_code, cohort_id FROM members WHERE id = ?",
-            [test_scenario_id]
+            [test_cohort_id]
         ).fetchall()
         print(f"Members in canonical table: {member_check}")
         

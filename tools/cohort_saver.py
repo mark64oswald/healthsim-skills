@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """
-HealthSim Scenario Saver
+HealthSim Cohort Saver
 
-Exports scenarios from DuckDB to JSON files.
+Exports cohorts from DuckDB to JSON files.
 
 Usage:
-    python scenario_saver.py <scenario_name> [--output <output_path>] [--db <duckdb_path>]
+    python cohort_saver.py <cohort_name> [--output <output_path>] [--db <duckdb_path>]
 
 Example:
-    python scenario_saver.py "bob-thompson-er-visit" --output ./exports
+    python cohort_saver.py "bob-thompson-er-visit" --output ./exports
 """
 
 import argparse
@@ -105,8 +105,8 @@ class JSONEncoder(json.JSONEncoder):
         return super().default(obj)
 
 
-class ScenarioSaver:
-    """Exports scenarios from DuckDB to JSON files."""
+class CohortSaver:
+    """Exports cohorts from DuckDB to JSON files."""
     
     def __init__(self, db_path: str):
         """Initialize with database path."""
@@ -117,19 +117,19 @@ class ScenarioSaver:
         """Close database connection."""
         self.conn.close()
     
-    def get_scenario(self, scenario_name: str) -> Optional[Dict[str, Any]]:
-        """Get scenario by name."""
+    def get_cohort(self, cohort_name: str) -> Optional[Dict[str, Any]]:
+        """Get cohort by name."""
         result = self.conn.execute("""
-            SELECT scenario_id, name, description, created_at, entity_count, products
-            FROM scenarios
+            SELECT cohort_id, name, description, created_at, entity_count, products
+            FROM cohorts
             WHERE name = ?
-        """, [scenario_name]).fetchone()
+        """, [cohort_name]).fetchone()
         
         if not result:
             return None
             
         return {
-            "scenario_id": result[0],
+            "cohort_id": result[0],
             "name": result[1],
             "description": result[2],
             "created_at": result[3],
@@ -137,20 +137,20 @@ class ScenarioSaver:
             "products": result[5]
         }
     
-    def get_scenario_entities(self, scenario_id: str) -> List[tuple]:
-        """Get all entity references for a scenario."""
+    def get_cohort_entities(self, cohort_id: str) -> List[tuple]:
+        """Get all entity references for a cohort."""
         return self.conn.execute("""
             SELECT entity_type, entity_id
-            FROM scenario_entities
-            WHERE scenario_id = ?
+            FROM cohort_entities
+            WHERE cohort_id = ?
             ORDER BY entity_type, entity_id
-        """, [scenario_id]).fetchall()
+        """, [cohort_id]).fetchall()
     
-    def get_scenario_tags(self, scenario_id: str) -> List[str]:
-        """Get tags for a scenario."""
+    def get_cohort_tags(self, cohort_id: str) -> List[str]:
+        """Get tags for a cohort."""
         results = self.conn.execute("""
-            SELECT tag FROM scenario_tags WHERE scenario_id = ?
-        """, [scenario_id]).fetchall()
+            SELECT tag FROM cohort_tags WHERE cohort_id = ?
+        """, [cohort_id]).fetchall()
         return [r[0] for r in results]
     
     def fetch_entity(self, entity_type: str, entity_id: str) -> Optional[Dict[str, Any]]:
@@ -182,35 +182,35 @@ class ScenarioSaver:
         
         return entity
     
-    def save_scenario(self, scenario_name: str, output_path: str, 
+    def save_cohort(self, cohort_name: str, output_path: str, 
                       format: str = "by_product") -> Dict[str, Any]:
         """
-        Save scenario to JSON files.
+        Save cohort to JSON files.
         
         Args:
-            scenario_name: Name of scenario to export
+            cohort_name: Name of cohort to export
             output_path: Directory to save files
             format: 'by_product' (separate files per product) or 'single' (one file)
         """
-        # Get scenario
-        scenario = self.get_scenario(scenario_name)
-        if not scenario:
-            raise ValueError(f"Scenario not found: {scenario_name}")
+        # Get cohort
+        cohort = self.get_cohort(cohort_name)
+        if not cohort:
+            raise ValueError(f"Cohort not found: {cohort_name}")
         
-        scenario_id = scenario["scenario_id"]
+        cohort_id = cohort["cohort_id"]
         
         # Create output directory
         output_dir = Path(output_path)
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        print(f"\nExporting scenario: {scenario_name}")
-        print(f"Scenario ID: {scenario_id}")
+        print(f"\nExporting cohort: {cohort_name}")
+        print(f"Cohort ID: {cohort_id}")
         print(f"Output: {output_dir}")
         print("-" * 50)
         
         # Get all entity references
-        entity_refs = self.get_scenario_entities(scenario_id)
-        tags = self.get_scenario_tags(scenario_id)
+        entity_refs = self.get_cohort_entities(cohort_id)
+        tags = self.get_cohort_tags(cohort_id)
         
         # Organize entities by type
         entities_by_type: Dict[str, List[Dict]] = {}
@@ -248,44 +248,44 @@ class ScenarioSaver:
                     files_written.append(filename)
                     print(f"  Wrote {filename}: {sum(len(v) for v in product_data.values())} entities")
             
-            # Save scenario metadata
+            # Save cohort metadata
             metadata = {
-                "scenario_id": scenario_id,
-                "name": scenario_name,
-                "description": scenario.get("description"),
-                "created_at": scenario.get("created_at"),
+                "cohort_id": cohort_id,
+                "name": cohort_name,
+                "description": cohort.get("description"),
+                "created_at": cohort.get("created_at"),
                 "exported_at": datetime.now().isoformat(),
                 "entity_count": total_entities,
                 "tags": tags,
                 "files": files_written
             }
             
-            with open(output_dir / "scenario.json", 'w') as f:
+            with open(output_dir / "cohort.json", 'w') as f:
                 json.dump(metadata, f, indent=2, cls=JSONEncoder)
             
         else:  # single file
             # Save everything in one file
             all_data = {
-                "scenario": {
-                    "scenario_id": scenario_id,
-                    "name": scenario_name,
-                    "description": scenario.get("description"),
+                "cohort": {
+                    "cohort_id": cohort_id,
+                    "name": cohort_name,
+                    "description": cohort.get("description"),
                     "tags": tags
                 },
                 "entities": entities_by_type
             }
             
-            with open(output_dir / f"{scenario_name}.json", 'w') as f:
+            with open(output_dir / f"{cohort_name}.json", 'w') as f:
                 json.dump(all_data, f, indent=2, cls=JSONEncoder)
         
         # Write README
-        readme_content = f"""# {scenario_name}
+        readme_content = f"""# {cohort_name}
 
 Exported from HealthSim DuckDB on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
 
 ## Summary
 
-- **Scenario ID**: {scenario_id}
+- **Cohort ID**: {cohort_id}
 - **Total Entities**: {total_entities}
 - **Tags**: {', '.join(tags) if tags else 'None'}
 
@@ -306,16 +306,16 @@ Exported from HealthSim DuckDB on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
         print(f"  Output directory: {output_dir}")
         
         return {
-            "scenario_id": scenario_id,
-            "scenario_name": scenario_name,
+            "cohort_id": cohort_id,
+            "cohort_name": cohort_name,
             "total_entities": total_entities,
             "output_path": str(output_dir)
         }
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Export HealthSim scenario to JSON")
-    parser.add_argument("scenario_name", help="Name of scenario to export")
+    parser = argparse.ArgumentParser(description="Export HealthSim cohort to JSON")
+    parser.add_argument("cohort_name", help="Name of cohort to export")
     parser.add_argument("--output", "-o", default="./exports", help="Output directory")
     parser.add_argument("--db", default="healthsim.duckdb", help="DuckDB database path")
     parser.add_argument("--format", choices=["by_product", "single"], default="by_product",
@@ -334,13 +334,13 @@ def main():
             print(f"Error: Database not found at {db_path}")
             sys.exit(1)
     
-    # Create output path with scenario name
-    output_path = Path(args.output) / args.scenario_name.replace(" ", "-").lower()
+    # Create output path with cohort name
+    output_path = Path(args.output) / args.cohort_name.replace(" ", "-").lower()
     
-    saver = ScenarioSaver(db_path)
+    saver = CohortSaver(db_path)
     
     try:
-        result = saver.save_scenario(args.scenario_name, str(output_path), args.format)
+        result = saver.save_cohort(args.cohort_name, str(output_path), args.format)
         print(f"\nExported to: {result['output_path']}")
     except Exception as e:
         print(f"Error: {e}")

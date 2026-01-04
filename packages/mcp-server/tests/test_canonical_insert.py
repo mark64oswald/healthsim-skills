@@ -60,7 +60,7 @@ def test_db(tmp_path):
             source_system VARCHAR,
             skill_used VARCHAR,
             generation_seed INTEGER,
-            scenario_id VARCHAR
+            cohort_id VARCHAR
         )
     """)
     
@@ -93,7 +93,7 @@ def test_db(tmp_path):
             source_system VARCHAR,
             skill_used VARCHAR,
             generation_seed INTEGER,
-            scenario_id VARCHAR
+            cohort_id VARCHAR
         )
     """)
     
@@ -110,7 +110,7 @@ class TestCanonicalInsert:
     
     def test_patient_insert(self, test_db):
         """Test that patient entities insert correctly into canonical table."""
-        scenario_id = "test-scenario-001"
+        cohort_id = "test-cohort-001"
         patient = {
             "patient_id": "PT-001",
             "first_name": "John",
@@ -124,7 +124,7 @@ class TestCanonicalInsert:
         
         result = insert_into_canonical_table(
             test_db,
-            scenario_id,
+            cohort_id,
             "patients",
             patient
         )
@@ -143,11 +143,11 @@ class TestCanonicalInsert:
         assert row[1] == "John"
         assert row[2] == "Doe"
         assert row[3] == "San Diego"
-        assert row[4] == scenario_id
+        assert row[4] == cohort_id
     
     def test_member_insert(self, test_db):
         """Test that member entities insert correctly into canonical table."""
-        scenario_id = "test-scenario-001"
+        cohort_id = "test-cohort-001"
         member = {
             "member_id": "MBR-001",
             "patient_id": "PT-001",
@@ -158,7 +158,7 @@ class TestCanonicalInsert:
         
         result = insert_into_canonical_table(
             test_db,
-            scenario_id,
+            cohort_id,
             "members",
             member
         )
@@ -176,11 +176,11 @@ class TestCanonicalInsert:
         assert row[0] == "MBR-001"
         assert row[1] == "BSC-PPO"
         assert row[2] == "GRP-001"
-        assert row[3] == scenario_id
+        assert row[3] == cohort_id
     
     def test_upsert_updates_existing(self, test_db):
         """Test that re-inserting same ID updates the record."""
-        scenario_id = "test-scenario-001"
+        cohort_id = "test-cohort-001"
         
         # First insert
         patient1 = {
@@ -189,7 +189,7 @@ class TestCanonicalInsert:
             "last_name": "Smith",
             "city": "Los Angeles"
         }
-        insert_into_canonical_table(test_db, scenario_id, "patients", patient1)
+        insert_into_canonical_table(test_db, cohort_id, "patients", patient1)
         
         # Update via upsert
         patient2 = {
@@ -198,7 +198,7 @@ class TestCanonicalInsert:
             "last_name": "Smith-Jones",  # Changed
             "city": "San Francisco"       # Changed
         }
-        insert_into_canonical_table(test_db, scenario_id, "patients", patient2)
+        insert_into_canonical_table(test_db, cohort_id, "patients", patient2)
         
         # Should only be one record
         count = test_db.execute("SELECT COUNT(*) FROM patients WHERE id = ?", ["PT-002"]).fetchone()[0]
@@ -216,7 +216,7 @@ class TestCanonicalInsert:
         """Test that unknown entity types return (False, error_msg) gracefully."""
         success, error = insert_into_canonical_table(
             test_db,
-            "test-scenario",
+            "test-cohort",
             "unknown_type",
             {"id": "123"}
         )

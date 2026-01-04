@@ -1,4 +1,4 @@
-"""Tests for scenario skill files."""
+"""Tests for cohort skill files."""
 
 from pathlib import Path
 
@@ -8,8 +8,8 @@ from patientsim.skills.loader import SkillLoader
 from patientsim.skills.schema import SkillType
 
 
-class TestScenarioSkills:
-    """Tests for scenario template skills."""
+class TestCohortSkills:
+    """Tests for cohort template skills."""
 
     @pytest.fixture
     def skills_dir(self) -> Path:
@@ -22,8 +22,8 @@ class TestScenarioSkills:
         return SkillLoader()
 
     def test_load_diabetes_management(self, skills_dir: Path, loader: SkillLoader) -> None:
-        """Test loading diabetes management scenario."""
-        skill_path = skills_dir / "scenarios" / "diabetes-management.md"
+        """Test loading diabetes management cohort."""
+        skill_path = skills_dir / "cohorts" / "diabetes-management.md"
         if not skill_path.exists():
             pytest.skip(f"Skill file not found: {skill_path}")
 
@@ -49,8 +49,8 @@ class TestScenarioSkills:
         assert skill.generation_rules is not None
 
     def test_load_ed_chest_pain(self, skills_dir: Path, loader: SkillLoader) -> None:
-        """Test loading ED chest pain scenario."""
-        skill_path = skills_dir / "scenarios" / "ed-chest-pain.md"
+        """Test loading ED chest pain cohort."""
+        skill_path = skills_dir / "cohorts" / "ed-chest-pain.md"
         if not skill_path.exists():
             pytest.skip(f"Skill file not found: {skill_path}")
 
@@ -72,8 +72,8 @@ class TestScenarioSkills:
         assert skill.generation_rules is not None
 
     def test_load_elective_joint(self, skills_dir: Path, loader: SkillLoader) -> None:
-        """Test loading elective joint replacement scenario."""
-        skill_path = skills_dir / "scenarios" / "elective-joint.md"
+        """Test loading elective joint replacement cohort."""
+        skill_path = skills_dir / "cohorts" / "elective-joint.md"
         if not skill_path.exists():
             pytest.skip(f"Skill file not found: {skill_path}")
 
@@ -92,47 +92,47 @@ class TestScenarioSkills:
         # Verify generation rules
         assert skill.generation_rules is not None
 
-    def test_all_scenarios_loadable(self, skills_dir: Path, loader: SkillLoader) -> None:
-        """Test that v2.0 scenario skills can be loaded."""
-        scenarios_dir = skills_dir / "scenarios"
-        if not scenarios_dir.exists():
-            pytest.skip("Scenarios directory not found")
+    def test_all_cohorts_loadable(self, skills_dir: Path, loader: SkillLoader) -> None:
+        """Test that v2.0 cohort skills can be loaded."""
+        cohorts_dir = skills_dir / "cohorts"
+        if not cohorts_dir.exists():
+            pytest.skip("Cohorts directory not found")
 
-        scenario_files = list(scenarios_dir.glob("*.md"))
-        if not scenario_files:
-            pytest.skip("No scenario files found")
+        cohort_files = list(cohorts_dir.glob("*.md"))
+        if not cohort_files:
+            pytest.skip("No cohort files found")
 
         v2_files = ["diabetes-management.md", "ed-chest-pain.md", "elective-joint.md"]
         loaded_count = 0
 
-        for scenario_file in scenario_files:
-            if scenario_file.name not in v2_files:
+        for cohort_file in cohort_files:
+            if cohort_file.name not in v2_files:
                 continue  # Skip non-v2 files
 
-            skill = loader.load_file(scenario_file)
+            skill = loader.load_file(cohort_file)
 
             # Basic validation
-            assert skill.name, f"No name in {scenario_file}"
-            assert skill.metadata, f"No metadata in {scenario_file}"
+            assert skill.name, f"No name in {cohort_file}"
+            assert skill.metadata, f"No metadata in {cohort_file}"
             loaded_count += 1
 
-        assert loaded_count > 0, "No v2 scenario files were loaded"
+        assert loaded_count > 0, "No v2 cohort files were loaded"
 
-    def test_scenario_parameters_valid(self, skills_dir: Path, loader: SkillLoader) -> None:
-        """Test that scenario parameters are valid."""
-        scenarios_dir = skills_dir / "scenarios"
-        if not scenarios_dir.exists():
-            pytest.skip("Scenarios directory not found")
+    def test_cohort_parameters_valid(self, skills_dir: Path, loader: SkillLoader) -> None:
+        """Test that cohort parameters are valid."""
+        cohorts_dir = skills_dir / "cohorts"
+        if not cohorts_dir.exists():
+            pytest.skip("Cohorts directory not found")
 
         v2_files = ["diabetes-management.md", "ed-chest-pain.md", "elective-joint.md"]
 
         for filename in v2_files:
-            scenario_file = scenarios_dir / filename
-            if not scenario_file.exists():
+            cohort_file = cohorts_dir / filename
+            if not cohort_file.exists():
                 continue
 
-            skill = loader.load_file(scenario_file)
+            skill = loader.load_file(cohort_file)
 
             for param in skill.parameters:
                 # All parameters should have a name
-                assert param.name, f"Parameter without name in {scenario_file}"
+                assert param.name, f"Parameter without name in {cohort_file}"

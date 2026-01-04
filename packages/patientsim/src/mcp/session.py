@@ -522,7 +522,7 @@ class PatientSessionManager(BaseSessionManager[Patient]):
                         {
                             "mrn": mrn,
                             "workspace_patient": existing.id,
-                            "scenario_patient": patient_ent.entity_id,
+                            "cohort_patient": patient_ent.entity_id,
                             "resolution": "skipped",
                         }
                     )
@@ -623,19 +623,19 @@ class PatientSessionManager(BaseSessionManager[Patient]):
         session.patient = session.patient.model_copy(update=modifications)
         return session
 
-    # === Legacy scenario methods (delegate to workspace methods) ===
+    # === Legacy cohort methods (delegate to workspace methods) ===
 
-    def save_scenario(
+    def save_cohort(
         self,
         name: str,
         description: str | None = None,
         tags: list[str] | None = None,
         patient_ids: list[str] | None = None,
     ) -> Workspace:
-        """Save current workspace as a scenario (legacy alias for save_workspace).
+        """Save current workspace as a cohort (legacy alias for save_workspace).
 
         Args:
-            name: Human-readable name for the scenario
+            name: Human-readable name for the cohort
             description: Optional description
             tags: Optional tags for organization
             patient_ids: Specific patient IDs to save (None = all)
@@ -652,18 +652,18 @@ class PatientSessionManager(BaseSessionManager[Patient]):
             return result
         return self.save_workspace(name, description, tags)
 
-    def load_scenario(
+    def load_cohort(
         self,
-        scenario_id: str | None = None,
+        cohort_id: str | None = None,
         name: str | None = None,
         mode: str = "replace",
         patient_ids: list[str] | None = None,  # noqa: ARG002
     ) -> tuple[Workspace, dict[str, Any]]:
-        """Load a scenario into the workspace (legacy alias for load_workspace).
+        """Load a cohort into the workspace (legacy alias for load_workspace).
 
         Args:
-            scenario_id: UUID of scenario to load
-            name: Name to search for (if scenario_id not provided)
+            cohort_id: UUID of scenario to load
+            name: Name to search for (if cohort_id not provided)
             mode: "replace" (clear first) or "merge" (add to existing)
             patient_ids: Specific patient IDs to load (ignored, loads all)
 
@@ -672,32 +672,32 @@ class PatientSessionManager(BaseSessionManager[Patient]):
         """
         del patient_ids  # Unused - loads all patients
         return self.load_workspace(
-            workspace_id=scenario_id,
+            workspace_id=cohort_id,
             name=name,
             mode=mode,
         )
 
-    def list_scenarios(
+    def list_cohorts(
         self,
         search: str | None = None,
         tags: list[str] | None = None,
         limit: int = 20,
     ) -> list[dict[str, Any]]:
-        """List saved scenarios with metadata (legacy alias for list_workspaces)."""
+        """List saved cohorts with metadata (legacy alias for list_workspaces)."""
         workspaces = self.list_workspaces(search=search, tags=tags, limit=limit)
 
         # Add legacy field names
         for w in workspaces:
-            w["scenario_id"] = w["workspace_id"]
+            w["cohort_id"] = w["workspace_id"]
             w["patient_count"] = w.get("entity_count", 0)
 
         return workspaces
 
-    def delete_scenario(self, scenario_id: str) -> dict[str, Any] | None:
-        """Delete a saved scenario (legacy alias for delete_workspace)."""
-        result = self.delete_workspace(scenario_id)
+    def delete_cohort(self, cohort_id: str) -> dict[str, Any] | None:
+        """Delete a saved cohort (legacy alias for delete_workspace)."""
+        result = self.delete_workspace(cohort_id)
         if result:
-            result["scenario_id"] = result["workspace_id"]
+            result["cohort_id"] = result["workspace_id"]
             result["patient_count"] = result.get("entity_count", 0)
         return result
 

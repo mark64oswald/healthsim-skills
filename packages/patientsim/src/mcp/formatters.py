@@ -91,14 +91,14 @@ def format_patient_summary(session: PatientSession) -> str:
 
 def format_cohort_summary(
     sessions: list[PatientSession],
-    scenario: str | None = None,
+    cohort: str | None = None,
 ) -> str:
     """
     Format a cohort of patients as a summary.
 
     Args:
         sessions: List of patient sessions
-        scenario: Optional scenario name used
+        cohort: Optional cohort name used
 
     Returns:
         Markdown-formatted cohort summary
@@ -111,10 +111,10 @@ def format_cohort_summary(
         "",
     ]
 
-    if scenario:
+    if cohort:
         lines.extend(
             [
-                f"**Scenario**: {scenario}",
+                f"**Cohort**: {cohort}",
                 "",
             ]
         )
@@ -168,25 +168,25 @@ def format_cohort_summary(
     return "\n".join(lines)
 
 
-def format_scenario_list(scenarios: dict[str, dict[str, Any]]) -> str:
+def format_cohort_list(cohorts: dict[str, dict[str, Any]]) -> str:
     """
-    Format available scenarios as a list.
+    Format available cohorts as a list.
 
     Args:
-        scenarios: Dict of scenario name to metadata
+        cohorts: Dict of cohort name to metadata
 
     Returns:
-        Markdown-formatted scenario list
+        Markdown-formatted cohort list
     """
-    if not scenarios:
-        return "No scenarios available."
+    if not cohorts:
+        return "No cohorts available."
 
     lines = [
-        "## Available Scenarios",
+        "## Available Cohorts",
         "",
     ]
 
-    for name, metadata in sorted(scenarios.items()):
+    for name, metadata in sorted(cohorts.items()):
         description = metadata.get("description", "No description available")
         lines.extend(
             [
@@ -199,22 +199,22 @@ def format_scenario_list(scenarios: dict[str, dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def format_scenario_details(
+def format_cohort_details(
     name: str,
     metadata: dict[str, Any],
 ) -> str:
     """
-    Format detailed scenario information.
+    Format detailed cohort information.
 
     Args:
-        name: Scenario name
-        metadata: Scenario metadata
+        name: Cohort name
+        metadata: Cohort metadata
 
     Returns:
-        Markdown-formatted scenario details
+        Markdown-formatted cohort details
     """
     lines = [
-        f"## Scenario: {name}",
+        f"## Cohort: {name}",
         "",
     ]
 

@@ -74,6 +74,6 @@ __all__ = [
     "SourceType",
     "ProvenanceSummary",
     "EntityWithProvenance",
-    "Scenario",
-    "ScenarioMetadata",
+    "Cohort",
+    "CohortMetadata",
 ]
