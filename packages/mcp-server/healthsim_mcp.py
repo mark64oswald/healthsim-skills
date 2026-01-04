@@ -14,13 +14,13 @@ the same process.
 See docs/mcp/duckdb-connection-architecture.md for design details.
 
 Tools provided:
-- healthsim_list_scenarios: List all saved scenarios
-- healthsim_load_scenario: Load a scenario by name/ID
-- healthsim_save_scenario: Save a new scenario (full replacement)
+- healthsim_list_cohorts: List all saved scenarios
+- healthsim_load_cohort: Load a scenario by name/ID
+- healthsim_save_cohort: Save a new scenario (full replacement)
 - healthsim_add_entities: Add entities incrementally (recommended for large datasets)
-- healthsim_delete_scenario: Delete a scenario
+- healthsim_delete_cohort: Delete a scenario
 - healthsim_query: Execute read-only SQL queries
-- healthsim_get_summary: Get token-efficient scenario summary
+- healthsim_get_cohort_summary: Get token-efficient scenario summary
 - healthsim_query_reference: Query PopulationSim reference data
 - healthsim_search_providers: Search real NPPES provider data
 - healthsim_tables: List all tables in the database
@@ -73,7 +73,7 @@ from healthsim.state.serializers import get_serializer, get_table_info
 # =============================================================================
 
 # SCENARIO DATA: Synthetic PHI entities that are generated per-scenario
-# These are the ONLY entity types that should be stored in scenario_entities
+# These are the ONLY entity types that should be stored in cohort_entities
 SCENARIO_ENTITY_TYPES = {
     "patients",      # Synthetic patient demographics
     "members",       # Synthetic insurance enrollment  
@@ -311,8 +311,8 @@ def _ensure_sequences():
     """Ensure required sequences exist (for databases created before sequences were added)."""
     try:
         conn = duckdb.connect(str(DB_PATH))
-        conn.execute("CREATE SEQUENCE IF NOT EXISTS scenario_tags_seq START 1")
-        conn.execute("CREATE SEQUENCE IF NOT EXISTS scenario_entities_seq START 1")
+        conn.execute("CREATE SEQUENCE IF NOT EXISTS cohort_tags_seq START 1")
+        conn.execute("CREATE SEQUENCE IF NOT EXISTS cohort_entities_seq START 1")
         conn.close()
     except Exception as e:
         print(f"  Warning: Could not ensure sequences: {e}", file=sys.stderr)
@@ -329,8 +329,8 @@ mcp = FastMCP("healthsim_mcp")
 # Pydantic Input Models
 # =============================================================================
 
-class ListScenariosInput(BaseModel):
-    """Input for listing scenarios."""
+class ListCohortsInput(BaseModel):
+    """Input for listing cohorts."""
     model_config = ConfigDict(str_strip_whitespace=True)
     
     tag: Optional[str] = Field(default=None, description="Filter by tag")
@@ -338,21 +338,21 @@ class ListScenariosInput(BaseModel):
     limit: int = Field(default=50, description="Maximum results", ge=1, le=200)
 
 
-class LoadScenarioInput(BaseModel):
-    """Input for loading a scenario."""
+class LoadCohortInput(BaseModel):
+    """Input for loading a cohort."""
     model_config = ConfigDict(str_strip_whitespace=True)
     
-    name_or_id: str = Field(..., description="Scenario name or UUID", min_length=1)
+    name_or_id: str = Field(..., description="Cohort name or UUID", min_length=1)
     include_entities: bool = Field(default=True, description="Include full entity data")
 
 
-class SaveScenarioInput(BaseModel):
-    """Input for saving a scenario."""
+class SaveCohortInput(BaseModel):
+    """Input for saving a cohort."""
     model_config = ConfigDict(str_strip_whitespace=True)
     
-    name: str = Field(..., description="Unique scenario name", min_length=1, max_length=200)
+    name: str = Field(..., description="Unique cohort name", min_length=1, max_length=200)
     entities: Dict[str, List[Dict[str, Any]]] = Field(..., description="Entity dict: {type: [entities]}")
-    description: Optional[str] = Field(default=None, description="Scenario description")
+    description: Optional[str] = Field(default=None, description="Cohort description")
     tags: Optional[List[str]] = Field(default=None, description="Tags for filtering")
     overwrite: bool = Field(default=False, description="Overwrite if exists")
     allow_reference_entities: bool = Field(
@@ -376,11 +376,11 @@ class AddEntitiesInput(BaseModel):
     # Scenario identification - use ONE of these
     scenario_id: Optional[str] = Field(
         default=None, 
-        description="Existing scenario UUID to add entities to. If provided, entities are added to this scenario."
+        description="Existing cohort UUID to add entities to. If provided, entities are added to this scenario."
     )
     scenario_name: Optional[str] = Field(
         default=None,
-        description="Scenario name. If scenario_id not provided, creates new scenario with this name or auto-generates one."
+        description="Cohort name. If scenario_id not provided, creates new scenario with this name or auto-generates one."
     )
     
     # Entities to add
@@ -390,7 +390,7 @@ class AddEntitiesInput(BaseModel):
     )
     
     # Optional metadata (only used when creating new scenario)
-    description: Optional[str] = Field(default=None, description="Scenario description (for new scenarios)")
+    description: Optional[str] = Field(default=None, description="Cohort description (for new scenarios)")
     tags: Optional[List[str]] = Field(default=None, description="Tags for filtering (for new scenarios)")
     
     # Batch tracking (optional, for progress reporting)
@@ -405,11 +405,11 @@ class AddEntitiesInput(BaseModel):
     )
 
 
-class DeleteScenarioInput(BaseModel):
-    """Input for deleting a scenario."""
+class DeleteCohortInput(BaseModel):
+    """Input for deleting a cohort."""
     model_config = ConfigDict(str_strip_whitespace=True)
     
-    name_or_id: str = Field(..., description="Scenario name or UUID", min_length=1)
+    name_or_id: str = Field(..., description="Cohort name or UUID", min_length=1)
     confirm: bool = Field(default=False, description="Must be True to delete")
 
 
@@ -422,10 +422,10 @@ class QueryInput(BaseModel):
 
 
 class GetSummaryInput(BaseModel):
-    """Input for getting scenario summary."""
+    """Input for getting cohort summary."""
     model_config = ConfigDict(str_strip_whitespace=True)
     
-    scenario_id_or_name: str = Field(..., description="Scenario name or UUID", min_length=1)
+    scenario_id_or_name: str = Field(..., description="Cohort name or UUID", min_length=1)
     include_samples: bool = Field(default=True, description="Include sample entities")
     samples_per_type: int = Field(default=3, description="Samples per entity type", ge=1, le=10)
 
@@ -488,7 +488,7 @@ def insert_into_canonical_table(
     Insert entity into canonical table using serializer.
     
     This mirrors the behavior of StateManager._insert_canonical_entity to ensure
-    that add_entities writes to both scenario_entities AND canonical tables.
+    that add_entities writes to both cohort_entities AND canonical tables.
     
     Args:
         conn: DuckDB connection
@@ -628,22 +628,22 @@ def validate_entity_types(
 # =============================================================================
 
 @mcp.tool(
-    name="healthsim_list_scenarios",
+    name="healthsim_list_cohorts",
     annotations={
-        "title": "List HealthSim Scenarios",
+        "title": "List HealthSim Cohorts",
         "readOnlyHint": True,
         "destructiveHint": False,
         "idempotentHint": True,
     }
 )
-def list_scenarios(params: ListScenariosInput) -> str:
-    """List all saved scenarios in the HealthSim database.
+def list_cohorts(params: ListCohortsInput) -> str:
+    """List all saved cohorts in the HealthSim database.
     
-    Returns scenario names, descriptions, entity counts, and tags.
-    Use this to discover available scenarios before loading them.
+    Returns cohort names, descriptions, entity counts, and tags.
+    Use this to discover available cohorts before loading them.
     
     Returns:
-        JSON list of scenario summaries with: scenario_id, name, description,
+        JSON list of cohort summaries with: scenario_id, name, description,
         created_at, updated_at, entity_count, tags
     """
     manager = _get_manager().get_read_manager()
@@ -671,19 +671,19 @@ def list_scenarios(params: ListScenariosInput) -> str:
 
 
 @mcp.tool(
-    name="healthsim_load_scenario",
+    name="healthsim_load_cohort",
     annotations={
-        "title": "Load HealthSim Scenario",
+        "title": "Load HealthSim Cohort",
         "readOnlyHint": True,
         "destructiveHint": False,
         "idempotentHint": True,
     }
 )
-def load_scenario(params: LoadScenarioInput) -> str:
+def load_cohort(params: LoadCohortInput) -> str:
     """Load a scenario by name or ID.
     
     Returns full scenario data including all entities. For large scenarios,
-    consider using healthsim_get_summary instead for a token-efficient summary.
+    consider using healthsim_get_cohort_summary instead for a token-efficient summary.
     
     Returns:
         JSON with scenario metadata and entities dict
@@ -766,7 +766,7 @@ def query(params: QueryInput) -> str:
 
 
 @mcp.tool(
-    name="healthsim_get_summary",
+    name="healthsim_get_cohort_summary",
     annotations={
         "title": "Get Scenario Summary",
         "readOnlyHint": True,
@@ -933,7 +933,7 @@ def list_tables() -> str:
     Returns table names grouped by category:
     - Reference tables (ref_*): PopulationSim demographic/health data
     - Entity tables: patients, members, encounters, claims, etc.
-    - System tables: scenarios, scenario_entities, schema_migrations
+    - System tables: scenarios, cohort_entities, schema_migrations
     
     Returns:
         JSON with categorized table names
@@ -945,7 +945,7 @@ def list_tables() -> str:
     
     # Categorize
     reference = [t for t in tables if t.startswith("ref_")]
-    system = ["scenarios", "scenario_entities", "scenario_tags", "schema_migrations"]
+    system = ["scenarios", "cohort_entities", "cohort_tags", "schema_migrations"]
     entity = [t for t in tables if t not in reference and t not in system]
     
     return json.dumps({
@@ -1121,15 +1121,15 @@ def search_providers(params: SearchProvidersInput) -> str:
 # =============================================================================
 
 @mcp.tool(
-    name="healthsim_save_scenario",
+    name="healthsim_save_cohort",
     annotations={
-        "title": "Save HealthSim Scenario",
+        "title": "Save HealthSim Cohort",
         "readOnlyHint": False,
         "destructiveHint": False,
         "idempotentHint": False,
     }
 )
-def save_scenario(params: SaveScenarioInput) -> str:
+def save_cohort(params: SaveCohortInput) -> str:
     """Save a scenario to the HealthSim database.
     
     ⚠️  USE healthsim_add_entities INSTEAD when:
@@ -1262,7 +1262,7 @@ def add_entities(params: AddEntitiesInput) -> str:
                 if scenario_name:
                     # Check if scenario exists
                     existing = service.conn.execute(
-                        "SELECT id FROM scenarios WHERE name = ?",
+                        "SELECT id FROM cohorts WHERE name = ?",
                         [scenario_name]
                     ).fetchone()
                     
@@ -1275,7 +1275,7 @@ def add_entities(params: AddEntitiesInput) -> str:
                         now = datetime.utcnow()
                         
                         service.conn.execute("""
-                            INSERT INTO scenarios (id, name, description, created_at, updated_at)
+                            INSERT INTO cohorts (id, name, description, created_at, updated_at)
                             VALUES (?, ?, ?, ?, ?)
                         """, [scenario_id, scenario_name, params.description, now, now])
                         
@@ -1283,8 +1283,8 @@ def add_entities(params: AddEntitiesInput) -> str:
                         if params.tags:
                             for tag in params.tags:
                                 service.conn.execute("""
-                                    INSERT INTO scenario_tags (id, scenario_id, tag)
-                                    VALUES (nextval('scenario_tags_seq'), ?, ?)
+                                    INSERT INTO cohort_tags (id, cohort_id, tag)
+                                    VALUES (nextval('cohort_tags_seq'), ?, ?)
                                 """, [scenario_id, tag.lower()])
                 else:
                     # Auto-generate scenario name
@@ -1294,13 +1294,13 @@ def add_entities(params: AddEntitiesInput) -> str:
                     now = datetime.utcnow()
                     
                     service.conn.execute("""
-                        INSERT INTO scenarios (id, name, description, created_at, updated_at)
+                        INSERT INTO cohorts (id, name, description, created_at, updated_at)
                         VALUES (?, ?, ?, ?, ?)
                     """, [scenario_id, scenario_name, params.description, now, now])
             else:
                 # Verify scenario exists
                 existing = service.conn.execute(
-                    "SELECT name FROM scenarios WHERE id = ?",
+                    "SELECT name FROM cohorts WHERE id = ?",
                     [scenario_id]
                 ).fetchone()
                 
@@ -1309,7 +1309,7 @@ def add_entities(params: AddEntitiesInput) -> str:
                 
                 scenario_name = existing[0]
             
-            # Now add entities to scenario_entities table
+            # Now add entities to cohort_entities table
             entity_counts = {}
             entity_ids_added = {}
             canonical_errors = {}  # Track canonical table insert failures
@@ -1335,27 +1335,27 @@ def add_entities(params: AddEntitiesInput) -> str:
                         str(uuid4())
                     )
                     
-                    # Store as JSON in scenario_entities
+                    # Store as JSON in cohort_entities
                     entity_json = json.dumps(entity, default=str)
                     
                     # Upsert: check if exists, update or insert
                     existing_entity = service.conn.execute("""
-                        SELECT id FROM scenario_entities 
-                        WHERE scenario_id = ? AND entity_type = ? AND entity_id = ?
+                        SELECT id FROM cohort_entities 
+                        WHERE cohort_id = ? AND entity_type = ? AND entity_id = ?
                     """, [scenario_id, entity_type_normalized, entity_id]).fetchone()
                     
                     if existing_entity:
                         # Update existing
                         service.conn.execute("""
-                            UPDATE scenario_entities 
+                            UPDATE cohort_entities 
                             SET entity_data = ?, created_at = ?
-                            WHERE scenario_id = ? AND entity_type = ? AND entity_id = ?
+                            WHERE cohort_id = ? AND entity_type = ? AND entity_id = ?
                         """, [entity_json, datetime.utcnow(), scenario_id, entity_type_normalized, entity_id])
                     else:
                         # Insert new (use sequence for id like core manager does)
                         service.conn.execute("""
-                            INSERT INTO scenario_entities 
-                            VALUES (nextval('scenario_entities_seq'), ?, ?, ?, ?, ?)
+                            INSERT INTO cohort_entities 
+                            VALUES (nextval('cohort_entities_seq'), ?, ?, ?, ?, ?)
                         """, [scenario_id, entity_type_normalized, entity_id, entity_json, datetime.utcnow()])
                     
                     # Also insert into canonical table for query consistency
@@ -1378,14 +1378,14 @@ def add_entities(params: AddEntitiesInput) -> str:
             
             # Update scenario timestamp
             service.conn.execute("""
-                UPDATE scenarios SET updated_at = ? WHERE id = ?
+                UPDATE cohorts SET updated_at = ? WHERE id = ?
             """, [datetime.utcnow(), scenario_id])
             
             # Get total entity count for scenario
             total_result = service.conn.execute("""
                 SELECT entity_type, COUNT(*) as count 
-                FROM scenario_entities 
-                WHERE scenario_id = ? 
+                FROM cohort_entities 
+                WHERE cohort_id = ? 
                 GROUP BY entity_type
             """, [scenario_id]).fetchall()
             
@@ -1409,7 +1409,7 @@ def add_entities(params: AddEntitiesInput) -> str:
         # Include canonical insert errors if any occurred
         if canonical_errors:
             response["canonical_insert_errors"] = canonical_errors
-            response["warning"] = "Some entities failed to insert into canonical tables. They exist in scenario_entities (JSON) but not in queryable tables."
+            response["warning"] = "Some entities failed to insert into canonical tables. They exist in cohort_entities (JSON) but not in queryable tables."
         
         # Add batch info if provided
         if params.batch_number is not None:
@@ -1426,15 +1426,15 @@ def add_entities(params: AddEntitiesInput) -> str:
 
 
 @mcp.tool(
-    name="healthsim_delete_scenario",
+    name="healthsim_delete_cohort",
     annotations={
-        "title": "Delete HealthSim Scenario",
+        "title": "Delete HealthSim Cohort",
         "readOnlyHint": False,
         "destructiveHint": True,
         "idempotentHint": False,
     }
 )
-def delete_scenario(params: DeleteScenarioInput) -> str:
+def delete_cohort(params: DeleteCohortInput) -> str:
     """Delete a scenario from the database.
     
     CAUTION: This permanently removes the scenario and all linked entities.
