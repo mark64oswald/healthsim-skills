@@ -42,9 +42,9 @@ See [hello-healthsim examples](../../hello-healthsim/examples/membersim-examples
 | **Accumulators** | Deductible, OOP tracking | [accumulator-tracking.md](accumulator-tracking.md) |
 | **Value-Based Care** | HEDIS, risk adjustment, HCC | [value-based-care.md](value-based-care.md) |
 
-## Claim Scenarios
+## Claim Cohorts
 
-| Scenario | Key Elements | Skill |
+| Cohort | Key Elements | Skill |
 |----------|--------------|-------|
 | Plan & Benefits | HMO/PPO/HDHP design, cost sharing | [plan-benefits.md](plan-benefits.md) |
 | Professional Claims | Office visits, consults, E&M coding | [professional-claims.md](professional-claims.md) |
@@ -94,7 +94,7 @@ See [SKILL.md](SKILL.md) for full integration details.
 
 For complete generation parameters, examples, and validation rules, see:
 
-- **[SKILL.md](SKILL.md)** - Full skill reference with all scenarios
+- **[SKILL.md](SKILL.md)** - Full skill reference with all cohorts
 - **[../../SKILL.md](../../SKILL.md)** - Master skill file (cross-product routing)
 
 ## Related Documentation

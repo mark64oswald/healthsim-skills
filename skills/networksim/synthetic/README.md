@@ -15,7 +15,7 @@ Skills for generating synthetic healthcare entities (providers, facilities, phar
 
 ## When to Use Synthetic vs Query Skills
 
-| Scenario | Use | Reason |
+| Cohort | Use | Reason |
 |----------|-----|--------|
 | Need a provider for demo | **Synthetic** | Quick, no database required |
 | Find real cardiologists in Houston | **Query** | Need actual NPPES data |

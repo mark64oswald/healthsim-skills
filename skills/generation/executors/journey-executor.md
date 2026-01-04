@@ -119,7 +119,7 @@ Events generated:
 
 Timeline span: 2025-01-15 to 2026-01-14
 
-Save to scenario?"
+Save to cohort?"
 ```
 
 ## Event Generation Details
@@ -317,7 +317,7 @@ Avg events/month:  200
 - **[Journey Builder](../builders/journey-builder.md)** - Build specifications
 - **[Profile Executor](profile-executor.md)** - Execute profiles
 - **[Cross-Domain Sync](cross-domain-sync.md)** - Multi-product coordination
-- **[State Management](../../common/state-management.md)** - Save scenarios
+- **[State Management](../../common/state-management.md)** - Save cohorts
 
 ---
 

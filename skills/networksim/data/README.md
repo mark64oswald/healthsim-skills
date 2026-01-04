@@ -216,7 +216,7 @@ ORDER BY diabetes_rate DESC;
 
 ```bash
 cd /path/to/healthsim-workspace
-pytest scenarios/networksim/tests/test_data_quality.py -v
+pytest cohorts/networksim/tests/test_data_quality.py -v
 ```
 
 ---

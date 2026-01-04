@@ -41,9 +41,9 @@ See [hello-healthsim examples](../../hello-healthsim/examples/rxmembersim-exampl
 | **Accumulators** | Rx deductible, TrOOP, Part D phases | [rx-accumulator.md](rx-accumulator.md) |
 | **Manufacturer Programs** | Copay cards, PAPs, hub programs | [manufacturer-programs.md](manufacturer-programs.md) |
 
-## Pharmacy Scenarios
+## Pharmacy Cohorts
 
-| Scenario | Key Elements | Skill |
+| Cohort | Key Elements | Skill |
 |----------|--------------|-------|
 | Retail Fills | Generic/brand, copays, refills | [retail-pharmacy.md](retail-pharmacy.md) |
 | Specialty Drugs | Limited distribution, prior auth, hub enrollment | [specialty-pharmacy.md](specialty-pharmacy.md) |
@@ -100,7 +100,7 @@ See [SKILL.md](SKILL.md#cross-product-populationsim-integration) for full integr
 
 For complete generation parameters, examples, and validation rules, see:
 
-- **[SKILL.md](SKILL.md)** - Full skill reference with all scenarios
+- **[SKILL.md](SKILL.md)** - Full skill reference with all cohorts
 - **[../../SKILL.md](../../SKILL.md)** - Master skill file (cross-product routing)
 
 ## Related Documentation

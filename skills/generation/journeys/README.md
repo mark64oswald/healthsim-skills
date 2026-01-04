@@ -60,7 +60,7 @@ Cycle 1                 Cycle 2                 Cycle 3
 
 ## When to Use Each Pattern
 
-| Scenario | Recommended Pattern |
+| Cohort | Recommended Pattern |
 |----------|---------------------|
 | Simple follow-up care | Linear |
 | ER or urgent care | Branching |

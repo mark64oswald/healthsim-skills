@@ -3,13 +3,13 @@ name: value-based-care
 description: "Value-based care arrangements including quality measures, HEDIS, risk adjustment, and alternative payment models. Triggers: value-based care, VBC, HEDIS, quality measures, risk adjustment, HCC, ACO, capitation, quality bonus, Stars rating"
 ---
 
-# Value-Based Care Scenario
+# Value-Based Care Cohort
 
-A scenario template for generating value-based care arrangements including quality measures, HEDIS, risk adjustment, and alternative payment models.
+A cohort template for generating value-based care arrangements including quality measures, HEDIS, risk adjustment, and alternative payment models.
 
 ## For Claude
 
-Use this skill when the user requests value-based care or quality measurement scenarios. This teaches you how to generate **realistic VBC arrangements** with quality metrics, risk adjustment, and payment models.
+Use this skill when the user requests value-based care or quality measurement cohorts. This teaches you how to generate **realistic VBC arrangements** with quality metrics, risk adjustment, and payment models.
 
 **When to apply this skill:**
 
@@ -17,7 +17,7 @@ Use this skill when the user requests value-based care or quality measurement sc
 - User requests HEDIS, STARS, or quality reporting
 - User specifies risk adjustment, HCC, or attribution
 - User asks for ACO or alternative payment model examples
-- User needs pay-for-performance scenarios
+- User needs pay-for-performance cohorts
 
 **Key capabilities this skill provides:**
 
@@ -29,7 +29,7 @@ Use this skill when the user requests value-based care or quality measurement sc
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: MemberSim
 - **Tags**: value-based-care, quality, HEDIS, risk-adjustment, payer
@@ -37,7 +37,7 @@ Use this skill when the user requests value-based care or quality measurement sc
 
 ## Purpose
 
-This scenario generates realistic value-based care arrangements. It models quality measurement, risk adjustment, provider attribution, and alternative payment models used in population health management.
+This cohort generates realistic value-based care arrangements. It models quality measurement, risk adjustment, provider attribution, and alternative payment models used in population health management.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "risk adjustment", "HCC", "attribution"
 - "ACO", "APM", "pay for performance"
 
-**VBC Scenarios**:
+**VBC Cohorts**:
 
 - "Generate a quality bonus program"
 - "Create a shared savings model"

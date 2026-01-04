@@ -21,7 +21,7 @@ PopulationSim uses canonical data models to ensure consistent representation of 
 | [PopulationProfile](population-profile-schema.md) | Geographic population characteristics | All geographic skills |
 | [CohortSpecification](cohort-specification-schema.md) | Target population definition | Cohort skills, generation |
 | [DataSourceMapping](data-source-mapping.md) | Source data to model mapping | Reference, validation |
-| [CrossProductIntegration](cross-product-integration.md) | HealthSim product integration | Cross-product scenarios |
+| [CrossProductIntegration](cross-product-integration.md) | HealthSim product integration | Cross-product cohorts |
 
 ---
 

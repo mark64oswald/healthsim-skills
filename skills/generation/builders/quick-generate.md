@@ -25,7 +25,7 @@ Quick Generate provides immediate entity generation using sensible defaults. Use
 |-------------------|---------------------|
 | 1-10 entities | 10+ entities |
 | Ad-hoc testing | Repeatable cohorts |
-| Exploring scenarios | Production data |
+| Exploring cohorts | Production data |
 | Single-entity demos | Statistical distributions |
 
 ## Trigger Phrases
@@ -157,7 +157,7 @@ Tyler:
 
 **30-Day Pharmacy Claims:** 4 fills, total patient pay: $65
 
-Save to scenario or generate claims detail?"
+Save to cohort or generate claims detail?"
 ```
 
 ### Example 4: Trial Subject
@@ -204,7 +204,7 @@ After generation, offer format options:
 2. **FHIR R4** - Patient + Conditions + Observations
 3. **HL7v2** - ADT message
 4. **X12 837** - Claims format
-5. **Save** - Persist to DuckDB scenario
+5. **Save** - Persist to DuckDB cohort
 6. **More** - Generate additional similar entities"
 ```
 
@@ -235,21 +235,21 @@ Quick-generated entities can be saved:
 ```
 User: "Save this patient"
 
-Claude: "Saving to scenario 'ad-hoc-patients'...
+Claude: "Saving to cohort 'ad-hoc-patients'...
 
 ✓ Saved patient MRN00000001 (Maria Santos)
-  - Scenario: ad-hoc-patients
+  - Cohort: ad-hoc-patients
   - Entities: 1 patient, 3 conditions, 2 observations
   
-To load later: 'Load scenario ad-hoc-patients'"
+To load later: 'Load cohort ad-hoc-patients'"
 ```
 
 ## Related Skills
 
 - **[Profile Builder](profile-builder.md)** - Full specification building
-- **[State Management](../../common/state-management.md)** - Save/load scenarios
-- **[PatientSim](../../patientsim/SKILL.md)** - Clinical scenarios
-- **[MemberSim](../../membersim/SKILL.md)** - Claims scenarios
+- **[State Management](../../common/state-management.md)** - Save/load cohorts
+- **[PatientSim](../../patientsim/SKILL.md)** - Clinical cohorts
+- **[MemberSim](../../membersim/SKILL.md)** - Claims cohorts
 
 ---
 

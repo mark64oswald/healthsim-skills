@@ -3,18 +3,18 @@ name: chronic-kidney-disease
 description: "Chronic kidney disease patients across all stages including dialysis and transplant evaluation. Triggers: CKD, kidney disease, renal failure, eGFR, creatinine, dialysis, nephrology, ESRD, transplant"
 ---
 
-# Chronic Kidney Disease Scenario
+# Chronic Kidney Disease Cohort
 
-A scenario template for generating patients with chronic kidney disease across all stages, including dialysis and transplant evaluation.
+A cohort template for generating patients with chronic kidney disease across all stages, including dialysis and transplant evaluation.
 
 ## For Claude
 
-Use this skill when the user requests CKD patient data or nephrology scenarios. This teaches you how to generate **realistic CKD patients** with stage-appropriate lab values, medications, and encounter patterns.
+Use this skill when the user requests CKD patient data or nephrology cohorts. This teaches you how to generate **realistic CKD patients** with stage-appropriate lab values, medications, and encounter patterns.
 
 **When to apply this skill:**
 
 - User mentions CKD, kidney disease, or renal failure
-- User requests eGFR or creatinine-based scenarios
+- User requests eGFR or creatinine-based cohorts
 - User asks for dialysis patient data
 - User needs nephrology encounter examples
 
@@ -27,7 +27,7 @@ Use this skill when the user requests CKD patient data or nephrology scenarios. 
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: ckd, nephrology, dialysis, renal, chronic-disease
@@ -35,7 +35,7 @@ Use this skill when the user requests CKD patient data or nephrology scenarios. 
 
 ## Purpose
 
-This scenario generates realistic chronic kidney disease patients across all stages. It models the complete CKD spectrum from early-stage with proteinuria through end-stage renal disease on dialysis, with appropriate lab patterns, medications, and comorbidities.
+This cohort generates realistic chronic kidney disease patients across all stages. It models the complete CKD spectrum from early-stage with proteinuria through end-stage renal disease on dialysis, with appropriate lab patterns, medications, and comorbidities.
 
 ## When to Use This Skill
 
@@ -48,7 +48,7 @@ Apply this skill when the user's request involves:
 - "dialysis", "hemodialysis", "peritoneal dialysis"
 - "nephrology", "nephrologist"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 
 - "Generate a stage 4 CKD patient"
 - "Create a diabetic nephropathy case"
@@ -80,7 +80,7 @@ Apply this skill when the user's request involves:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, CKD scenarios use real CDC PLACES data:
+When geography is specified, CKD cohorts use real CDC PLACES data:
 
 ### Embedded Data Lookup
 
@@ -400,7 +400,7 @@ Higher SVI areas have:
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [diabetes-management.md](diabetes-management.md) - Diabetic nephropathy

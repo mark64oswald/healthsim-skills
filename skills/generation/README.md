@@ -158,7 +158,7 @@ skills/generation/
 
 - **[PopulationSim](../populationsim/SKILL.md)** - Real-world demographics and SDOH data
 - **[NetworkSim](../networksim/SKILL.md)** - Real provider and facility assignments
-- **[Common: State Management](../common/state-management.md)** - Scenario persistence
+- **[Common: State Management](../common/state-management.md)** - Cohort persistence
 - **[Common: Identity Correlation](../common/identity-correlation.md)** - Cross-product linking
 
 ## Design Documents

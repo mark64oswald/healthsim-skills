@@ -66,7 +66,7 @@ PCP referral → Specialist appointment → Report back to PCP
 - Routine, predictable care sequences
 - Administrative workflows
 - Simple diagnostic pathways
-- Training/tutorial scenarios
+- Training/tutorial cohorts
 
 ---
 
@@ -457,7 +457,7 @@ Lifecycle (overall structure)
 
 ## Pattern Selection Guide
 
-| Scenario | Recommended Pattern |
+| Cohort | Recommended Pattern |
 |----------|---------------------|
 | Simple appointment sequence | Linear |
 | ER visit with uncertain outcome | Branching |

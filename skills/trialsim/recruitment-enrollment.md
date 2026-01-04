@@ -26,7 +26,7 @@ This is an **operational skill** for generating recruitment and enrollment data.
 - Randomization or treatment assignment
 
 **Combine with:**
-- Phase scenario skills for trial-specific I/E criteria
+- Phase cohort skills for trial-specific I/E criteria
 - Therapeutic area skills for indication-specific eligibility
 - PatientSim for source patient demographics
 
@@ -416,7 +416,7 @@ Site Activation: Month 0
 ## Related Skills
 
 - [Clinical Trials Domain](clinical-trials-domain.md) - Core trial concepts
-- [Phase 3 Pivotal](phase3-pivotal.md) - Pivotal trial scenarios with I/E examples
+- [Phase 3 Pivotal](phase3-pivotal.md) - Pivotal trial cohorts with I/E examples
 - [PatientSim](../patientsim/SKILL.md) - Source patient data for screening
 
 ---

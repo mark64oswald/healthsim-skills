@@ -3,9 +3,9 @@ name: acute-otitis-media
 description: "Pediatric ear infections including acute otitis media (AOM) and recurrent ear infections. Triggers: ear infection, otitis media, AOM, amoxicillin child, pediatric ENT, ear tubes, myringotomy, ear pain, pediatric fever"
 ---
 
-# Acute Otitis Media Scenario
+# Acute Otitis Media Cohort
 
-A scenario template for generating pediatric patients with ear infections, including acute otitis media (AOM), otitis media with effusion (OME), and recurrent ear infections.
+A cohort template for generating pediatric patients with ear infections, including acute otitis media (AOM), otitis media with effusion (OME), and recurrent ear infections.
 
 ## For Claude
 
@@ -14,7 +14,7 @@ Use this skill when the user requests pediatric ear infection patients. This tea
 **When to apply this skill:**
 - User mentions ear infection, otitis media, or AOM
 - User requests amoxicillin for a child
-- User asks for pediatric ENT scenarios
+- User asks for pediatric ENT cohorts
 - User needs ear tube (myringotomy) candidates
 - User specifies young children with ear pain or fever
 
@@ -26,7 +26,7 @@ Use this skill when the user requests pediatric ear infection patients. This tea
 - How to handle treatment failures and resistant organisms
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: pediatrics, ENT, infectious-disease, primary-care
@@ -34,7 +34,7 @@ Use this skill when the user requests pediatric ear infection patients. This tea
 
 ## Purpose
 
-This scenario generates realistic pediatric ear infection patients from ages 6 months to 12 years, modeling severity, treatment decisions per AAP guidelines, recurrence patterns, and ENT referral criteria.
+This cohort generates realistic pediatric ear infection patients from ages 6 months to 12 years, modeling severity, treatment decisions per AAP guidelines, recurrence patterns, and ENT referral criteria.
 
 ## When to Use This Skill
 
@@ -47,7 +47,7 @@ Apply this skill when the user's request involves:
 - "ear tubes", "myringotomy", "PE tubes"
 - "middle ear", "tympanic membrane"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate a child with an ear infection"
 - "Create a pediatric patient with recurrent AOM"
 - "Generate a toddler with fever and ear pain"
@@ -65,7 +65,7 @@ Apply this skill when the user's request involves:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, AOM scenarios reflect local demographic and healthcare access patterns:
+When geography is specified, AOM cohorts reflect local demographic and healthcare access patterns:
 
 ### Embedded Data Lookup
 

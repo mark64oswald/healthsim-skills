@@ -3,17 +3,17 @@ name: elective-joint
 description: "Elective total joint arthroplasty (hip/knee replacement) with complete perioperative event sequences. Triggers: joint replacement, hip replacement, knee replacement, arthroplasty, orthopedic surgery, perioperative, POD, post-operative, DVT, surgical"
 ---
 
-# Elective Joint Replacement Scenario - Complete Surgical Event Timelines
+# Elective Joint Replacement Cohort - Complete Surgical Event Timelines
 
-A scenario template for generating patients undergoing elective total joint arthroplasty (hip or knee replacement) **with complete perioperative event sequences** from pre-operative evaluation through surgery, daily post-operative progression (POD 0-3), complications, and discharge planning.
+A cohort template for generating patients undergoing elective total joint arthroplasty (hip or knee replacement) **with complete perioperative event sequences** from pre-operative evaluation through surgery, daily post-operative progression (POD 0-3), complications, and discharge planning.
 
 ## For Claude
 
-Use this skill when the user requests orthopedic surgery patients, specifically total joint replacement scenarios. This teaches you how to generate **realistic surgical event timelines** for perioperative patients across all phases - pre-operative optimization, day of surgery, post-operative recovery with daily progression, rehabilitation milestones, and potential complications.
+Use this skill when the user requests orthopedic surgery patients, specifically total joint replacement cohorts. This teaches you how to generate **realistic surgical event timelines** for perioperative patients across all phases - pre-operative optimization, day of surgery, post-operative recovery with daily progression, rehabilitation milestones, and potential complications.
 
 **When to apply this skill:**
 - User mentions joint replacement, hip/knee replacement, or arthroplasty
-- User requests orthopedic surgery or perioperative scenarios with event timelines
+- User requests orthopedic surgery or perioperative cohorts with event timelines
 - User asks for elective surgery admissions with complete surgical course
 - User specifies POD (post-operative day) patients with progression over time
 - User mentions orthopedic complications (DVT, infection, delirium) and their development
@@ -34,16 +34,16 @@ Use this skill when the user requests orthopedic surgery patients, specifically 
 **Clinical coherence**: Match pain levels to post-op day (POD 0: 6-8/10 → POD 3: 3-5/10), ensure Hgb drop is realistic (typically 2-4 g/dL from blood loss), and include appropriate PT milestones (POD 1: bedside → POD 2: 100 feet → POD 3: stairs). Show **temporal progression** with events occurring in realistic sequence.
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 2.0
 - **Author**: PatientSim
 - **Tags**: orthopedics, surgery, perioperative, rehabilitation
 
 ## Purpose
 
-This scenario generates realistic patients undergoing elective total joint replacement surgery. It models the complete perioperative journey including pre-operative optimization, surgical procedure, post-operative care, rehabilitation, and potential complications.
+This cohort generates realistic patients undergoing elective total joint replacement surgery. It models the complete perioperative journey including pre-operative optimization, surgical procedure, post-operative care, rehabilitation, and potential complications.
 
-The scenario is designed to:
+The cohort is designed to:
 - Simulate realistic elective surgery admissions
 - Model pre-operative medical optimization and clearance
 - Generate appropriate perioperative medication management
@@ -63,7 +63,7 @@ Apply this skill when the user's request involves:
 - "post-op patient", "POD 1", "POD 2" (post-operative day)
 - "elective surgery", "planned surgery"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate a patient for hip replacement"
 - "I need a post-op orthopedic patient"
 - "Create a knee replacement patient on POD 2"
@@ -184,7 +184,7 @@ Joint replacement is **HIGH RISK for venous thromboembolism (VTE)**. Without pro
 4. **Mechanical**: SCDs (sequential compression devices) while in hospital
    - Adjunct to pharmacologic, not replacement
 
-**Why this matters for generation**: NEVER generate a joint replacement patient without DVT prophylaxis. This is a critical safety issue. If generating DVT complication, show patient WAS on prophylaxis (it's not 100% effective). Typical scenario: patient on enoxaparin 40mg daily, develops DVT POD 5-7 at home.
+**Why this matters for generation**: NEVER generate a joint replacement patient without DVT prophylaxis. This is a critical safety issue. If generating DVT complication, show patient WAS on prophylaxis (it's not 100% effective). Typical cohort: patient on enoxaparin 40mg daily, develops DVT POD 5-7 at home.
 
 ### Multimodal Analgesia (Opioid-Sparing Strategy)
 
@@ -260,7 +260,7 @@ medications_to_stop_before_surgery = {
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, joint replacement scenarios use real population data:
+When geography is specified, joint replacement cohorts use real population data:
 
 ### Embedded Data Lookup
 
@@ -521,7 +521,7 @@ Apply to generation:
    ```python
    # Every joint replacement patient needs DVT prophylaxis
 
-   if scenario == "joint_replacement":
+   if cohort == "joint_replacement":
        assert "enoxaparin" in medications or "rivaroxaban" in medications or "aspirin 325mg" in medications
 
        # If NO prophylaxis listed, this is an error - joint replacement is HIGH RISK
@@ -1507,7 +1507,7 @@ Low-risk patient selected for outpatient arthroplasty program.
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [adt-workflow.md](adt-workflow.md) - Admission/transfer workflows

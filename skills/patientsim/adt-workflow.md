@@ -3,9 +3,9 @@ name: adt-workflow
 description: "Admit/Discharge/Transfer events following HL7v2 ADT messaging patterns. Triggers: ADT, admission, discharge, transfer, patient movement, census, inpatient workflow, A01, A02, A03, bed management"
 ---
 
-# ADT Workflow Scenario
+# ADT Workflow Cohort
 
-A scenario template for generating Admit/Discharge/Transfer events following HL7v2 ADT messaging patterns.
+A cohort template for generating Admit/Discharge/Transfer events following HL7v2 ADT messaging patterns.
 
 ## For Claude
 
@@ -27,7 +27,7 @@ Use this skill when the user requests ADT events or patient movement workflows. 
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: adt, admission, discharge, transfer, hl7v2, inpatient
@@ -35,7 +35,7 @@ Use this skill when the user requests ADT events or patient movement workflows. 
 
 ## Purpose
 
-This scenario generates realistic Admit/Discharge/Transfer events for patient movement tracking. It supports the complete ADT lifecycle from registration through discharge with proper location coding and event sequencing.
+This cohort generates realistic Admit/Discharge/Transfer events for patient movement tracking. It supports the complete ADT lifecycle from registration through discharge with proper location coding and event sequencing.
 
 ## When to Use This Skill
 
@@ -48,7 +48,7 @@ Apply this skill when the user's request involves:
 - "patient movement", "census", "bed management"
 - "inpatient workflow"
 
-**Workflow Scenarios**:
+**Workflow Cohorts**:
 
 - "Generate an admission for chest pain"
 - "Create a complete inpatient stay with transfers"
@@ -83,7 +83,7 @@ Apply this skill when the user's request involves:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, ADT scenarios use real population data for demographics and utilization patterns:
+When geography is specified, ADT cohorts use real population data for demographics and utilization patterns:
 
 ### Embedded Data Lookup
 

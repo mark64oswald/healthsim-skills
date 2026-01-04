@@ -54,7 +54,7 @@ Each pattern provides:
 - Example complete configurations
 - Validation checklists
 
-### 3. Customize for Scenario
+### 3. Customize for Cohort
 
 Modify pattern parameters for your specific:
 - Geographic market

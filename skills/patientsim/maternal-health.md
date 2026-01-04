@@ -3,18 +3,18 @@ name: maternal-health
 description: "Obstetric patients across pregnancy phases - prenatal care, labor and delivery, postpartum. Triggers: pregnancy, prenatal, obstetric, gestational diabetes, preeclampsia, labor, delivery, postpartum, OB, maternal"
 ---
 
-# Maternal Health Scenario
+# Maternal Health Cohort
 
-A scenario template for generating obstetric patients across pregnancy phases including prenatal care, labor and delivery, and postpartum follow-up.
+A cohort template for generating obstetric patients across pregnancy phases including prenatal care, labor and delivery, and postpartum follow-up.
 
 ## For Claude
 
-Use this skill when the user requests pregnancy or obstetric patient data. This teaches you how to generate **realistic maternal health scenarios** with appropriate prenatal visits, complications, and delivery outcomes.
+Use this skill when the user requests pregnancy or obstetric patient data. This teaches you how to generate **realistic maternal health cohorts** with appropriate prenatal visits, complications, and delivery outcomes.
 
 **When to apply this skill:**
 
 - User mentions pregnancy, prenatal, or obstetric care
-- User requests gestational diabetes or preeclampsia scenarios
+- User requests gestational diabetes or preeclampsia cohorts
 - User asks for labor and delivery data
 - User needs postpartum encounter examples
 
@@ -27,7 +27,7 @@ Use this skill when the user requests pregnancy or obstetric patient data. This 
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: obstetrics, pregnancy, prenatal, maternal-health, labor-delivery
@@ -35,7 +35,7 @@ Use this skill when the user requests pregnancy or obstetric patient data. This 
 
 ## Purpose
 
-This scenario generates realistic obstetric patient data across all phases of pregnancy. It supports prenatal visit schedules, pregnancy complications, labor and delivery events, and postpartum follow-up with appropriate clinical documentation.
+This cohort generates realistic obstetric patient data across all phases of pregnancy. It supports prenatal visit schedules, pregnancy complications, labor and delivery events, and postpartum follow-up with appropriate clinical documentation.
 
 ## When to Use This Skill
 
@@ -48,7 +48,7 @@ Apply this skill when the user's request involves:
 - "labor and delivery", "cesarean", "postpartum"
 - "gravida", "para", "trimester"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 
 - "Generate a 28-week prenatal visit"
 - "Create a gestational diabetes case with insulin"
@@ -86,7 +86,7 @@ Apply this skill when the user's request involves:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, maternal health scenarios use real population data:
+When geography is specified, maternal health cohorts use real population data:
 
 ### Embedded Data Lookup
 
@@ -299,9 +299,9 @@ Impact on maternal health:
 | RhoGAM | 300 mcg IM | Rh-negative mother |
 | Sertraline | 50-200 mg daily | Postpartum depression |
 
-## Clinical Scenarios
+## Clinical Cohorts
 
-### Scenario 1: Uncomplicated Prenatal Visit
+### Cohort 1: Uncomplicated Prenatal Visit
 
 **Request:** "Generate a 28-week prenatal visit for a healthy primigravida"
 
@@ -355,7 +355,7 @@ Impact on maternal health:
 }
 ```
 
-### Scenario 2: Gestational Diabetes Management
+### Cohort 2: Gestational Diabetes Management
 
 **Request:** "Generate a patient with gestational diabetes on insulin"
 
@@ -417,7 +417,7 @@ Impact on maternal health:
 }
 ```
 
-### Scenario 3: Severe Preeclampsia Admission
+### Cohort 3: Severe Preeclampsia Admission
 
 **Request:** "Generate a patient admitted with severe preeclampsia at 34 weeks"
 
@@ -484,7 +484,7 @@ Impact on maternal health:
 }
 ```
 
-### Scenario 4: Postpartum Visit
+### Cohort 4: Postpartum Visit
 
 **Request:** "Generate a 6-week postpartum visit after uncomplicated vaginal delivery"
 
@@ -571,7 +571,7 @@ Impact on maternal health:
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [diabetes-management.md](diabetes-management.md) - Pre-existing diabetes in pregnancy

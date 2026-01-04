@@ -3,19 +3,19 @@ name: behavioral-health
 description: "Mental health and substance use disorders - depression, anxiety, bipolar, PTSD, SUD. Triggers: depression, anxiety, bipolar, PTSD, mental health, psychiatric, antidepressants, mood stabilizers, substance use, addiction, therapy, PHQ-9, GAD-7"
 ---
 
-# Behavioral Health Clinical Scenario
+# Behavioral Health Clinical Cohort
 
-A scenario template for generating patients with mental health and substance use disorders, including depression, anxiety, bipolar disorder, PTSD, and substance use disorders.
+A cohort template for generating patients with mental health and substance use disorders, including depression, anxiety, bipolar disorder, PTSD, and substance use disorders.
 
 ## For Claude
 
-Use this skill when the user requests behavioral health patients or mental health clinical scenarios. This teaches you how to generate **realistic clinical presentations** for psychiatric conditions across the spectrum from mild anxiety to complex multi-diagnosis patients.
+Use this skill when the user requests behavioral health patients or mental health clinical cohorts. This teaches you how to generate **realistic clinical presentations** for psychiatric conditions across the spectrum from mild anxiety to complex multi-diagnosis patients.
 
 **When to apply this skill:**
 - User mentions depression, anxiety, bipolar, PTSD, or mental health
-- User requests psychiatric patient data or behavioral health scenarios
+- User requests psychiatric patient data or behavioral health cohorts
 - User specifies antidepressants, mood stabilizers, or psychiatric medications
-- User asks for substance use disorder or addiction scenarios
+- User asks for substance use disorder or addiction cohorts
 - User needs therapy or counseling visit documentation
 - User mentions PHQ-9, GAD-7, or other psychiatric screening tools
 
@@ -28,7 +28,7 @@ Use this skill when the user requests behavioral health patients or mental healt
 - How to handle comorbid psychiatric conditions
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: behavioral-health, psychiatry, mental-health, substance-use, primary-care
@@ -36,7 +36,7 @@ Use this skill when the user requests behavioral health patients or mental healt
 
 ## Purpose
 
-This scenario generates realistic behavioral health patients across the spectrum of psychiatric conditions. It models clinical presentations, symptom severity, treatment response, and comorbidity patterns for depression, anxiety, bipolar disorder, PTSD, and substance use disorders.
+This cohort generates realistic behavioral health patients across the spectrum of psychiatric conditions. It models clinical presentations, symptom severity, treatment response, and comorbidity patterns for depression, anxiety, bipolar disorder, PTSD, and substance use disorders.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "substance abuse", "SUD", "addiction", "alcohol use"
 - "mental health", "psychiatric", "behavioral health"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate a patient with depression"
 - "Create a patient with anxiety and insomnia"
 - "Generate a patient in recovery from opioid use"
@@ -79,7 +79,7 @@ When generating behavioral health patients:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, behavioral health scenarios use real CDC PLACES data:
+When geography is specified, behavioral health cohorts use real CDC PLACES data:
 
 ### Embedded Data Lookup
 

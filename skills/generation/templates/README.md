@@ -1,6 +1,6 @@
 # Templates
 
-Pre-built profiles and journeys for common healthcare scenarios.
+Pre-built profiles and journeys for common healthcare cohorts.
 
 ## Overview
 

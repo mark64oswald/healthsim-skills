@@ -3,13 +3,13 @@ name: plan-benefits
 description: "Health plan benefit structures including HMO, PPO, HDHP with cost-sharing configurations. Triggers: plan, benefit plan, plan design, HMO, PPO, HDHP, copay structure, deductible, plan configuration, cost sharing"
 ---
 
-# Plan & Benefits Configuration Scenario
+# Plan & Benefits Configuration Cohort
 
-A scenario template for generating health plan benefit structures including HMO, PPO, HDHP, and other plan types with cost-sharing configurations.
+A cohort template for generating health plan benefit structures including HMO, PPO, HDHP, and other plan types with cost-sharing configurations.
 
 ## For Claude
 
-Use this skill when the user requests plan design or benefit configuration scenarios. This teaches you how to generate **realistic plan structures** with appropriate cost-sharing, network tiers, and coverage limits.
+Use this skill when the user requests plan design or benefit configuration cohorts. This teaches you how to generate **realistic plan structures** with appropriate cost-sharing, network tiers, and coverage limits.
 
 **When to apply this skill:**
 
@@ -29,7 +29,7 @@ Use this skill when the user requests plan design or benefit configuration scena
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: MemberSim
 - **Tags**: plan-design, benefits, payer, configuration
@@ -37,7 +37,7 @@ Use this skill when the user requests plan design or benefit configuration scena
 
 ## Purpose
 
-This scenario generates realistic health plan benefit configurations. It models complete plan structures with cost-sharing, network rules, and coverage limits appropriate to each plan type.
+This cohort generates realistic health plan benefit configurations. It models complete plan structures with cost-sharing, network rules, and coverage limits appropriate to each plan type.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "copay structure", "deductible structure"
 - "cost sharing", "network tier"
 
-**Plan Scenarios**:
+**Plan Cohorts**:
 
 - "Generate an HMO plan configuration"
 - "Create an HDHP with HSA"

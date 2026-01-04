@@ -1,6 +1,6 @@
 # Profile Templates
 
-Pre-built population profiles for common healthcare scenarios.
+Pre-built population profiles for common healthcare cohorts.
 
 ## Available Templates
 

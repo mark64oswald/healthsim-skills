@@ -4,7 +4,7 @@
 
 ## What NetworkSim Does
 
-NetworkSim is the **provider network** component of HealthSim. Its primary function is providing access to **real reference data**—8.9 million US healthcare providers from the NPPES registry stored in DuckDB. This real data grounds HealthSim scenarios in actual provider information.
+NetworkSim is the **provider network** component of HealthSim. Its primary function is providing access to **real reference data**—8.9 million US healthcare providers from the NPPES registry stored in DuckDB. This real data grounds HealthSim cohorts in actual provider information.
 
 When real data isn't appropriate (demos, tutorials, testing), NetworkSim can also generate synthetic providers with valid-format NPIs.
 
@@ -12,7 +12,7 @@ When real data isn't appropriate (demos, tutorials, testing), NetworkSim can als
 
 | Capability | Description | Primary Use |
 |------------|-------------|-------------|
-| **Real Provider Queries** | Search 8.9M providers by specialty, location, credentials | Production scenarios, validation |
+| **Real Provider Queries** | Search 8.9M providers by specialty, location, credentials | Production cohorts, validation |
 | **Geographic Analysis** | Provider distribution by county, state, metro area | Network adequacy, planning |
 | **Facility Lookup** | Find hospitals, ASCs, clinics with quality metrics | Care coordination, referrals |
 | **Synthetic Generation** | Create test providers when real data isn't needed | Demos, tutorials, testing |
@@ -123,7 +123,7 @@ WHERE p.state = 'TX' AND h.overall_rating >= 4;
 
 ### Use Real Data (Primary Use Case)
 
-- **Production scenarios** - Ground synthetic patients in real provider networks
+- **Production cohorts** - Ground synthetic patients in real provider networks
 - **Validation** - Verify NPIs exist and have correct specialties
 - **Analysis** - Understand provider distribution, network adequacy
 - **Integration testing** - Use real NPIs for realistic claim and encounter data
@@ -133,7 +133,7 @@ WHERE p.state = 'TX' AND h.overall_rating >= 4;
 
 - **Tutorials and demos** - When you don't want to reference real providers
 - **Training materials** - Avoid any connection to actual practitioners
-- **Reproducible scenarios** - Same synthetic provider every time
+- **Reproducible cohorts** - Same synthetic provider every time
 - **Specialized testing** - Need exact credentials or characteristics
 
 ## Synthetic Generation

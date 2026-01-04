@@ -42,7 +42,7 @@ See [hello-healthsim examples](../../hello-healthsim/examples/trialsim-examples.
 | **Therapeutic Areas** | Oncology, CV, CNS, CGT | [therapeutic-areas/](therapeutic-areas/) |
 | **Real World Evidence** | Synthetic controls, external comparators | [rwe/](rwe/) |
 
-## Trial Phase Scenarios
+## Trial Phase Cohorts
 
 | Phase | Key Elements | Skill |
 |-------|--------------|-------|
@@ -102,7 +102,7 @@ See [SKILL.md](SKILL.md#cross-product-populationsim-integration) for full integr
 
 For complete generation parameters, examples, and validation rules, see:
 
-- **[SKILL.md](SKILL.md)** - Full skill reference with all scenarios
+- **[SKILL.md](SKILL.md)** - Full skill reference with all cohorts
 - **[../../SKILL.md](../../SKILL.md)** - Master skill file (cross-product routing)
 - **[domains/README.md](domains/README.md)** - SDTM domain overview
 

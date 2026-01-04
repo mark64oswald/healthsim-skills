@@ -3,13 +3,13 @@ name: behavioral-health-claims
 description: "Behavioral health professional claims including psychotherapy, psychiatric evaluation, and SUD treatment. Triggers: behavioral health claim, mental health claim, psychotherapy, psychiatry billing, substance abuse, SUD, therapy session, PHP, IOP"
 ---
 
-# Behavioral Health Claims Scenario
+# Behavioral Health Claims Cohort
 
-A scenario template for generating behavioral health professional claims including psychotherapy, psychiatric evaluation, and substance use disorder treatment.
+A cohort template for generating behavioral health professional claims including psychotherapy, psychiatric evaluation, and substance use disorder treatment.
 
 ## For Claude
 
-Use this skill when the user requests behavioral health claims or mental health billing scenarios. This teaches you how to generate **realistic behavioral health claims** with appropriate CPT codes, session lengths, and provider types.
+Use this skill when the user requests behavioral health claims or mental health billing cohorts. This teaches you how to generate **realistic behavioral health claims** with appropriate CPT codes, session lengths, and provider types.
 
 **When to apply this skill:**
 
@@ -29,7 +29,7 @@ Use this skill when the user requests behavioral health claims or mental health 
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: MemberSim
 - **Tags**: behavioral-health, mental-health, claims, payer, psychiatry
@@ -37,7 +37,7 @@ Use this skill when the user requests behavioral health claims or mental health 
 
 ## Purpose
 
-This scenario generates realistic behavioral health professional claims. It models psychotherapy, psychiatric evaluation, medication management, and substance use treatment with appropriate coding and adjudication.
+This cohort generates realistic behavioral health professional claims. It models psychotherapy, psychiatric evaluation, medication management, and substance use treatment with appropriate coding and adjudication.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "substance abuse claim", "SUD claim"
 - "therapy claim", "counseling claim"
 
-**Claim Scenarios**:
+**Claim Cohorts**:
 
 - "Generate a psychotherapy claim"
 - "Create a psychiatric evaluation claim"
@@ -469,7 +469,7 @@ Common parity-related denial review triggers:
 
 ## Related Skills
 
-### MemberSim Scenarios
+### MemberSim Cohorts
 
 - [SKILL.md](SKILL.md) - MemberSim overview
 - [professional-claims.md](professional-claims.md) - General professional claims

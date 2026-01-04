@@ -3,33 +3,33 @@ name: dur-alerts
 description: "Drug Utilization Review alerts including drug interactions, therapeutic duplication, early refill rejections, and clinical edits. Triggers: DUR, drug interaction, DDI, therapeutic duplication, early refill, clinical alert, drug-drug interaction, contraindication"
 ---
 
-# Drug Utilization Review (DUR) Alerts Scenario
+# Drug Utilization Review (DUR) Alerts Cohort
 
-A scenario template for generating DUR alerts including drug interactions, therapeutic duplication, and early refill rejections.
+A cohort template for generating DUR alerts including drug interactions, therapeutic duplication, and early refill rejections.
 
 ## For Claude
 
-Use this skill when the user requests DUR alert or drug interaction scenarios. This teaches you how to generate **realistic clinical edit alerts** with appropriate severity levels and pharmacist responses.
+Use this skill when the user requests DUR alert or drug interaction cohorts. This teaches you how to generate **realistic clinical edit alerts** with appropriate severity levels and pharmacist responses.
 
 **When to apply this skill:**
 
 - User mentions DUR or drug utilization review
-- User requests drug interaction or duplication scenarios
+- User requests drug interaction or duplication cohorts
 - User specifies early refill or refill too soon
 - User asks for clinical alert examples
-- User needs prospective DUR scenarios
+- User needs prospective DUR cohorts
 
 **Key capabilities this skill provides:**
 
 - How to structure DUR alert codes and messages
 - How to model drug-drug interaction severity levels
 - How to handle pharmacist professional service codes
-- How to generate override and rejection scenarios
+- How to generate override and rejection cohorts
 - How to document result of service codes
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: RxMemberSim
 - **Tags**: pharmacy, DUR, drug-interaction, clinical-edit, PBM
@@ -37,7 +37,7 @@ Use this skill when the user requests DUR alert or drug interaction scenarios. T
 
 ## Purpose
 
-This scenario generates realistic drug utilization review alerts. It models prospective DUR checks including drug interactions, therapeutic duplication, dose alerts, and pharmacist intervention documentation.
+This cohort generates realistic drug utilization review alerts. It models prospective DUR checks including drug interactions, therapeutic duplication, dose alerts, and pharmacist intervention documentation.
 
 ## When to Use This Skill
 
@@ -50,11 +50,11 @@ Apply this skill when the user's request involves:
 - "therapeutic duplication", "early refill"
 - "high dose", "contraindication"
 
-**DUR Scenarios**:
+**DUR Cohorts**:
 
 - "Generate a drug interaction alert"
 - "Create an early refill rejection"
-- "Generate a DUR override scenario"
+- "Generate a DUR override cohort"
 
 ## Trigger Phrases
 
@@ -261,12 +261,12 @@ Apply this skill when the user's request involves:
 }
 ```
 
-### Early Refill Scenarios
+### Early Refill Cohorts
 ```json
 {
-  "scenarios": [
+  "cohorts": [
     {
-      "scenario": "maintenance_medication",
+      "cohort": "maintenance_medication",
       "previous_fill": "2025-01-01",
       "days_supply": 30,
       "attempt_date": "2025-01-22",
@@ -279,7 +279,7 @@ Apply this skill when the user's request involves:
       "message": "Refill too soon. 70% of supply used. Eligible on 01/25/2025."
     },
     {
-      "scenario": "vacation_override",
+      "cohort": "vacation_override",
       "previous_fill": "2025-01-01",
       "days_supply": 30,
       "attempt_date": "2025-01-20",

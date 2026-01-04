@@ -3,18 +3,18 @@ name: accumulator-tracking
 description: "Member benefit accumulators including deductibles, out-of-pocket maximums, and cost-sharing tracking. Triggers: deductible, out-of-pocket, OOP, accumulator, cost-sharing, MOOP, coinsurance, member responsibility, year-to-date"
 ---
 
-# Accumulator Tracking Scenario
+# Accumulator Tracking Cohort
 
-A scenario template for generating member benefit accumulators including deductibles, out-of-pocket maximums, and cost-sharing tracking.
+A cohort template for generating member benefit accumulators including deductibles, out-of-pocket maximums, and cost-sharing tracking.
 
 ## For Claude
 
-Use this skill when the user requests accumulator or cost-sharing scenarios. This teaches you how to generate **realistic accumulator states** across plan years with proper application to claims.
+Use this skill when the user requests accumulator or cost-sharing cohorts. This teaches you how to generate **realistic accumulator states** across plan years with proper application to claims.
 
 **When to apply this skill:**
 
 - User mentions deductible, out-of-pocket, or OOP
-- User requests accumulator or cost-sharing scenarios
+- User requests accumulator or cost-sharing cohorts
 - User specifies MOOP, coinsurance, or member responsibility
 - User asks for year-to-date benefit tracking
 - User needs accumulator application examples
@@ -29,7 +29,7 @@ Use this skill when the user requests accumulator or cost-sharing scenarios. Thi
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: MemberSim
 - **Tags**: accumulators, deductible, oop, cost-sharing, payer
@@ -37,7 +37,7 @@ Use this skill when the user requests accumulator or cost-sharing scenarios. Thi
 
 ## Purpose
 
-This scenario generates realistic member benefit accumulator states. It models deductible and OOP tracking across a plan year, proper application to claims, and the interaction between individual and family limits.
+This cohort generates realistic member benefit accumulator states. It models deductible and OOP tracking across a plan year, proper application to claims, and the interaction between individual and family limits.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "cost sharing", "coinsurance"
 - "member responsibility", "YTD"
 
-**Accumulator Scenarios**:
+**Accumulator Cohorts**:
 
 - "Generate a member with partially met deductible"
 - "Create an accumulator state near OOP max"

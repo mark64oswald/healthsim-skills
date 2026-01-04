@@ -392,7 +392,7 @@ HMO and PPO represent opposite ends of the cost-flexibility spectrum:
 
 **Key Tradeoff**: HMOs offer lower costs in exchange for less flexibility. PPOs offer more choice but at higher premiums and cost sharing.
 
-**Example Scenario**:
+**Example Cohort**:
 - Sarah is healthy, lives near a good HMO network, and wants to minimize costs → **HMO**
 - John travels frequently, has established specialists, and values flexibility → **PPO**
 

@@ -3,7 +3,7 @@ name: networksim-prompt-guide
 description: |
   Example prompts for using NetworkSim skills effectively. Templates for
   network reference, provider generation, facility generation, pharmacy
-  generation, and cross-product integration scenarios.
+  generation, and cross-product integration cohorts.
 ---
 
 # NetworkSim Prompt Guide
@@ -16,7 +16,7 @@ This guide provides example prompts for using NetworkSim skills effectively. Use
 1. Reference Knowledge Prompts - Learn concepts
 2. Synthetic Generation Prompts - Create entities
 3. Cross-Product Integration Prompts - Enhance other products
-4. Advanced Prompts - Complex scenarios
+4. Advanced Prompts - Complex cohorts
 
 ---
 
@@ -318,7 +318,7 @@ Generate a hospitalist group for a 400-bed hospital
 ```
 **Expected**: Hospitalist group (207RH0002X), appropriate staffing ratio
 
-**Advanced Provider Scenarios**:
+**Advanced Provider Cohorts**:
 ```
 Generate a telemedicine provider licensed in multiple states
 ```
@@ -739,7 +739,7 @@ Identify essential community provider gaps in this network
 ```
 **Expected**: ECP percentage, missing providers, compliance status
 
-### Complex Scenarios
+### Complex Cohorts
 
 ```
 Generate a specialty pharmacy network for a PBM covering all 50 states

@@ -3,9 +3,9 @@ name: sepsis-acute-care
 description: "Sepsis patients across severity levels with SEP-1 bundle compliance and ICU care patterns. Triggers: sepsis, septic shock, SIRS, critical care, ICU, bacteremia, bloodstream infection, acute care, qSOFA"
 ---
 
-# Sepsis and Acute Care Scenario
+# Sepsis and Acute Care Cohort
 
-A scenario template for generating sepsis patients across severity levels with SEP-1 bundle compliance and ICU-level care patterns.
+A cohort template for generating sepsis patients across severity levels with SEP-1 bundle compliance and ICU-level care patterns.
 
 ## For Claude
 
@@ -14,7 +14,7 @@ Use this skill when the user requests sepsis or critical care patient data. This
 **When to apply this skill:**
 
 - User mentions sepsis, septic shock, or SIRS
-- User requests critical care or ICU scenarios
+- User requests critical care or ICU cohorts
 - User asks for bacteremia or bloodstream infection data
 - User needs acute care encounter examples
 
@@ -27,7 +27,7 @@ Use this skill when the user requests sepsis or critical care patient data. This
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: sepsis, critical-care, icu, acute-care, infection
@@ -35,7 +35,7 @@ Use this skill when the user requests sepsis or critical care patient data. This
 
 ## Purpose
 
-This scenario generates realistic sepsis patients across the severity spectrum. It implements Sepsis-3 definitions, SOFA scoring, and SEP-1 quality measure bundle compliance with appropriate vital signs, lab abnormalities, and treatment patterns.
+This cohort generates realistic sepsis patients across the severity spectrum. It implements Sepsis-3 definitions, SOFA scoring, and SEP-1 quality measure bundle compliance with appropriate vital signs, lab abnormalities, and treatment patterns.
 
 ## When to Use This Skill
 
@@ -48,7 +48,7 @@ Apply this skill when the user's request involves:
 - "ICU admission", "critical care"
 - "SEP-1", "sepsis bundle"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 
 - "Generate a septic shock patient from pneumonia"
 - "Create a urosepsis case requiring ICU"
@@ -80,7 +80,7 @@ Apply this skill when the user's request involves:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, sepsis scenarios use real population health data:
+When geography is specified, sepsis cohorts use real population health data:
 
 ### Embedded Data Lookup
 
@@ -452,7 +452,7 @@ For quality measure compliance, ensure:
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [adt-workflow.md](adt-workflow.md) - Admission/transfer to ICU
 - [orders-results.md](orders-results.md) - Lab ordering for sepsis workup

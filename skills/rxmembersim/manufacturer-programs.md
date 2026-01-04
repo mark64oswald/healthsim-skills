@@ -3,13 +3,13 @@ name: manufacturer-programs
 description: "Manufacturer assistance programs including copay cards, patient assistance programs, and hub services. Triggers: copay card, copay assistance, PAP, patient assistance, manufacturer program, hub services, free drug program, accumulator adjustment"
 ---
 
-# Manufacturer Programs Scenario
+# Manufacturer Programs Cohort
 
-A scenario template for generating manufacturer assistance programs including copay cards, patient assistance programs, and hub services.
+A cohort template for generating manufacturer assistance programs including copay cards, patient assistance programs, and hub services.
 
 ## For Claude
 
-Use this skill when the user requests manufacturer program or copay assistance scenarios. This teaches you how to generate **realistic patient support programs** with copay cards, PAPs, and accumulator adjustment policies.
+Use this skill when the user requests manufacturer program or copay assistance cohorts. This teaches you how to generate **realistic patient support programs** with copay cards, PAPs, and accumulator adjustment policies.
 
 **When to apply this skill:**
 
@@ -17,7 +17,7 @@ Use this skill when the user requests manufacturer program or copay assistance s
 - User requests patient assistance program or PAP
 - User specifies copay coupon or copay accumulator
 - User asks for hub program or bridge program examples
-- User needs foundation assistance scenarios
+- User needs foundation assistance cohorts
 
 **Key capabilities this skill provides:**
 
@@ -25,11 +25,11 @@ Use this skill when the user requests manufacturer program or copay assistance s
 - How to model patient assistance eligibility criteria
 - How to handle accumulator adjustment programs
 - How to integrate hub services with specialty fills
-- How to generate manufacturer rebate scenarios
+- How to generate manufacturer rebate cohorts
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: RxMemberSim
 - **Tags**: pharmacy, manufacturer, copay-card, PAP, hub-services
@@ -37,7 +37,7 @@ Use this skill when the user requests manufacturer program or copay assistance s
 
 ## Purpose
 
-This scenario generates realistic manufacturer assistance programs. It models copay cards, patient assistance programs, foundation grants, and hub services that support patient access to medications.
+This cohort generates realistic manufacturer assistance programs. It models copay cards, patient assistance programs, foundation grants, and hub services that support patient access to medications.
 
 ## When to Use This Skill
 
@@ -50,11 +50,11 @@ Apply this skill when the user's request involves:
 - "copay coupon", "copay accumulator"
 - "hub program", "bridge program"
 
-**Program Scenarios**:
+**Program Cohorts**:
 
 - "Generate a copay card enrollment"
 - "Create a PAP eligibility check"
-- "Generate an accumulator adjustment scenario"
+- "Generate an accumulator adjustment cohort"
 
 ## Trigger Phrases
 
@@ -368,7 +368,7 @@ Some health plans exclude manufacturer copay assistance from counting toward ded
     "policy_type": "accumulator_adjustment",
     "description": "Copay card payments do not count toward deductible or OOP max",
     "impact_on_patient": {
-      "scenario": "Patient on $6000 brand drug with $500 copay",
+      "cohort": "Patient on $6000 brand drug with $500 copay",
       "without_accumulator": {
         "copay_card_pays": 500.00,
         "counts_toward_deductible": 500.00,
@@ -758,11 +758,11 @@ Maximizers coordinate manufacturer assistance to ensure patient costs count towa
 }
 ```
 
-### Example 6: Accumulator Impact Scenario
+### Example 6: Accumulator Impact Cohort
 
 ```json
 {
-  "accumulator_scenario": {
+  "accumulator_cohort": {
     "patient": {
       "name": "David Park",
       "plan_type": "HDHP with accumulator policy"

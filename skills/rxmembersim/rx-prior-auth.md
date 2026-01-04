@@ -3,13 +3,13 @@ name: rx-prior-auth
 description: "Pharmacy prior authorization requests including clinical PA, step therapy overrides, formulary exceptions, and ePA transactions. Triggers: pharmacy PA, prior authorization, step therapy, formulary exception, ePA, clinical criteria, PA denial, PA approval"
 ---
 
-# Pharmacy Prior Authorization Scenario
+# Pharmacy Prior Authorization Cohort
 
-A scenario template for generating pharmacy prior authorization requests including clinical PA, step therapy overrides, and formulary exceptions.
+A cohort template for generating pharmacy prior authorization requests including clinical PA, step therapy overrides, and formulary exceptions.
 
 ## For Claude
 
-Use this skill when the user requests pharmacy prior authorization scenarios. This teaches you how to generate **realistic pharmacy PA workflows** with clinical criteria, ePA transactions, and decision outcomes.
+Use this skill when the user requests pharmacy prior authorization cohorts. This teaches you how to generate **realistic pharmacy PA workflows** with clinical criteria, ePA transactions, and decision outcomes.
 
 **When to apply this skill:**
 
@@ -17,7 +17,7 @@ Use this skill when the user requests pharmacy prior authorization scenarios. Th
 - User requests step therapy or formulary exception
 - User specifies quantity limit override or age edit
 - User asks for PA approval/denial examples
-- User needs ePA transaction scenarios
+- User needs ePA transaction cohorts
 
 **Key capabilities this skill provides:**
 
@@ -29,7 +29,7 @@ Use this skill when the user requests pharmacy prior authorization scenarios. Th
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: RxMemberSim
 - **Tags**: pharmacy, prior-auth, step-therapy, ePA, PBM
@@ -37,7 +37,7 @@ Use this skill when the user requests pharmacy prior authorization scenarios. Th
 
 ## Purpose
 
-This scenario generates realistic pharmacy prior authorization workflows. It models clinical PA, step therapy, formulary exceptions, and quantity limit overrides with appropriate clinical criteria and decision rationale.
+This cohort generates realistic pharmacy prior authorization workflows. It models clinical PA, step therapy, formulary exceptions, and quantity limit overrides with appropriate clinical criteria and decision rationale.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "step therapy", "formulary exception"
 - "quantity limit override", "PA required"
 
-**PA Scenarios**:
+**PA Cohorts**:
 
 - "Generate a pharmacy PA request"
 - "Create a step therapy override"

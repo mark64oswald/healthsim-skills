@@ -6,23 +6,23 @@ Cross-product skills that apply to all HealthSim products. These skills handle i
 
 | Skill | Use When | Key Features |
 |-------|----------|--------------|
-| [State Management](state-management.md) | Saving/loading scenarios | DuckDB persistence, scenario naming, tags |
+| [State Management](state-management.md) | Saving/loading cohorts | DuckDB persistence, cohort naming, tags |
 | [DuckDB Skill](duckdb-skill.md) | Database queries and operations | SQL queries, schema management |
 | [Identity Correlation](identity-correlation.md) | Linking entities across products | SSN correlation, Person↔Patient/Member/Subject |
 
 ## State Management
 
-The state management skill handles scenario persistence across all HealthSim products:
+The state management skill handles cohort persistence across all HealthSim products:
 
 ```
-Save this scenario as "diabetes-cohort-jan-2025"
-Load scenario "test-population"
-List all scenarios
-Get summary for the current scenario
+Save this cohort as "diabetes-cohort-jan-2025"
+Load cohort "test-population"
+List all cohorts
+Get summary for the current cohort
 ```
 
 Key concepts:
-- **Scenarios** are named snapshots of generated data
+- **Cohorts** are named snapshots of generated data
 - **Auto-persist** automatically saves entities as they're generated
 - **Tags** enable organization and filtering
 
@@ -97,7 +97,7 @@ See [identity-correlation.md](identity-correlation.md) for full details.
 
 ```
 Generate 50 diabetic patients with claims
-Save as scenario "diabetes-claims-demo" with tags "demo", "diabetes"
+Save as cohort "diabetes-claims-demo" with tags "demo", "diabetes"
 ```
 
 ### Cross-Product Queries

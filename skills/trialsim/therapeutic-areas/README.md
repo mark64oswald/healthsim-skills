@@ -13,7 +13,7 @@ Indication-specific knowledge for generating realistic clinical trial data with 
 
 ## How to Use
 
-Therapeutic area skills work in combination with phase scenario skills:
+Therapeutic area skills work in combination with phase cohort skills:
 
 ```
 "Generate a Phase III oncology trial"
@@ -36,5 +36,5 @@ All therapeutic area skills include:
 ## Cross-References
 
 - [Clinical Trials Domain](../clinical-trials-domain.md) - Core trial concepts
-- [Phase 3 Pivotal](../phase3-pivotal.md) - Pivotal trial scenarios
+- [Phase 3 Pivotal](../phase3-pivotal.md) - Pivotal trial cohorts
 - [Recruitment & Enrollment](../recruitment-enrollment.md) - I/E criteria patterns

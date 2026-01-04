@@ -60,7 +60,7 @@ Validation:
 ✓ Diabetes prevalence: 100%
 ✓ HTN comorbidity: 74% (target: 75%)
 
-Save as scenario? (suggested name: 'medicare-diabetic-texas-001')"
+Save as cohort? (suggested name: 'medicare-diabetic-texas-001')"
 ```
 
 ### Execute with Options
@@ -71,7 +71,7 @@ Save as scenario? (suggested name: 'medicare-diabetic-texas-001')"
     "profile_id": "medicare-diabetic-texas-001",
     "options": {
       "save_cohort": true,
-      "scenario_name": "ma-diabetic-cohort-jan2025",
+      "cohort_name": "ma-diabetic-cohort-jan2025",
       "formats": ["fhir_r4", "x12_837"],
       "validation": "strict",
       "dry_run": false
@@ -191,7 +191,7 @@ Rx → Fill:           450/450 linked (100%)
 
 OUTPUT FILES
 ──────────────────────────────────────────────────────────────────
-Scenario saved: ma-diabetic-cohort-jan2025
+Cohort saved: ma-diabetic-cohort-jan2025
   - main.patients:     200 rows
   - main.members:      200 rows
   - main.encounters:   842 rows
@@ -260,7 +260,7 @@ Saved partial results? (y/n)
 
 - **[Profile Builder](../builders/profile-builder.md)** - Build specifications
 - **[Journey Executor](journey-executor.md)** - Execute journeys
-- **[State Management](../../common/state-management.md)** - Save scenarios
+- **[State Management](../../common/state-management.md)** - Save cohorts
 - **[Cross-Domain Sync](cross-domain-sync.md)** - Multi-product coordination
 
 ---

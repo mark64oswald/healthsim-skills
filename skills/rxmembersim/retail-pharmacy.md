@@ -3,21 +3,21 @@ name: retail-pharmacy
 description: "Retail pharmacy prescription fills and claims including new prescriptions, refills, and mail order. Triggers: retail pharmacy, prescription fill, refill, CVS, Walgreens, mail order, days supply, copay, pharmacy claim, NCPDP"
 ---
 
-# Retail Pharmacy Scenario
+# Retail Pharmacy Cohort
 
-A scenario template for generating retail pharmacy prescription fills and claims including new prescriptions, refills, and mail order.
+A cohort template for generating retail pharmacy prescription fills and claims including new prescriptions, refills, and mail order.
 
 ## For Claude
 
-Use this skill when the user requests retail pharmacy or prescription fill scenarios. This teaches you how to generate **realistic pharmacy claims** with NCPDP transactions, copays, and fill workflows.
+Use this skill when the user requests retail pharmacy or prescription fill cohorts. This teaches you how to generate **realistic pharmacy claims** with NCPDP transactions, copays, and fill workflows.
 
 **When to apply this skill:**
 
 - User mentions retail pharmacy or prescription fill
-- User requests pharmacy claim or refill scenarios
+- User requests pharmacy claim or refill cohorts
 - User specifies copay, days supply, or fill type
 - User asks for CVS, Walgreens, or mail order examples
-- User needs pharmacy billing scenarios
+- User needs pharmacy billing cohorts
 
 **Key capabilities this skill provides:**
 
@@ -25,11 +25,11 @@ Use this skill when the user requests retail pharmacy or prescription fill scena
 - How to model retail vs mail order channel differences
 - How to apply formulary copay tiers
 - How to handle new fills vs refills
-- How to generate rejection and override scenarios
+- How to generate rejection and override cohorts
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: RxMemberSim
 - **Tags**: pharmacy, retail, prescription, NCPDP, PBM
@@ -37,7 +37,7 @@ Use this skill when the user requests retail pharmacy or prescription fill scena
 
 ## Purpose
 
-This scenario generates realistic retail pharmacy transactions. It models the complete prescription lifecycle from new fill through refill, including claim submission, adjudication, and patient cost-sharing.
+This cohort generates realistic retail pharmacy transactions. It models the complete prescription lifecycle from new fill through refill, including claim submission, adjudication, and patient cost-sharing.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "copay", "CVS", "Walgreens"
 - "30-day supply", "90-day supply", "mail order"
 
-**Pharmacy Scenarios**:
+**Pharmacy Cohorts**:
 
 - "Generate a retail pharmacy claim"
 - "Create a prescription refill"
@@ -377,7 +377,7 @@ Deductible Credit: $0
 }
 ```
 
-## Refill Scenarios
+## Refill Cohorts
 
 ### Standard Refill
 ```json

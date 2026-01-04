@@ -3,20 +3,20 @@ name: enrollment-eligibility
 description: "Member enrollment transactions (834) and eligibility verification responses (270/271). Triggers: enrollment, eligibility, member add, 834, 270, 271, COBRA, open enrollment, QLE, coverage verification"
 ---
 
-# Enrollment and Eligibility Scenario
+# Enrollment and Eligibility Cohort
 
-A scenario template for generating member enrollment transactions and eligibility verification responses.
+A cohort template for generating member enrollment transactions and eligibility verification responses.
 
 ## For Claude
 
-Use this skill when the user requests enrollment or eligibility scenarios. This teaches you how to generate **realistic enrollment transactions** (834) and eligibility responses (270/271).
+Use this skill when the user requests enrollment or eligibility cohorts. This teaches you how to generate **realistic enrollment transactions** (834) and eligibility responses (270/271).
 
 **When to apply this skill:**
 
 - User mentions enrollment, eligibility, or member add
 - User requests 834, 270, or 271 transactions
 - User specifies COBRA, open enrollment, or QLE
-- User asks for eligibility verification scenarios
+- User asks for eligibility verification cohorts
 - User needs coverage verification examples
 
 **Key capabilities this skill provides:**
@@ -29,7 +29,7 @@ Use this skill when the user requests enrollment or eligibility scenarios. This 
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: MemberSim
 - **Tags**: enrollment, eligibility, 834, 270, 271, payer
@@ -37,7 +37,7 @@ Use this skill when the user requests enrollment or eligibility scenarios. This 
 
 ## Purpose
 
-This scenario generates realistic enrollment and eligibility transactions. It models member adds, changes, terminations, and eligibility verification with proper effective dates and coverage details.
+This cohort generates realistic enrollment and eligibility transactions. It models member adds, changes, terminations, and eligibility verification with proper effective dates and coverage details.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "eligibility check", "coverage verification"
 - "COBRA", "open enrollment", "QLE"
 
-**Enrollment Scenarios**:
+**Enrollment Cohorts**:
 
 - "Generate a new member enrollment"
 - "Create an eligibility verification response"
@@ -181,7 +181,7 @@ Restoration of previously terminated coverage.
 
 ## Enrollment Reason Codes
 
-| Code | Description | Scenario |
+| Code | Description | Cohort |
 |------|-------------|----------|
 | 02 | New Hire | Employment start |
 | 07 | Open Enrollment | Annual enrollment period |

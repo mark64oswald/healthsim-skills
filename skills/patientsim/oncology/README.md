@@ -1,4 +1,4 @@
-# Oncology Scenarios
+# Oncology Cohorts
 
 Comprehensive oncology patient generation skills for PatientSim.
 
@@ -7,9 +7,9 @@ Comprehensive oncology patient generation skills for PatientSim.
 | Skill | Description | Key Features |
 |-------|-------------|--------------|
 | [oncology-domain.md](../../../references/oncology-domain.md) | Foundational oncology knowledge | Staging, biomarkers, treatment modalities |
-| [breast-cancer.md](breast-cancer.md) | Breast cancer scenarios | Molecular subtypes, hormonal/targeted therapy |
-| [lung-cancer.md](lung-cancer.md) | Lung cancer scenarios | NSCLC/SCLC, biomarker-driven therapy |
-| [colorectal-cancer.md](colorectal-cancer.md) | Colorectal cancer scenarios | Colon/rectal, MSI, hereditary syndromes |
+| [breast-cancer.md](breast-cancer.md) | Breast cancer cohorts | Molecular subtypes, hormonal/targeted therapy |
+| [lung-cancer.md](lung-cancer.md) | Lung cancer cohorts | NSCLC/SCLC, biomarker-driven therapy |
+| [colorectal-cancer.md](colorectal-cancer.md) | Colorectal cancer cohorts | Colon/rectal, MSI, hereditary syndromes |
 
 ## Quick Start
 
@@ -32,7 +32,7 @@ Generate a 58-year-old with Stage III colon cancer, MSI-high status
 
 ### TrialSim (Clinical Trials)
 - [TrialSim Oncology](../../trialsim/therapeutic-areas/oncology.md) - Trial endpoints, RECIST 1.1, survival analysis
-- [Phase 3 Pivotal](../../trialsim/phase3-pivotal.md) - Pivotal trial scenarios
+- [Phase 3 Pivotal](../../trialsim/phase3-pivotal.md) - Pivotal trial cohorts
 - [Recruitment & Enrollment](../../trialsim/recruitment-enrollment.md) - Screening funnels, I/E criteria
 
 > **Integration Pattern:** Use PatientSim oncology skills for clinical care journeys. When a patient enrolls in a clinical trial, apply TrialSim skills for trial-specific data (RECIST assessments, randomization, SDTM format).

@@ -3,8 +3,8 @@ name: healthsim-duckdb
 description: |
   DuckDB-based unified data architecture for HealthSim. Provides persistent storage 
   for canonical entities across all products, enabling cross-product queries and 
-  scenario management. Use for loading scenarios, saving scenarios, querying 
-  the canonical data model, and token-efficient scenario operations.
+  cohort management. Use for loading cohorts, saving cohorts, querying 
+  the canonical data model, and token-efficient cohort operations.
 status: Active
 version: "1.2"
 ---
@@ -13,7 +13,7 @@ version: "1.2"
 
 ## Overview
 
-The HealthSim DuckDB skill provides persistent storage and query capabilities for all canonical entities generated across the HealthSim product suite. It serves as the operational data store for scenarios and enables cross-product analytics.
+The HealthSim DuckDB skill provides persistent storage and query capabilities for all canonical entities generated across the HealthSim product suite. It serves as the operational data store for cohorts and enables cross-product analytics.
 
 **Status**: Active  
 **Schema Version**: 1.2  
@@ -21,36 +21,36 @@ The HealthSim DuckDB skill provides persistent storage and query capabilities fo
 
 ## Trigger Phrases
 
-### Scenario Management
-- "Load scenario into DuckDB"
-- "Save scenario to database"
+### Cohort Management
+- "Load cohort into DuckDB"
+- "Save cohort to database"
 - "Persist these entities"
-- "Get summary of scenario"
-- "List my scenarios"
+- "Get summary of cohort"
+- "List my cohorts"
 
 ### Querying
 - "Query the canonical model"
 - "Show patients with claims"
 - "Cross-product query for..."
-- "Query scenario for..."
+- "Query cohort for..."
 - "Show me [entities] where..."
 
 ### Export/Import
-- "Export scenario to JSON"
-- "Import scenario from JSON"
+- "Export cohort to JSON"
+- "Import cohort from JSON"
 
 ## Database Schema
 
 ### Schema Version 1.2 Updates
 
-As of version 1.2, all canonical tables include a `scenario_id` column that links entities directly to their source scenario. This enables efficient scenario-scoped queries without joining through `scenario_entities`.
+As of version 1.2, all canonical tables include a `cohort_id` column that links entities directly to their source cohort. This enables efficient cohort-scoped queries without joining through `cohort_entities`.
 
 ### Provenance Columns (All Canonical Tables)
 
 Every canonical table includes these columns for provenance tracking:
 
 ```sql
-scenario_id VARCHAR,        -- Links to scenarios.scenario_id (v1.2+)
+cohort_id VARCHAR,        -- Links to cohorts.cohort_id (v1.2+)
 source_type VARCHAR,        -- 'loaded', 'generated', 'derived'
 source_system VARCHAR,      -- 'patientsim', 'membersim', etc.
 skill_used VARCHAR,         -- Skill that guided generation
@@ -68,7 +68,7 @@ created_at TIMESTAMP,       -- When entity was created
 | **TrialSim** | studies, sites, treatment_arms, subjects, adverse_events, visit_schedule, actual_visits, disposition_events | Clinical Trials |
 | **PopulationSim** | geographic_entities, population_profiles, health_indicators, sdoh_indices, cohort_specifications | Demographics/SDOH |
 | **NetworkSim** | networks, network_providers, network_facilities, provider_specialties | Provider Networks |
-| **State Mgmt** | scenarios, scenario_entities, scenario_tags | Scenario Tracking |
+| **State Mgmt** | cohorts, cohort_entities, cohort_tags | Cohort Tracking |
 
 ### Cross-Product Relationships
 
@@ -90,7 +90,7 @@ Person (Core) ──────────────────────
 
 ## Auto-Persist API
 
-The auto-persist pattern provides token-efficient scenario management. Instead of returning all data after persist operations, it returns a compact summary (~500 tokens).
+The auto-persist pattern provides token-efficient cohort management. Instead of returning all data after persist operations, it returns a compact summary (~500 tokens).
 
 ### persist()
 
@@ -106,36 +106,36 @@ result = persist(
 )
 
 # Returns PersistResult:
-# - scenario_id: UUID
-# - scenario_name: 'diabetes-cohort-20241227'
-# - summary: ScenarioSummary (~500 tokens)
+# - cohort_id: UUID
+# - cohort_name: 'diabetes-cohort-20241227'
+# - summary: CohortSummary (~500 tokens)
 # - entity_ids: {'patients': [...], 'encounters': [...]}
 ```
 
 ### get_summary()
 
-Load scenario summary without full data (~500 tokens vs potentially 50K+).
+Load cohort summary without full data (~500 tokens vs potentially 50K+).
 
 ```python
 from healthsim.state import get_summary
 
 summary = get_summary('diabetes-cohort-20241227')
 
-# Returns ScenarioSummary:
-# - scenario_id, scenario_name
+# Returns CohortSummary:
+# - cohort_id, cohort_name
 # - entity_counts: {'patients': 100, 'encounters': 250}
 # - statistics: {'age_range': [35, 78], 'gender_distribution': {...}}
 # - samples: {'patients': [3 sample patients], ...}
 ```
 
-### query_scenario()
+### query_cohort()
 
-Run SQL queries against scenario data with pagination.
+Run SQL queries against cohort data with pagination.
 
 ```python
-from healthsim.state import query_scenario
+from healthsim.state import query_cohort
 
-results = query_scenario(
+results = query_cohort(
     'diabetes-cohort-20241227',
     "SELECT given_name, family_name, birth_date FROM patients WHERE gender = 'F'",
     limit=20,
@@ -154,15 +154,15 @@ results = query_scenario(
 
 ## Example Queries
 
-### 1. Scenario-Scoped Query (v1.2+)
+### 1. Cohort-Scoped Query (v1.2+)
 
-Query data from a specific scenario:
+Query data from a specific cohort:
 
 ```sql
--- Find all female patients in a specific scenario
+-- Find all female patients in a specific cohort
 SELECT given_name, family_name, birth_date, gender
 FROM patients
-WHERE scenario_id = 'abc123-...'
+WHERE cohort_id = 'abc123-...'
   AND gender = 'female'
 ORDER BY family_name;
 ```
@@ -183,7 +183,7 @@ JOIN patients p ON per.person_id = p.person_id
 JOIN encounters e ON p.patient_id = e.patient_id
 JOIN claims c ON e.encounter_id = c.encounter_id
 WHERE per.family_name = 'Thompson'
-  AND per.scenario_id = 'abc123-...';
+  AND per.cohort_id = 'abc123-...';
 ```
 
 ### 3. Trial Subject with Clinical History
@@ -199,7 +199,7 @@ FROM subjects sub
 JOIN studies st ON sub.study_id = st.study_id
 JOIN patients p ON sub.patient_id = p.patient_id
 LEFT JOIN encounters e ON p.patient_id = e.patient_id
-WHERE sub.scenario_id = 'abc123-...'
+WHERE sub.cohort_id = 'abc123-...'
 GROUP BY sub.usubjid, sub.arm_code, st.protocol_number, p.mrn;
 ```
 
@@ -234,40 +234,40 @@ FROM rx_members rm
 JOIN pharmacy_claims pc ON rm.rx_member_id = pc.rx_member_id
 LEFT JOIN dur_alerts da ON pc.pharmacy_claim_id = da.pharmacy_claim_id
 WHERE da.severity = '1'  -- Severe alerts
-  AND rm.scenario_id = 'abc123-...';
+  AND rm.cohort_id = 'abc123-...';
 ```
 
 ### 6. Entity Statistics for Summary
 
 ```sql
--- Get entity counts for a scenario
+-- Get entity counts for a cohort
 SELECT 
     'patients' as entity_type,
     COUNT(*) as count
 FROM patients
-WHERE scenario_id = 'abc123-...'
+WHERE cohort_id = 'abc123-...'
 UNION ALL
-SELECT 'encounters', COUNT(*) FROM encounters WHERE scenario_id = 'abc123-...'
+SELECT 'encounters', COUNT(*) FROM encounters WHERE cohort_id = 'abc123-...'
 UNION ALL
-SELECT 'claims', COUNT(*) FROM claims WHERE scenario_id = 'abc123-...';
+SELECT 'claims', COUNT(*) FROM claims WHERE cohort_id = 'abc123-...';
 ```
 
 ## Tools
 
-### Scenario Loader (`tools/scenario_loader.py`)
+### Cohort Loader (`tools/cohort_loader.py`)
 
-Load JSON scenario files into DuckDB.
+Load JSON cohort files into DuckDB.
 
 ```bash
-python tools/scenario_loader.py <scenario_path> [--db healthsim.duckdb]
+python tools/cohort_loader.py <cohort_path> [--db healthsim.duckdb]
 ```
 
-### Scenario Saver (`tools/scenario_saver.py`)
+### Cohort Saver (`tools/cohort_saver.py`)
 
-Export scenarios from DuckDB to JSON files.
+Export cohorts from DuckDB to JSON files.
 
 ```bash
-python tools/scenario_saver.py <scenario_name> [--output ./exports]
+python tools/cohort_saver.py <cohort_name> [--output ./exports]
 ```
 
 ## MCP Integration
@@ -294,7 +294,7 @@ result = await mcp.query("SELECT * FROM persons LIMIT 10")
 ## Related Documentation
 
 - [Data Architecture](../../docs/data-architecture.md) - Database schema and state management
-- [State Management Skill](./state-management.md) - Save/load/query scenarios
+- [State Management Skill](./state-management.md) - Save/load/query cohorts
 - [Data Models Reference](../../references/data-models.md) - Canonical model definitions
 
 ## Validation Rules
@@ -302,7 +302,7 @@ result = await mcp.query("SELECT * FROM persons LIMIT 10")
 | Rule | Description |
 |------|-------------|
 | person_id required | All product entities must link to a person |
-| scenario_id required | All canonical entities must have scenario_id (v1.2+) |
+| cohort_id required | All canonical entities must have cohort_id (v1.2+) |
 | SSN format | XXX-XX-XXXX for universal correlation |
 | NPI format | 10-digit with Luhn check digit |
 | FIPS codes | 2-digit state, 5-digit county, 11-digit tract |

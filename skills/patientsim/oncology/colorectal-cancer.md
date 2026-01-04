@@ -5,7 +5,7 @@ description: "Colorectal cancer patient journeys from screening through surgery,
 
 # Colorectal Cancer Management
 
-Comprehensive scenario skill for generating realistic colorectal cancer patient journeys, covering colon and rectal cancer from screening detection through surgery, adjuvant therapy, metastatic treatment, and surveillance.
+Comprehensive cohort skill for generating realistic colorectal cancer patient journeys, covering colon and rectal cancer from screening detection through surgery, adjuvant therapy, metastatic treatment, and surveillance.
 
 ## For Claude
 
@@ -13,12 +13,12 @@ Use this skill when generating colorectal cancer patients across the care contin
 
 **When to apply this skill:**
 - User mentions colon cancer, rectal cancer, or colorectal cancer
-- User requests GI oncology or colorectal treatment scenarios
+- User requests GI oncology or colorectal treatment cohorts
 - User specifies FOLFOX, FOLFIRI, or other colorectal regimens
 - User asks about MSI/dMMR status or Lynch syndrome
 - User mentions KRAS, NRAS, or BRAF testing in colorectal context
 - User asks about anti-EGFR therapy (cetuximab, panitumumab)
-- User needs liver metastases scenarios (common in CRC)
+- User needs liver metastases cohorts (common in CRC)
 - User requests colonoscopy screening or polyp surveillance
 
 **Key capabilities this skill provides:**
@@ -33,7 +33,7 @@ Use this skill when generating colorectal cancer patients across the care contin
 **Important**: Site matters in colorectal cancer. Colon cancer typically gets surgery first, then adjuvant chemotherapy. Locally advanced rectal cancer often needs neoadjuvant chemoradiation before surgery. ALWAYS confirm RAS mutation status before considering anti-EGFR therapy - mutated RAS excludes these agents.
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: Claude (AI-generated, requires clinical validation)
 - **Tags**: oncology, colorectal-cancer, colon-cancer, rectal-cancer, folfox, msi, kras, colonoscopy, lynch-syndrome
@@ -44,9 +44,9 @@ Use this skill when generating colorectal cancer patients across the care contin
 
 ## Purpose
 
-This scenario generates realistic colorectal cancer patients across the disease spectrum, from screen-detected polyps and early-stage cancers through metastatic disease. It simulates the multi-disciplinary approach to colorectal cancer care including surgery, radiation (primarily rectal), chemotherapy, and targeted/immunotherapy.
+This cohort generates realistic colorectal cancer patients across the disease spectrum, from screen-detected polyps and early-stage cancers through metastatic disease. It simulates the multi-disciplinary approach to colorectal cancer care including surgery, radiation (primarily rectal), chemotherapy, and targeted/immunotherapy.
 
-The scenario is designed to:
+The cohort is designed to:
 - Model realistic colorectal cancer presentations (screening vs symptomatic)
 - Distinguish colon from rectal cancer management approaches
 - Generate appropriate staging workups and biomarker testing
@@ -71,7 +71,7 @@ Apply this skill when the user's request involves:
 - "liver metastases", "hepatectomy", "colorectal liver mets"
 - "TME", "total mesorectal excision", "LAR", "APR"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate a colon cancer patient"
 - "I need a patient with rectal cancer on neoadjuvant therapy"
 - "Create a patient with colorectal liver metastases"
@@ -1191,7 +1191,7 @@ considerations:
     - may_need_cardiac_clearance
     - bridging_anticoagulation_if_on_anticoagulants
 
-example_scenario:
+example_cohort:
   age: 72
   cancer: stage_iii_colon
   cardiac: cad_with_stent_on_plavix_and_aspirin
@@ -1225,7 +1225,7 @@ considerations:
     - proteinuria_monitoring_more_important
     - wound_healing_concerns_compounded
 
-example_scenario:
+example_cohort:
   age: 64
   cancer: stage_iv_colon_liver_mets
   diabetes: type_2_on_metformin_and_glipizide
@@ -1259,7 +1259,7 @@ considerations:
     - history_of_ibd_means_continued_high_risk
     - remaining_bowel_at_risk
 
-example_scenario:
+example_cohort:
   age: 55
   cancer: stage_ii_colon_arising_in_ulcerative_colitis
   ibd: 20_year_history_of_pancolitis
@@ -1301,7 +1301,7 @@ considerations:
     - pre_hydration_for_staging_scans
     - consider_alternatives_to_contrast
 
-example_scenario:
+example_cohort:
   age: 68
   cancer: stage_iii_colon
   renal: ckd_stage_3b_egfr_35
@@ -1334,7 +1334,7 @@ considerations:
     - bleeding_risk_with_varices
     - avoid_in_significant_portal_hypertension
 
-example_scenario:
+example_cohort:
   age: 62
   cancer: stage_iv_colon_with_single_liver_met
   liver: child_pugh_a_cirrhosis_from_nash
@@ -1892,11 +1892,11 @@ family_implications:
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 
 - [../SKILL.md](../SKILL.md) - PatientSim overview
-- [breast-cancer.md](breast-cancer.md) - Similar oncology scenario structure
-- [lung-cancer.md](lung-cancer.md) - Similar oncology scenario structure
+- [breast-cancer.md](breast-cancer.md) - Similar oncology cohort structure
+- [lung-cancer.md](lung-cancer.md) - Similar oncology cohort structure
 
 ### Cross-Product: MemberSim
 

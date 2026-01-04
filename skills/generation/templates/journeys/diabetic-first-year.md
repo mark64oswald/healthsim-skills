@@ -291,7 +291,7 @@ Attach to profile or generate standalone?"
 | 9 | Quarterly visit |
 | 12 | Annual comprehensive visit and labs |
 
-## Branching Scenarios
+## Branching Cohorts
 
 ### Standard Pathway (78%)
 - A1c < 8.0 at 6 months

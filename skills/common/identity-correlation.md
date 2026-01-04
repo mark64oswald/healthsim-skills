@@ -12,7 +12,7 @@ triggers:
 
 # Identity Correlation Skill
 
-Links entities across HealthSim products to enable realistic cross-domain scenarios. Uses SSN as the universal correlator to connect Person → Patient → Member → RxMember → Subject.
+Links entities across HealthSim products to enable realistic cross-domain cohorts. Uses SSN as the universal correlator to connect Person → Patient → Member → RxMember → Subject.
 
 ## Overview
 
@@ -226,7 +226,7 @@ WHERE s.usubjid LIKE '%0042';
 
 ## Related Skills
 
-- **[State Management](state-management.md)** - Scenario persistence
+- **[State Management](state-management.md)** - Cohort persistence
 - **[DuckDB Skill](duckdb-skill.md)** - Database queries
 - **[Generation: Cross-Domain Sync](../generation/executors/cross-domain-sync.md)** - Automated cross-product triggers
 

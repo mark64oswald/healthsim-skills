@@ -3,18 +3,18 @@ name: heart-failure
 description: "Heart failure patients with guideline-directed medical therapy across NYHA classes and EF categories. Triggers: heart failure, CHF, ejection fraction, HFrEF, HFpEF, HFmrEF, decompensated heart failure, cardiology, GDMT, cardiac"
 ---
 
-# Heart Failure Scenario
+# Heart Failure Cohort
 
-A scenario template for generating heart failure patients with guideline-directed medical therapy across all NYHA classes and ejection fraction categories.
+A cohort template for generating heart failure patients with guideline-directed medical therapy across all NYHA classes and ejection fraction categories.
 
 ## For Claude
 
-Use this skill when the user requests heart failure patient data or cardiology scenarios. This teaches you how to generate **realistic heart failure patients** with appropriate GDMT, lab patterns, and encounter types.
+Use this skill when the user requests heart failure patient data or cardiology cohorts. This teaches you how to generate **realistic heart failure patients** with appropriate GDMT, lab patterns, and encounter types.
 
 **When to apply this skill:**
 
 - User mentions heart failure, CHF, or ejection fraction
-- User requests HFrEF, HFpEF, or HFmrEF scenarios
+- User requests HFrEF, HFpEF, or HFmrEF cohorts
 - User asks for decompensated heart failure admissions
 - User needs cardiology encounter examples
 
@@ -27,7 +27,7 @@ Use this skill when the user requests heart failure patient data or cardiology s
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: heart-failure, cardiology, chf, gdmt, chronic-disease
@@ -35,7 +35,7 @@ Use this skill when the user requests heart failure patient data or cardiology s
 
 ## Purpose
 
-This scenario generates realistic heart failure patients across the spectrum from compensated outpatient to acute decompensation requiring hospitalization. It implements current guideline-directed medical therapy and appropriate diagnostic workup patterns.
+This cohort generates realistic heart failure patients across the spectrum from compensated outpatient to acute decompensation requiring hospitalization. It implements current guideline-directed medical therapy and appropriate diagnostic workup patterns.
 
 ## When to Use This Skill
 
@@ -48,7 +48,7 @@ Apply this skill when the user's request involves:
 - "BNP", "NT-proBNP", "decompensated"
 - "NYHA class", "cardiomyopathy"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 
 - "Generate a patient with HFrEF on GDMT"
 - "Create a decompensated heart failure admission"
@@ -82,7 +82,7 @@ Apply this skill when the user's request involves:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, heart failure scenarios use real CDC PLACES data:
+When geography is specified, heart failure cohorts use real CDC PLACES data:
 
 ### Embedded Data Lookup
 
@@ -402,7 +402,7 @@ Apply to HF generation:
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [diabetes-management.md](diabetes-management.md) - Common comorbidity

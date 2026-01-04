@@ -1,6 +1,6 @@
 # Journey Templates
 
-Pre-built temporal event sequences for common healthcare scenarios.
+Pre-built temporal event sequences for common healthcare cohorts.
 
 ## Available Templates
 

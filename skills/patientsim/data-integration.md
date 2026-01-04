@@ -15,7 +15,7 @@ This is a **foundation skill** that enables data-driven patient generation. Load
 - User specifies a geography (county FIPS, tract FIPS, city/state)
 - User requests "realistic demographics" or "population-based" patients
 - User mentions SDOH factors, social vulnerability, or health disparities
-- Any clinical scenario skill needs real population data
+- Any clinical cohort skill needs real population data
 
 **This skill does NOT generate patients directly** - it provides the data lookup patterns that other PatientSim skills use.
 
@@ -274,5 +274,5 @@ From svi_county_2022.csv (FIPS 48201):
 ## Related Skills
 
 - [PopulationSim → PatientSim Integration](../populationsim/integration/patientsim-integration.md) - Complete mapping specification
-- [diabetes-management.md](diabetes-management.md) - Example of data-driven clinical scenario
+- [diabetes-management.md](diabetes-management.md) - Example of data-driven clinical cohort
 - [PopulationSim SKILL.md](../populationsim/SKILL.md) - Data package overview

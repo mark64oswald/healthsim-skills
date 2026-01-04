@@ -3,20 +3,20 @@ name: facility-claims
 description: "Institutional (UB-04/837I) claims for hospital inpatient, outpatient, and observation services. Triggers: facility claim, 837I, UB-04, hospital claims, inpatient, DRG, revenue codes, institutional, hospital billing"
 ---
 
-# Facility Claims Scenario
+# Facility Claims Cohort
 
-A scenario template for generating institutional (UB-04/837I) claims for hospital inpatient, outpatient, and observation services.
+A cohort template for generating institutional (UB-04/837I) claims for hospital inpatient, outpatient, and observation services.
 
 ## For Claude
 
-Use this skill when the user requests facility/institutional claims or hospital billing scenarios. This teaches you how to generate **realistic facility claims** with DRG assignment, revenue codes, and institutional adjudication patterns.
+Use this skill when the user requests facility/institutional claims or hospital billing cohorts. This teaches you how to generate **realistic facility claims** with DRG assignment, revenue codes, and institutional adjudication patterns.
 
 **When to apply this skill:**
 
 - User mentions facility claim, 837I, or UB-04
 - User requests hospital or inpatient claims
 - User specifies DRG, revenue codes, or room and board
-- User asks for institutional claim scenarios
+- User asks for institutional claim cohorts
 - User needs hospital billing examples
 
 **Key capabilities this skill provides:**
@@ -29,7 +29,7 @@ Use this skill when the user requests facility/institutional claims or hospital 
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: MemberSim
 - **Tags**: claims, facility, institutional, billing, payer, 837I
@@ -37,7 +37,7 @@ Use this skill when the user requests facility/institutional claims or hospital 
 
 ## Purpose
 
-This scenario generates realistic facility claims for hospital services. It models DRG-based inpatient payments, outpatient APC reimbursement, observation stays, and the complete institutional claim lifecycle.
+This cohort generates realistic facility claims for hospital services. It models DRG-based inpatient payments, outpatient APC reimbursement, observation stays, and the complete institutional claim lifecycle.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "DRG", "revenue code", "room and board"
 - "institutional claim"
 
-**Claim Scenarios**:
+**Claim Cohorts**:
 
 - "Generate an inpatient claim for a hip replacement"
 - "Create an outpatient facility claim"

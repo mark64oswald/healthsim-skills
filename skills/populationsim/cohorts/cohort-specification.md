@@ -17,7 +17,7 @@ The cohort-specification skill creates complete CohortSpecification objects that
 - Define patient populations for PatientSim
 - Specify member populations for MemberSim
 - Create trial subject pools for TrialSim
-- Establish baseline populations for scenarios
+- Establish baseline populations for cohorts
 
 ---
 

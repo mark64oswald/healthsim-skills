@@ -3,9 +3,9 @@ name: orders-results
 description: "Clinical orders (lab, radiology, medication) and their corresponding results with realistic values. Triggers: lab orders, test results, observations, ORM, ORU, lab panels, CMP, CBC, radiology orders, medication orders, LOINC"
 ---
 
-# Orders and Results Scenario
+# Orders and Results Cohort
 
-A scenario template for generating clinical orders (laboratory, radiology, medication) and their corresponding results with realistic values and interpretations.
+A cohort template for generating clinical orders (laboratory, radiology, medication) and their corresponding results with realistic values and interpretations.
 
 ## For Claude
 
@@ -27,7 +27,7 @@ Use this skill when the user requests clinical orders or diagnostic results. Thi
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: orders, results, laboratory, radiology, orm, oru, hl7v2
@@ -35,7 +35,7 @@ Use this skill when the user requests clinical orders or diagnostic results. Thi
 
 ## Purpose
 
-This scenario generates clinical orders and results for laboratory, radiology, and medication workflows. It supports the complete order lifecycle from placement through completion with realistic result values and interpretations.
+This cohort generates clinical orders and results for laboratory, radiology, and medication workflows. It supports the complete order lifecycle from placement through completion with realistic result values and interpretations.
 
 ## When to Use This Skill
 
@@ -48,7 +48,7 @@ Apply this skill when the user's request involves:
 - "CMP", "CBC", "lipid panel", "BMP"
 - "radiology order", "imaging result"
 
-**Order Scenarios**:
+**Order Cohorts**:
 
 - "Generate a CMP with abnormal results"
 - "Create a critical potassium value"
@@ -71,7 +71,7 @@ Apply this skill when the user's request involves:
 
 ## Overview
 
-This scenario generates clinical orders (laboratory, radiology, medication) and their corresponding results/observations. It supports the complete order lifecycle from placement through completion with realistic result values.
+This cohort generates clinical orders (laboratory, radiology, medication) and their corresponding results/observations. It supports the complete order lifecycle from placement through completion with realistic result values.
 
 ## Parameters
 
@@ -469,8 +469,8 @@ OBX|5|NM|2823-3^Potassium^LN||4.2|mmol/L|3.5-5.0|N|||F|||20250115150000
 ## Related Skills
 
 - [SKILL.md](SKILL.md) - PatientSim overview
-- [diabetes-management.md](diabetes-management.md) - Diabetes scenario
-- [heart-failure.md](heart-failure.md) - Heart failure scenario
+- [diabetes-management.md](diabetes-management.md) - Diabetes cohort
+- [heart-failure.md](heart-failure.md) - Heart failure cohort
 - [../../formats/hl7v2-orm.md](../../formats/hl7v2-orm.md) - Order message format
 - [../../formats/hl7v2-oru.md](../../formats/hl7v2-oru.md) - Result message format
 - [../../references/code-systems.md](../../references/code-systems.md) - LOINC, CPT codes

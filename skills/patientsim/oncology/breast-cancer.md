@@ -5,7 +5,7 @@ description: "Breast cancer patient journeys from screening through treatment an
 
 # Breast Cancer Management
 
-Comprehensive scenario skill for generating realistic breast cancer patient journeys, from screening detection through treatment, surveillance, and survivorship or metastatic management.
+Comprehensive cohort skill for generating realistic breast cancer patient journeys, from screening detection through treatment, surveillance, and survivorship or metastatic management.
 
 ## For Claude
 
@@ -15,9 +15,9 @@ Use this skill when generating breast cancer patients across the care continuum.
 - User mentions breast cancer, breast mass, or abnormal mammogram
 - User requests oncology patients requiring chemotherapy, radiation, or hormonal therapy
 - User specifies ER/PR/HER2 status or molecular subtypes
-- User asks for mastectomy, lumpectomy, or breast surgery scenarios
+- User asks for mastectomy, lumpectomy, or breast surgery cohorts
 - User mentions tamoxifen, aromatase inhibitors, or Herceptin
-- User needs survivorship or metastatic breast cancer scenarios
+- User needs survivorship or metastatic breast cancer cohorts
 - User requests multi-disciplinary oncology care workflows
 
 **Key capabilities this skill provides:**
@@ -32,7 +32,7 @@ Use this skill when generating breast cancer patients across the care continuum.
 **Important**: Molecular subtype determines treatment. ER+ patients need hormonal therapy. HER2+ patients need trastuzumab. Triple-negative patients need chemotherapy. Always ensure treatment matches the biomarker profile.
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: Claude (AI-generated, requires clinical validation)
 - **Tags**: oncology, breast-cancer, chemotherapy, hormonal-therapy, her2, survivorship, mastectomy
@@ -43,9 +43,9 @@ Use this skill when generating breast cancer patients across the care continuum.
 
 ## Purpose
 
-This scenario generates realistic breast cancer patients across the disease spectrum, from screen-detected early-stage cancers through metastatic disease. It simulates the multi-disciplinary approach to breast cancer care including surgery, radiation, chemotherapy, targeted therapy, and hormonal therapy.
+This cohort generates realistic breast cancer patients across the disease spectrum, from screen-detected early-stage cancers through metastatic disease. It simulates the multi-disciplinary approach to breast cancer care including surgery, radiation, chemotherapy, targeted therapy, and hormonal therapy.
 
-The scenario is designed to:
+The cohort is designed to:
 - Model realistic breast cancer presentations and detection pathways
 - Generate appropriate staging workups and biomarker testing
 - Simulate treatment planning based on molecular subtype
@@ -69,7 +69,7 @@ Apply this skill when the user's request involves:
 - "BRCA", "genetic testing", "hereditary breast cancer"
 - "breast cancer survivor", "surveillance mammogram"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate a breast cancer patient"
 - "I need a HER2-positive patient on targeted therapy"
 - "Create a patient with triple-negative breast cancer"
@@ -121,7 +121,7 @@ Apply this skill when the user's request involves:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, breast cancer scenarios can reference population context:
+When geography is specified, breast cancer cohorts can reference population context:
 
 ### Embedded Data Lookup
 
@@ -753,7 +753,7 @@ if adjuvant_chemotherapy:
 **Claude interprets**:
 - Stage: IV (de novo or recurrence)
 - Multiple prior treatments
-- Disease progression scenario
+- Disease progression cohort
 
 **Key features Claude generates**:
 
@@ -951,7 +951,7 @@ shared_considerations:
     - >10% drop from baseline: Cardiology consultation
   - Switch to non-anthracycline regimen (TC instead of AC)
   - Cardio-oncology referral
-example_scenario:
+example_cohort:
   - Baseline LVEF 60%
   - After AC cycle 3: LVEF 48%
   - Action: Hold doxorubicin, switch to taxane-only
@@ -967,7 +967,7 @@ shared_considerations:
   - Usually reversible (unlike anthracycline)
   - Can often rechallenge when LVEF recovers
   - Consider liposomal doxorubicin if both needed
-example_scenario:
+example_cohort:
   - On TCHP cycle 4
   - LVEF drops 62% → 45%
   - Hold trastuzumab/pertuzumab
@@ -1175,7 +1175,7 @@ CMP:
 
 ## Clinical Validation Notice
 
-This scenario skill was AI-generated and requires clinical validation before use in any production or clinical decision-support context. The information provided is intended for synthetic data generation for testing and training purposes only.
+This cohort skill was AI-generated and requires clinical validation before use in any production or clinical decision-support context. The information provided is intended for synthetic data generation for testing and training purposes only.
 
 Key areas requiring validation:
 - Treatment regimen accuracy and current standard of care
@@ -1212,11 +1212,11 @@ Last validation review: Pending
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 
 - [../SKILL.md](../SKILL.md) - PatientSim overview
-- [lung-cancer.md](lung-cancer.md) - Similar oncology scenario structure
-- [colorectal-cancer.md](colorectal-cancer.md) - Similar oncology scenario structure
+- [lung-cancer.md](lung-cancer.md) - Similar oncology cohort structure
+- [colorectal-cancer.md](colorectal-cancer.md) - Similar oncology cohort structure
 - [../maternal-health.md](../maternal-health.md) - Pregnancy and breast cancer considerations
 
 ### Cross-Product: MemberSim

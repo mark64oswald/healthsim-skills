@@ -217,11 +217,11 @@ Example:
 
 ---
 
-## Scenario Integration
+## Cohort Integration
 
-### Multi-Product Scenario Example
+### Multi-Product Cohort Example
 
-**Scenario**: "Houston Diabetic Family"
+**Cohort**: "Houston Diabetic Family"
 
 ```yaml
 PopulationSim:

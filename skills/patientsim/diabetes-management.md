@@ -1,21 +1,21 @@
 ---
 name: diabetes-management
-description: "Type 2 diabetes mellitus scenarios across all stages - pre-diabetes through complex insulin-dependent regimens with complications. Triggers: diabetes, T2DM, diabetic patient, A1C, blood sugar, glucose control, metformin, insulin, diabetes medications, nephropathy, retinopathy, neuropathy, disease progression"
+description: "Type 2 diabetes mellitus cohorts across all stages - pre-diabetes through complex insulin-dependent regimens with complications. Triggers: diabetes, T2DM, diabetic patient, A1C, blood sugar, glucose control, metformin, insulin, diabetes medications, nephropathy, retinopathy, neuropathy, disease progression"
 ---
 
-# Type 2 Diabetes Management Scenario - Disease Progression Events
+# Type 2 Diabetes Management Cohort - Disease Progression Events
 
-A scenario template for generating patients with Type 2 diabetes mellitus across all stages of disease progression, from pre-diabetes through complex insulin-dependent regimens with complications.
+A cohort template for generating patients with Type 2 diabetes mellitus across all stages of disease progression, from pre-diabetes through complex insulin-dependent regimens with complications.
 
 ## For Claude
 
-Use this skill when the user requests diabetic patients or diabetes management scenarios. This teaches you how to generate **realistic clinical progressions** for Type 2 diabetes across all stages - from newly diagnosed through complex multi-medication regimens with complications.
+Use this skill when the user requests diabetic patients or diabetes management cohorts. This teaches you how to generate **realistic clinical progressions** for Type 2 diabetes across all stages - from newly diagnosed through complex multi-medication regimens with complications.
 
 **When to apply this skill:**
 - User mentions diabetes, T2DM, diabetic patient
-- User requests A1C levels, blood sugar, glucose control scenarios
+- User requests A1C levels, blood sugar, glucose control cohorts
 - User specifies metformin, insulin, or other diabetes medications
-- User asks for chronic disease management scenarios
+- User asks for chronic disease management cohorts
 - User mentions diabetes complications (nephropathy, retinopathy, neuropathy)
 - User needs disease progression modeling over time
 
@@ -28,7 +28,7 @@ Use this skill when the user requests diabetic patients or diabetes management s
 - How to model comorbidities (hypertension, hyperlipidemia, CKD)
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 2.0
 - **Author**: PatientSim
 - **Tags**: diabetes, chronic-disease, endocrine, primary-care
@@ -36,7 +36,7 @@ Use this skill when the user requests diabetic patients or diabetes management s
 
 ## Purpose
 
-This scenario generates realistic Type 2 diabetes patients across the full spectrum of disease progression. It models the longitudinal management of diabetes from diagnosis through complex regimens, including medication escalation, complication development, and monitoring patterns.
+This cohort generates realistic Type 2 diabetes patients across the full spectrum of disease progression. It models the longitudinal management of diabetes from diagnosis through complex regimens, including medication escalation, complication development, and monitoring patterns.
 
 ## When to Use This Skill
 
@@ -49,7 +49,7 @@ Apply this skill when the user's request involves:
 - "metformin", "insulin", "diabetes medications"
 - "diabetes complications"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate a diabetic patient"
 - "Create a patient with poorly controlled diabetes"
 - "Generate patients with diabetes and CKD"
@@ -76,7 +76,7 @@ When generating diabetic patients:
 
 ## Data Sources (PopulationSim v2.0)
 
-When a geography is specified, diabetes scenarios are grounded in real CDC PLACES data:
+When a geography is specified, diabetes cohorts are grounded in real CDC PLACES data:
 
 ### Embedded Data Lookup
 
@@ -486,8 +486,8 @@ When using data-driven generation, include provenance:
 
 ### PatientSim
 - [SKILL.md](SKILL.md) - PatientSim overview
-- [chronic-kidney-disease.md](chronic-kidney-disease.md) - CKD scenarios (common comorbidity)
-- [heart-failure.md](heart-failure.md) - Heart failure scenarios
+- [chronic-kidney-disease.md](chronic-kidney-disease.md) - CKD cohorts (common comorbidity)
+- [heart-failure.md](heart-failure.md) - Heart failure cohorts
 
 ### Cross-Product: MemberSim
 - [../membersim/professional-claims.md](../membersim/professional-claims.md) - Office visit claims for diabetes management

@@ -77,7 +77,7 @@ Create a first-year diabetic journey:
 
 ```
 Generate the cohort using this profile and journey
-Save as scenario "ma-diabetic-cohort-2025"
+Save as cohort "ma-diabetic-cohort-2025"
 ```
 
 ## Distribution Types
@@ -132,7 +132,7 @@ Pre-built profiles and journeys for common use cases:
 
 ## Related Skills
 
-- **[State Management](../common/state-management.md)** - Save/load generated scenarios
+- **[State Management](../common/state-management.md)** - Save/load generated cohorts
 - **[Identity Correlation](../common/identity-correlation.md)** - Cross-product entity linking
 - **[PopulationSim](../populationsim/SKILL.md)** - Real-world demographic data
 - **[NetworkSim](../networksim/SKILL.md)** - Real provider assignments

@@ -3,18 +3,18 @@ name: childhood-asthma
 description: "Pediatric asthma patients across severity levels including acute exacerbations. Triggers: childhood asthma, pediatric asthma, wheezing, albuterol, inhaled steroids, asthma action plan, pediatric respiratory, children breathing"
 ---
 
-# Childhood Asthma Scenario
+# Childhood Asthma Cohort
 
-A scenario template for generating pediatric patients with asthma across severity levels, from intermittent to severe persistent, including acute exacerbations.
+A cohort template for generating pediatric patients with asthma across severity levels, from intermittent to severe persistent, including acute exacerbations.
 
 ## For Claude
 
-Use this skill when the user requests pediatric asthma patients or childhood respiratory scenarios. This teaches you how to generate **realistic pediatric asthma presentations** across all severity classifications with appropriate age-based treatment protocols.
+Use this skill when the user requests pediatric asthma patients or childhood respiratory cohorts. This teaches you how to generate **realistic pediatric asthma presentations** across all severity classifications with appropriate age-based treatment protocols.
 
 **When to apply this skill:**
 - User mentions childhood asthma, pediatric asthma, or wheezing in children
 - User requests albuterol, inhaled steroids, or asthma medications for children
-- User asks for asthma action plans or exacerbation scenarios
+- User asks for asthma action plans or exacerbation cohorts
 - User needs pediatric respiratory data
 - User specifies ages under 18 with breathing problems
 
@@ -26,7 +26,7 @@ Use this skill when the user requests pediatric asthma patients or childhood res
 - How to track controller medication adherence
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: PatientSim
 - **Tags**: pediatrics, asthma, respiratory, pulmonology, primary-care
@@ -34,7 +34,7 @@ Use this skill when the user requests pediatric asthma patients or childhood res
 
 ## Purpose
 
-This scenario generates realistic pediatric asthma patients from ages 2-17, modeling severity classification, treatment escalation, and acute exacerbations according to current NHLBI/GINA guidelines.
+This cohort generates realistic pediatric asthma patients from ages 2-17, modeling severity classification, treatment escalation, and acute exacerbations according to current NHLBI/GINA guidelines.
 
 ## When to Use This Skill
 
@@ -47,7 +47,7 @@ Apply this skill when the user's request involves:
 - "asthma exacerbation", "asthma attack"
 - "child with breathing problems"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate a child with asthma"
 - "Create a pediatric patient with an asthma flare"
 - "Generate an asthmatic child needing controller medication"
@@ -58,14 +58,14 @@ Apply this skill when the user's request involves:
 |-----------|------|---------|-------------|
 | age_range | range | 5-12 | Patient age range (2-17) |
 | severity | enum | mild-persistent | intermittent, mild-persistent, moderate-persistent, severe-persistent |
-| scenario_type | enum | routine | routine, exacerbation, ED-visit, hospitalization |
+| cohort_type | enum | routine | routine, exacerbation, ED-visit, hospitalization |
 | has_allergies | boolean | true | Include allergic triggers |
 | controller_compliant | boolean | true | Good controller medication adherence |
 | geography | string | null | County/tract FIPS for local asthma prevalence |
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, pediatric asthma scenarios reflect local prevalence patterns:
+When geography is specified, pediatric asthma cohorts reflect local prevalence patterns:
 
 ### Embedded Data Lookup
 

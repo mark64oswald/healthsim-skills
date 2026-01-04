@@ -19,7 +19,7 @@ The enrollment-projection skill models clinical trial enrollment timelines by co
 - Optimize site count decisions
 - Identify enrollment risks
 - Support protocol timeline planning
-- Model scenario variations
+- Model cohort variations
 
 ---
 
@@ -255,7 +255,7 @@ Where:
       }
     },
     
-    "scenario_analysis": {
+    "cohort_analysis": {
       "base_case": {
         "months": 8,
         "total_screens": 5714,
@@ -407,7 +407,7 @@ Where:
 - High diagnosis/awareness rate
 - Extensive research infrastructure
 
-**Aggressive Scenario**:
+**Aggressive Cohort**:
 | Parameter | Standard | Accelerated |
 |-----------|----------|-------------|
 | Sites | 20 | 40 |

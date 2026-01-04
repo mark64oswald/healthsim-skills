@@ -1,19 +1,19 @@
 ---
 name: healthsim-rxmembersim
-description: "RxMemberSim generates realistic synthetic pharmacy data for testing PBM systems, claims adjudication, and drug utilization review. Use when user requests: (1) pharmacy claims or prescription data, (2) DUR alerts or drug interactions, (3) formulary or tier scenarios, (4) pharmacy prior authorization, (5) NCPDP formatted output."
+description: "RxMemberSim generates realistic synthetic pharmacy data for testing PBM systems, claims adjudication, and drug utilization review. Use when user requests: (1) pharmacy claims or prescription data, (2) DUR alerts or drug interactions, (3) formulary or tier cohorts, (4) pharmacy prior authorization, (5) NCPDP formatted output."
 ---
 
 # RxMemberSim - Pharmacy and PBM Data Generation
 
 ## For Claude
 
-Use this skill when the user requests pharmacy data, prescription fills, or PBM (Pharmacy Benefit Management) scenarios. This is the primary skill for generating realistic synthetic pharmacy claims and drug utilization data.
+Use this skill when the user requests pharmacy data, prescription fills, or PBM (Pharmacy Benefit Management) cohorts. This is the primary skill for generating realistic synthetic pharmacy claims and drug utilization data.
 
 **When to apply this skill:**
 
 - User mentions prescriptions, pharmacy claims, or medication fills
 - User requests DUR (Drug Utilization Review) alerts or drug interactions
-- User specifies formulary, tier, or coverage scenarios
+- User specifies formulary, tier, or coverage cohorts
 - User asks for NCPDP formatted output
 - User needs pharmacy prior authorization or step therapy data
 
@@ -27,7 +27,7 @@ Use this skill when the user requests pharmacy data, prescription fills, or PBM 
 - Model manufacturer copay programs and patient assistance
 - Transform output to NCPDP D.0 format
 
-For specific pharmacy scenarios, load the appropriate scenario skill from the table below.
+For specific pharmacy cohorts, load the appropriate cohort skill from the table below.
 
 ## Overview
 
@@ -67,17 +67,17 @@ RxMemberSim generates realistic synthetic pharmacy data for testing pharmacy ben
 }
 ```
 
-### DUR Alert Scenario
+### DUR Alert Cohort
 
 **Request:** "Generate a pharmacy claim that triggers a drug interaction alert"
 
 Claude loads [dur-alerts.md](dur-alerts.md) and produces a claim with appropriate DUR response.
 
-## Scenario Skills
+## Cohort Skills
 
-Load the appropriate scenario based on user request:
+Load the appropriate cohort based on user request:
 
-| Scenario | Trigger Phrases | File |
+| Cohort | Trigger Phrases | File |
 |----------|-----------------|------|
 | **Retail Pharmacy** | prescription, fill, refill, copay, retail | [retail-pharmacy.md](retail-pharmacy.md) |
 | **Specialty Pharmacy** | specialty drug, biologics, limited distribution | [specialty-pharmacy.md](specialty-pharmacy.md) |
@@ -380,7 +380,7 @@ See [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) for transformation.
 
 ## Related Skills
 
-### RxMemberSim Scenarios
+### RxMemberSim Cohorts
 - [retail-pharmacy.md](retail-pharmacy.md) - Standard retail fills
 - [specialty-pharmacy.md](specialty-pharmacy.md) - Specialty drug distribution
 - [dur-alerts.md](dur-alerts.md) - Drug utilization review
@@ -394,14 +394,14 @@ See [../../formats/ncpdp-d0.md](../../formats/ncpdp-d0.md) for transformation.
 
 RxMemberSim pharmacy claims correspond to PatientSim medication orders:
 
-| RxMemberSim Skill | PatientSim Scenarios | Integration |
+| RxMemberSim Skill | PatientSim Cohorts | Integration |
 |-------------------|---------------------|-------------|
 | [retail-pharmacy.md](retail-pharmacy.md) | Chronic disease meds, discharge Rx | Fill date +0-3 days from order/discharge |
 | [specialty-pharmacy.md](specialty-pharmacy.md) | Oncology, biologics | Limited distribution, PA often required |
 | [dur-alerts.md](dur-alerts.md) | Multi-drug regimens | DDI based on patient's med list |
 | [rx-prior-auth.md](rx-prior-auth.md) | High-cost drugs | Clinical criteria from PatientSim |
 
-**PatientSim Scenario Links:**
+**PatientSim Cohort Links:**
 - [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Oral agents, insulin, GLP-1s
 - [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - GDMT medications
 - [../patientsim/chronic-kidney-disease.md](../patientsim/chronic-kidney-disease.md) - ESAs, phosphate binders

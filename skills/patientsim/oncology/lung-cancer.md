@@ -5,7 +5,7 @@ description: "Lung cancer patient journeys for NSCLC and SCLC with biomarker-dri
 
 # Lung Cancer Management
 
-Comprehensive scenario skill for generating realistic lung cancer patient journeys, covering both Non-Small Cell Lung Cancer (NSCLC) and Small Cell Lung Cancer (SCLC), from diagnosis through biomarker-driven treatment selection, progression, and palliative care.
+Comprehensive cohort skill for generating realistic lung cancer patient journeys, covering both Non-Small Cell Lung Cancer (NSCLC) and Small Cell Lung Cancer (SCLC), from diagnosis through biomarker-driven treatment selection, progression, and palliative care.
 
 ## For Claude
 
@@ -13,13 +13,13 @@ Use this skill when generating lung cancer patients across the care continuum. T
 
 **When to apply this skill:**
 - User mentions lung cancer, lung mass, pulmonary nodule
-- User requests thoracic oncology or lung cancer treatment scenarios
+- User requests thoracic oncology or lung cancer treatment cohorts
 - User specifies NSCLC, SCLC, adenocarcinoma, or squamous cell lung cancer
 - User asks about EGFR, ALK, ROS1, KRAS, or PD-L1 testing
 - User mentions targeted therapy agents (osimertinib, alectinib, sotorasib)
 - User mentions immunotherapy in lung cancer (pembrolizumab, durvalumab)
-- User needs brain metastases scenarios (common in lung cancer)
-- User requests smoking-related cancer scenarios
+- User needs brain metastases cohorts (common in lung cancer)
+- User requests smoking-related cancer cohorts
 
 **Key capabilities this skill provides:**
 - How to generate complete treatment timelines based on histology and biomarkers
@@ -33,7 +33,7 @@ Use this skill when generating lung cancer patients across the care continuum. T
 **Important**: Lung cancer treatment is highly dependent on histology (NSCLC vs SCLC) and molecular markers. NEVER give targeted therapy without confirming the mutation. ALWAYS test for actionable mutations in non-squamous NSCLC before starting treatment.
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: Claude (AI-generated, requires clinical validation)
 - **Tags**: oncology, lung-cancer, nsclc, sclc, immunotherapy, targeted-therapy, egfr, alk, pdl1
@@ -44,9 +44,9 @@ Use this skill when generating lung cancer patients across the care continuum. T
 
 ## Purpose
 
-This scenario generates realistic lung cancer patients across the disease spectrum, from screen-detected early-stage cancers through metastatic disease. It simulates the biomarker-driven approach to lung cancer care, which has transformed outcomes for patients with actionable mutations.
+This cohort generates realistic lung cancer patients across the disease spectrum, from screen-detected early-stage cancers through metastatic disease. It simulates the biomarker-driven approach to lung cancer care, which has transformed outcomes for patients with actionable mutations.
 
-The scenario is designed to:
+The cohort is designed to:
 - Model realistic lung cancer presentations (incidental finding vs symptomatic)
 - Generate appropriate staging workups including PET-CT and brain MRI
 - Simulate molecular testing workflows and result interpretation
@@ -70,7 +70,7 @@ Apply this skill when the user's request involves:
 - "carboplatin", "cisplatin", "pemetrexed", "etoposide"
 - "lobectomy", "pneumonectomy", "VATS", "thoracotomy"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate a lung cancer patient"
 - "I need an EGFR-positive lung cancer patient"
 - "Create a patient with ALK-rearranged NSCLC"
@@ -637,7 +637,7 @@ Platinum (carboplatin/cisplatin):
 2. **Choose stage**: Stage IV (most common at diagnosis)
 3. **Determine smoking history**: Former smoker (60 pack-years)
 4. **Select driver mutation**: None (most common) or EGFR (if never-smoker)
-5. **Set PD-L1**: Variable based on scenario
+5. **Set PD-L1**: Variable based on cohort
 6. **Generate appropriate treatment pathway**
 
 **When the user says**: "Generate an EGFR-positive lung cancer patient"
@@ -1379,7 +1379,7 @@ Limited stage:
 
 ## Clinical Validation Notice
 
-This scenario skill was AI-generated and requires clinical validation before use in any production or clinical decision-support context. The information provided is intended for synthetic data generation for testing and training purposes only.
+This cohort skill was AI-generated and requires clinical validation before use in any production or clinical decision-support context. The information provided is intended for synthetic data generation for testing and training purposes only.
 
 Key areas requiring validation:
 - Molecular testing algorithms and current actionable mutations
@@ -1416,11 +1416,11 @@ Last validation review: Pending
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 
 - [../SKILL.md](../SKILL.md) - PatientSim overview
-- [breast-cancer.md](breast-cancer.md) - Similar oncology scenario structure
-- [colorectal-cancer.md](colorectal-cancer.md) - Similar oncology scenario structure
+- [breast-cancer.md](breast-cancer.md) - Similar oncology cohort structure
+- [colorectal-cancer.md](colorectal-cancer.md) - Similar oncology cohort structure
 - [../sepsis-acute-care.md](../sepsis-acute-care.md) - Oncology patients with neutropenic fever
 
 ### Cross-Product: MemberSim

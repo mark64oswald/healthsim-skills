@@ -3,20 +3,20 @@ name: professional-claims
 description: "Professional (CMS-1500/837P) claims for physician and outpatient services. Triggers: professional claim, 837P, CMS-1500, physician billing, office visit claims, E&M codes, outpatient procedures, claim adjudication"
 ---
 
-# Professional Claims Scenario
+# Professional Claims Cohort
 
-A scenario template for generating professional (CMS-1500/837P) claims for physician and outpatient services, including E&M visits, procedures, and diagnostics.
+A cohort template for generating professional (CMS-1500/837P) claims for physician and outpatient services, including E&M visits, procedures, and diagnostics.
 
 ## For Claude
 
-Use this skill when the user requests professional claims or physician billing scenarios. This teaches you how to generate **realistic professional claims** with appropriate E&M coding, procedure modifiers, and adjudication patterns.
+Use this skill when the user requests professional claims or physician billing cohorts. This teaches you how to generate **realistic professional claims** with appropriate E&M coding, procedure modifiers, and adjudication patterns.
 
 **When to apply this skill:**
 
 - User mentions professional claim, 837P, or CMS-1500
 - User requests physician billing or office visit claims
 - User specifies E&M codes or outpatient procedures
-- User asks for claim adjudication scenarios
+- User asks for claim adjudication cohorts
 - User needs provider billing examples
 
 **Key capabilities this skill provides:**
@@ -25,11 +25,11 @@ Use this skill when the user requests professional claims or physician billing s
 - How to apply modifiers correctly (25, 59, LT/RT, etc.)
 - How to structure claim lines with diagnosis pointers
 - How to model adjudication with CARC codes
-- How to handle network vs out-of-network scenarios
+- How to handle network vs out-of-network cohorts
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: MemberSim
 - **Tags**: claims, professional, billing, payer, 837P
@@ -37,7 +37,7 @@ Use this skill when the user requests professional claims or physician billing s
 
 ## Purpose
 
-This scenario generates realistic professional claims for physician services. It models the complete claim lifecycle from service to adjudication, including E&M code selection, procedure coding, modifier usage, and payment calculation.
+This cohort generates realistic professional claims for physician services. It models the complete claim lifecycle from service to adjudication, including E&M code selection, procedure coding, modifier usage, and payment calculation.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "E&M claim", "outpatient claim"
 - "provider claim", "billing"
 
-**Claim Scenarios**:
+**Claim Cohorts**:
 
 - "Generate a professional claim for an office visit"
 - "Create a claim with E&M and procedure"
@@ -277,9 +277,9 @@ Apply this skill when the user's request involves:
 }
 ```
 
-## Common Denial Scenarios
+## Common Denial Cohorts
 
-| Scenario | CARC | Description | Resolution |
+| Cohort | CARC | Description | Resolution |
 |----------|------|-------------|------------|
 | Duplicate claim | CO-18 | Duplicate submission | Verify original payment |
 | Auth required | CO-15 | Prior authorization required | Submit authorization |

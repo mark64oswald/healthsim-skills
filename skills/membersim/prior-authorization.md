@@ -3,18 +3,18 @@ name: prior-authorization
 description: "Prior authorization requests and decisions for medical services, procedures, and medications. Triggers: prior authorization, prior auth, PA, pre-certification, medical necessity, utilization management, UM, authorization approval, denial"
 ---
 
-# Prior Authorization Scenario
+# Prior Authorization Cohort
 
-A scenario template for generating prior authorization requests and decisions for medical services, procedures, and medications.
+A cohort template for generating prior authorization requests and decisions for medical services, procedures, and medications.
 
 ## For Claude
 
-Use this skill when the user requests prior authorization or utilization management scenarios. This teaches you how to generate **realistic PA workflows** with clinical criteria, decision rationale, and appeal processes.
+Use this skill when the user requests prior authorization or utilization management cohorts. This teaches you how to generate **realistic PA workflows** with clinical criteria, decision rationale, and appeal processes.
 
 **When to apply this skill:**
 
 - User mentions prior authorization, prior auth, or PA
-- User requests pre-certification or medical necessity scenarios
+- User requests pre-certification or medical necessity cohorts
 - User specifies utilization management or UM
 - User asks for authorization approval/denial examples
 - User needs PA workflow documentation
@@ -23,13 +23,13 @@ Use this skill when the user requests prior authorization or utilization managem
 
 - How to structure PA requests with required clinical information
 - How to apply medical necessity criteria for decisions
-- How to model approval, denial, and pended scenarios
+- How to model approval, denial, and pended cohorts
 - How to handle urgent vs standard review timelines
-- How to generate appeal and peer-to-peer review scenarios
+- How to generate appeal and peer-to-peer review cohorts
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: MemberSim
 - **Tags**: prior-auth, utilization-management, payer, authorization
@@ -37,7 +37,7 @@ Use this skill when the user requests prior authorization or utilization managem
 
 ## Purpose
 
-This scenario generates realistic prior authorization workflows. It models the complete PA lifecycle from request through decision, including clinical criteria evaluation, turnaround times, and appeal processes.
+This cohort generates realistic prior authorization workflows. It models the complete PA lifecycle from request through decision, including clinical criteria evaluation, turnaround times, and appeal processes.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "medical necessity", "utilization management"
 - "authorization required"
 
-**PA Scenarios**:
+**PA Cohorts**:
 
 - "Generate a PA request for an MRI"
 - "Create a denied prior authorization"

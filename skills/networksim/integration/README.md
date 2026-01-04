@@ -9,7 +9,7 @@ category: integration
 
 ## Overview
 
-Integration skills bridge NetworkSim entities to other HealthSim products. They provide context-aware generation and enrichment of network-related data for realistic cross-product scenarios.
+Integration skills bridge NetworkSim entities to other HealthSim products. They provide context-aware generation and enrichment of network-related data for realistic cross-product cohorts.
 
 ## Integration Architecture
 
@@ -242,7 +242,7 @@ All integration skills return structured output with:
 
 ### When to Use Integration Skills
 
-1. **Cross-product scenarios**: When generating data that spans multiple products
+1. **Cross-product cohorts**: When generating data that spans multiple products
 2. **Realistic adjudication**: When claims need accurate cost sharing
 3. **Network-aware generation**: When providers/pharmacies must match plan context
 4. **Coverage determination**: When formulary/benefit context is needed

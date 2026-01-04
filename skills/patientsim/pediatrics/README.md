@@ -1,21 +1,21 @@
-# Pediatrics Scenarios
+# Pediatrics Cohorts
 
-Scenario templates for generating pediatric patient data across common childhood conditions.
+Cohort templates for generating pediatric patient data across common childhood conditions.
 
 ## Overview
 
-These scenarios model realistic pediatric patient journeys with age-appropriate clinical presentations, dosing, and management protocols. All scenarios follow AAP (American Academy of Pediatrics) and NHLBI guidelines.
+These cohorts model realistic pediatric patient journeys with age-appropriate clinical presentations, dosing, and management protocols. All cohorts follow AAP (American Academy of Pediatrics) and NHLBI guidelines.
 
-## Available Scenarios
+## Available Cohorts
 
-| Scenario | Description | Key Features |
+| Cohort | Description | Key Features |
 |----------|-------------|--------------|
 | [childhood-asthma.md](childhood-asthma.md) | Pediatric asthma across severity levels | NHLBI step therapy, spirometry, action plans |
 | [acute-otitis-media.md](acute-otitis-media.md) | Ear infections (AOM, OME) | AAP watchful waiting, antibiotic selection |
 
 ## Common Parameters
 
-All pediatric scenarios support:
+All pediatric cohorts support:
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
@@ -42,7 +42,7 @@ All pediatric scenarios support:
 
 ## Cross-References
 
-### Related PatientSim Scenarios
+### Related PatientSim Cohorts
 - [../maternal-health.md](../maternal-health.md) - Neonatal transition
 - [../sepsis-acute-care.md](../sepsis-acute-care.md) - Pediatric sepsis considerations
 

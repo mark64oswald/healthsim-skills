@@ -1,6 +1,6 @@
 ---
 name: healthsim-patientsim
-description: "Generate realistic clinical patient data including demographics, encounters, diagnoses, medications, labs, and vitals. Use when user requests: (1) patient records or clinical data, (2) EMR test data, (3) specific clinical scenarios like diabetes or heart failure, (4) HL7v2 or FHIR patient resources."
+description: "Generate realistic clinical patient data including demographics, encounters, diagnoses, medications, labs, and vitals. Use when user requests: (1) patient records or clinical data, (2) EMR test data, (3) specific clinical cohorts like diabetes or heart failure, (4) HL7v2 or FHIR patient resources."
 ---
 
 # PatientSim - Clinical Patient Data Generation
@@ -13,7 +13,7 @@ Use this skill when the user requests clinical patient data, EMR/EHR test data, 
 
 - User mentions patients, clinical data, or medical records
 - User requests EMR or EHR test data
-- User specifies clinical scenarios (diabetes, heart failure, oncology, etc.)
+- User specifies clinical cohorts (diabetes, heart failure, oncology, etc.)
 - User asks for HL7v2 messages, FHIR resources, or C-CDA documents
 - User needs encounters, diagnoses, medications, labs, or vitals
 
@@ -21,11 +21,11 @@ Use this skill when the user requests clinical patient data, EMR/EHR test data, 
 
 - Generate patients with realistic demographics and identifiers
 - Create encounters across care settings (inpatient, outpatient, ED, observation)
-- Apply clinical scenarios from specialized skills (diabetes, oncology, etc.)
+- Apply clinical cohorts from specialized skills (diabetes, oncology, etc.)
 - Produce appropriately coded data (ICD-10, CPT, LOINC, RxNorm)
 - Transform output to healthcare standards (FHIR R4, HL7v2, C-CDA)
 
-For specific clinical scenarios, load the appropriate scenario skill from the table below.
+For specific clinical cohorts, load the appropriate cohort skill from the table below.
 
 ## Overview
 
@@ -59,17 +59,17 @@ PatientSim generates realistic synthetic clinical data for EMR/EHR testing, incl
 }
 ```
 
-### Clinical Scenario
+### Clinical Cohort
 
 **Request:** "Generate a diabetic patient with complications"
 
 Claude loads [diabetes-management.md](diabetes-management.md) and produces a complete clinical picture.
 
-## Scenario Skills
+## Cohort Skills
 
-Load the appropriate scenario based on user request:
+Load the appropriate cohort based on user request:
 
-| Scenario | Trigger Phrases | File |
+| Cohort | Trigger Phrases | File |
 |----------|-----------------|------|
 | **ADT Workflow** | admission, discharge, transfer, ADT, patient movement | [adt-workflow.md](adt-workflow.md) |
 | **Behavioral Health** | depression, anxiety, bipolar, PTSD, mental health, psychiatric, substance use, PHQ-9, GAD-7 | [behavioral-health.md](behavioral-health.md) |
@@ -273,7 +273,7 @@ For complete mapping specification, see [PopulationSim → PatientSim Integratio
 
 **Request:** "Generate a 68-year-old female with diabetes, hypertension, and CKD stage 3"
 
-Claude combines patterns from multiple scenario skills to generate a coherent patient with:
+Claude combines patterns from multiple cohort skills to generate a coherent patient with:
 - Multiple chronic diagnoses with appropriate onset dates
 - Medications for each condition (metformin, lisinopril, etc.)
 - Quarterly encounters over 2 years
@@ -283,35 +283,35 @@ Claude combines patterns from multiple scenario skills to generate a coherent pa
 ## Related Skills
 
 ### Chronic Disease
-- [diabetes-management.md](diabetes-management.md) - Diabetes scenarios
-- [heart-failure.md](heart-failure.md) - Heart failure scenarios
-- [chronic-kidney-disease.md](chronic-kidney-disease.md) - CKD scenarios
+- [diabetes-management.md](diabetes-management.md) - Diabetes cohorts
+- [heart-failure.md](heart-failure.md) - Heart failure cohorts
+- [chronic-kidney-disease.md](chronic-kidney-disease.md) - CKD cohorts
 
 ### Behavioral Health
 
 - [behavioral-health.md](behavioral-health.md) - Depression, anxiety, bipolar, PTSD, substance use
 
 ### Acute Care
-- [adt-workflow.md](adt-workflow.md) - ADT workflow scenarios
-- [sepsis-acute-care.md](sepsis-acute-care.md) - Acute care scenarios
+- [adt-workflow.md](adt-workflow.md) - ADT workflow cohorts
+- [sepsis-acute-care.md](sepsis-acute-care.md) - Acute care cohorts
 - [orders-results.md](orders-results.md) - Orders and results
 
 ### Pediatrics
 
-- [pediatrics/childhood-asthma.md](pediatrics/childhood-asthma.md) - Pediatric asthma scenarios
-- [pediatrics/acute-otitis-media.md](pediatrics/acute-otitis-media.md) - Ear infection scenarios
+- [pediatrics/childhood-asthma.md](pediatrics/childhood-asthma.md) - Pediatric asthma cohorts
+- [pediatrics/acute-otitis-media.md](pediatrics/acute-otitis-media.md) - Ear infection cohorts
 
 ### Oncology
 - [oncology-domain.md](../../references/oncology-domain.md) - Foundational oncology knowledge
-- [oncology/breast-cancer.md](oncology/breast-cancer.md) - Breast cancer scenarios
-- [oncology/lung-cancer.md](oncology/lung-cancer.md) - Lung cancer scenarios (NSCLC/SCLC)
-- [oncology/colorectal-cancer.md](oncology/colorectal-cancer.md) - Colorectal cancer scenarios
+- [oncology/breast-cancer.md](oncology/breast-cancer.md) - Breast cancer cohorts
+- [oncology/lung-cancer.md](oncology/lung-cancer.md) - Lung cancer cohorts (NSCLC/SCLC)
+- [oncology/colorectal-cancer.md](oncology/colorectal-cancer.md) - Colorectal cancer cohorts
 
 ### Cross-Product: MemberSim (Claims)
 
 PatientSim clinical encounters generate corresponding claims in MemberSim:
 
-| PatientSim Scenario | MemberSim Skill | Typical Timing |
+| PatientSim Cohort | MemberSim Skill | Typical Timing |
 |---------------------|-----------------|----------------|
 | Office visits | [professional-claims.md](../membersim/professional-claims.md) | Same day |
 | Inpatient stays | [facility-claims.md](../membersim/facility-claims.md) | +2-14 days |
@@ -324,7 +324,7 @@ PatientSim clinical encounters generate corresponding claims in MemberSim:
 
 PatientSim medication orders generate prescription fills in RxMemberSim:
 
-| PatientSim Scenario | RxMemberSim Skill | Typical Timing |
+| PatientSim Cohort | RxMemberSim Skill | Typical Timing |
 |---------------------|-------------------|----------------|
 | Chronic disease meds | [retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) | Same day or +1-3 days |
 | Discharge meds | [retail-pharmacy.md](../rxmembersim/retail-pharmacy.md) | +0-3 days post-discharge |

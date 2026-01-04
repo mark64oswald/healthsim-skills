@@ -3,19 +3,19 @@ name: ed-chest-pain
 description: "Emergency Department chest pain presentations with complete event sequences from symptom onset through disposition. Triggers: chest pain, cardiac, ED, MI, STEMI, NSTEMI, ACS, acute coronary syndrome, troponin, ECG, rule out MI, emergency department"
 ---
 
-# Emergency Department Chest Pain Scenario - Complete Event Timelines
+# Emergency Department Chest Pain Cohort - Complete Event Timelines
 
-A scenario template for generating patients presenting to the Emergency Department with chest pain **with complete event sequences from symptom onset through disposition**, covering the spectrum from benign musculoskeletal pain to acute myocardial infarction.
+A cohort template for generating patients presenting to the Emergency Department with chest pain **with complete event sequences from symptom onset through disposition**, covering the spectrum from benign musculoskeletal pain to acute myocardial infarction.
 
 ## For Claude
 
-Use this skill when the user requests ED chest pain patients or cardiac workup scenarios. This teaches you how to generate **realistic clinical event sequences** for chest pain presentations across the risk spectrum - from low-risk rule-outs to STEMI requiring emergent intervention.
+Use this skill when the user requests ED chest pain patients or cardiac workup cohorts. This teaches you how to generate **realistic clinical event sequences** for chest pain presentations across the risk spectrum - from low-risk rule-outs to STEMI requiring emergent intervention.
 
 **When to apply this skill:**
-- User mentions chest pain, cardiac presentation, or ED scenarios
+- User mentions chest pain, cardiac presentation, or ED cohorts
 - User requests MI, STEMI, NSTEMI, or acute coronary syndrome patients
 - User specifies troponin levels, ECG changes, or cardiac workup
-- User asks for emergency department or acute care scenarios with event timelines
+- User asks for emergency department or acute care cohorts with event timelines
 - User mentions "rule out MI" or cardiac risk stratification
 - User needs event sequences for testing clinical decision support or workflow protocols
 
@@ -28,10 +28,10 @@ Use this skill when the user requests ED chest pain patients or cardiac workup s
 - When to activate cath lab emergently vs admit to cardiology vs discharge
 - How to create alert-triggering events (troponin rising, ST elevations appearing)
 
-**Important**: STEMI requires **immediate** cath lab activation (ST elevations ≥1mm in 2 contiguous leads). NSTEMI has elevated troponin but NO ST elevations. Rule-out has negative troponins and normal/non-diagnostic ECG. All scenarios should include **temporal sequences** showing progression of events.
+**Important**: STEMI requires **immediate** cath lab activation (ST elevations ≥1mm in 2 contiguous leads). NSTEMI has elevated troponin but NO ST elevations. Rule-out has negative troponins and normal/non-diagnostic ECG. All cohorts should include **temporal sequences** showing progression of events.
 
 ## Metadata
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 2.0
 - **Author**: PatientSim
 - **Tags**: emergency, chest-pain, cardiac, acute-care
@@ -39,9 +39,9 @@ Use this skill when the user requests ED chest pain patients or cardiac workup s
 
 ## Purpose
 
-This scenario generates realistic ED chest pain presentations, one of the most common and critical emergency department chief complaints. It simulates the diagnostic workup, risk stratification, and disposition decisions for chest pain patients.
+This cohort generates realistic ED chest pain presentations, one of the most common and critical emergency department chief complaints. It simulates the diagnostic workup, risk stratification, and disposition decisions for chest pain patients.
 
-The scenario is designed to:
+The cohort is designed to:
 - Model realistic chest pain presentations across the severity spectrum
 - Generate appropriate diagnostic workups (ECG, troponin, imaging)
 - Simulate risk stratification using clinical decision tools
@@ -61,7 +61,7 @@ Apply this skill when the user's request involves:
 - "rule out MI", "cardiac workup", "chest pain workup"
 - "ECG", "ST elevation", "ST depression"
 
-**Clinical Scenarios**:
+**Clinical Cohorts**:
 - "Generate an ED chest pain patient"
 - "I need a STEMI patient for cath lab"
 - "Create a patient with elevated troponin"
@@ -73,7 +73,7 @@ Apply this skill when the user's request involves:
 - User mentions emergency department or ED setting
 - User specifies cardiac catheterization or PCI
 - User mentions "door-to-balloon time" or cath lab activation
-- User asks for "time-critical" or "emergency" cardiac scenarios
+- User asks for "time-critical" or "emergency" cardiac cohorts
 - User specifies acute chest pain with radiation to arm/jaw
 
 **Co-occurring Mentions**:
@@ -112,7 +112,7 @@ Apply this skill when the user's request involves:
 
 ## Data Sources (PopulationSim v2.0)
 
-When geography is specified, ED chest pain scenarios use real population data:
+When geography is specified, ED chest pain cohorts use real population data:
 
 ### Embedded Data Lookup
 
@@ -926,7 +926,7 @@ STEMI:
 
 ## Related Skills
 
-### PatientSim Scenarios
+### PatientSim Cohorts
 
 - [SKILL.md](SKILL.md) - PatientSim overview
 - [heart-failure.md](heart-failure.md) - Cardiac comorbidity

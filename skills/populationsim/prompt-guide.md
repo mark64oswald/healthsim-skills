@@ -3,7 +3,7 @@ name: populationsim-prompt-guide
 description: |
   Example prompts for using PopulationSim skills effectively. Templates for 
   population analysis, SDOH assessment, cohort definition, trial support, 
-  and cross-product integration scenarios.
+  and cross-product integration cohorts.
 ---
 
 # PopulationSim Prompt Guide
@@ -359,7 +359,7 @@ Generate 1,000 health plan members from the Harris County population profile wit
 ### Full Ecosystem Generation
 
 ```
-Generate a complete synthetic healthcare dataset for [scenario]
+Generate a complete synthetic healthcare dataset for [cohort]
 
 Example:
 Generate a complete synthetic healthcare dataset for a diabetes quality improvement study:

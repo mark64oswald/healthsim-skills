@@ -7,13 +7,13 @@ description: "MemberSim generates realistic synthetic claims and payer data for 
 
 ## For Claude
 
-Use this skill when the user requests healthcare claims, payer data, or benefits administration scenarios. This is the primary skill for generating realistic synthetic claims and member data.
+Use this skill when the user requests healthcare claims, payer data, or benefits administration cohorts. This is the primary skill for generating realistic synthetic claims and member data.
 
 **When to apply this skill:**
 
 - User mentions claims, billing, or reimbursement
 - User requests 837P (professional) or 837I (facility) claims
-- User specifies payer, insurance, or benefits scenarios
+- User specifies payer, insurance, or benefits cohorts
 - User asks for X12 formatted output (834, 835, 837, 270/271)
 - User needs member enrollment, eligibility, or prior authorization data
 
@@ -26,7 +26,7 @@ Use this skill when the user requests healthcare claims, payer data, or benefits
 - Handle prior authorization workflows
 - Transform output to X12 formats (837, 835, 834, 270/271)
 
-For specific claims scenarios, load the appropriate scenario skill from the table below.
+For specific claims cohorts, load the appropriate cohort skill from the table below.
 
 ## Overview
 
@@ -78,11 +78,11 @@ MemberSim generates realistic synthetic claims and payer data for testing claims
 
 Claude loads [facility-claims.md](facility-claims.md) and produces a complete 837I-style claim with DRG assignment.
 
-## Scenario Skills
+## Cohort Skills
 
-Load the appropriate scenario based on user request:
+Load the appropriate cohort based on user request:
 
-| Scenario | Trigger Phrases | File |
+| Cohort | Trigger Phrases | File |
 |----------|-----------------|------|
 | **Plan & Benefits** | plan, benefit plan, HMO, PPO, HDHP, copay, deductible structure | [plan-benefits.md](plan-benefits.md) |
 | **Enrollment & Eligibility** | enrollment, eligibility, 834, 270, 271, coverage | [enrollment-eligibility.md](enrollment-eligibility.md) |
@@ -165,7 +165,7 @@ See [../../references/data-models.md](../../references/data-models.md) for compl
 ```
 
 ### Common Denial Reasons
-| Code | Description | Scenario |
+| Code | Description | Cohort |
 |------|-------------|----------|
 | CO-4 | Procedure code inconsistent with modifier | Invalid modifier |
 | CO-45 | Charge exceeds fee schedule | UCR violation |
@@ -372,7 +372,7 @@ Key oncology claim elements:
 
 ## Related Skills
 
-### MemberSim Scenarios
+### MemberSim Cohorts
 - [plan-benefits.md](plan-benefits.md) - Plan configuration and benefit structure
 - [enrollment-eligibility.md](enrollment-eligibility.md) - Enrollment and eligibility
 - [professional-claims.md](professional-claims.md) - Professional claim details
@@ -385,14 +385,14 @@ Key oncology claim elements:
 
 MemberSim claims correspond to PatientSim clinical encounters:
 
-| MemberSim Skill | PatientSim Scenarios | Integration |
+| MemberSim Skill | PatientSim Cohorts | Integration |
 |-----------------|---------------------|-------------|
 | [professional-claims.md](professional-claims.md) | Office visits, consults | Match E&M codes to encounter complexity |
 | [facility-claims.md](facility-claims.md) | Inpatient, ED, surgery | Match DRG to admission diagnoses |
 | [prior-authorization.md](prior-authorization.md) | Elective procedures | PA approved → procedure scheduled |
 | [behavioral-health.md](behavioral-health.md) | Psychiatric care | Match visit types and diagnoses |
 
-**PatientSim Scenario Links:**
+**PatientSim Cohort Links:**
 - [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - HF admission claims
 - [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Diabetes office visit claims
 - [../patientsim/elective-joint.md](../patientsim/elective-joint.md) - Surgical episode claims

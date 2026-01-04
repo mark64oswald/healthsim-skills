@@ -3,18 +3,18 @@ name: specialty-pharmacy
 description: "Specialty pharmacy transactions for high-cost biologics, injectables, and limited distribution drugs. Triggers: specialty pharmacy, biologic, injectable, Humira, Enbrel, Remicade, biosimilar, limited distribution, cold chain, hub services, copay assistance"
 ---
 
-# Specialty Pharmacy Scenario
+# Specialty Pharmacy Cohort
 
-A scenario template for generating specialty pharmacy transactions for high-cost biologics, injectables, and limited distribution drugs.
+A cohort template for generating specialty pharmacy transactions for high-cost biologics, injectables, and limited distribution drugs.
 
 ## For Claude
 
-Use this skill when the user requests specialty pharmacy or biologic medication scenarios. This teaches you how to generate **realistic specialty drug claims** with prior authorization, copay assistance, and hub services.
+Use this skill when the user requests specialty pharmacy or biologic medication cohorts. This teaches you how to generate **realistic specialty drug claims** with prior authorization, copay assistance, and hub services.
 
 **When to apply this skill:**
 
 - User mentions specialty pharmacy or specialty drug
-- User requests biologics, biosimilars, or injectable scenarios
+- User requests biologics, biosimilars, or injectable cohorts
 - User specifies hub services or limited distribution
 - User asks for copay assistance or patient support programs
 - User needs high-cost drug billing examples
@@ -29,7 +29,7 @@ Use this skill when the user requests specialty pharmacy or biologic medication 
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: RxMemberSim
 - **Tags**: pharmacy, specialty, biologics, PBM, high-cost
@@ -37,7 +37,7 @@ Use this skill when the user requests specialty pharmacy or biologic medication 
 
 ## Purpose
 
-This scenario generates realistic specialty pharmacy transactions. It models high-cost medication dispensing including biologics, limited distribution requirements, copay assistance, and hub services.
+This cohort generates realistic specialty pharmacy transactions. It models high-cost medication dispensing including biologics, limited distribution requirements, copay assistance, and hub services.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "limited distribution", "specialty tier"
 - "high-cost drug", "hub services"
 
-**Specialty Scenarios**:
+**Specialty Cohorts**:
 
 - "Generate a specialty pharmacy claim"
 - "Create a biologic prescription fill"

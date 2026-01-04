@@ -1,6 +1,6 @@
 ---
 name: clinical-trials-domain
-description: "Core domain knowledge for clinical trial data generation including trial phases, CDISC standards, regulatory requirements, safety/efficacy patterns, and cross-product integration. Referenced by all TrialSim scenario skills."
+description: "Core domain knowledge for clinical trial data generation including trial phases, CDISC standards, regulatory requirements, safety/efficacy patterns, and cross-product integration. Referenced by all TrialSim cohort skills."
 ---
 
 # Clinical Trials Domain Knowledge

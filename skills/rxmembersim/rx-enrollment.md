@@ -3,18 +3,18 @@ name: rx-enrollment
 description: "Pharmacy benefit enrollment and eligibility including member adds, changes, and terminations. Triggers: pharmacy enrollment, eligibility, BIN, PCN, group number, pharmacy benefit, member ID, cardholder, coverage activation"
 ---
 
-# Pharmacy Enrollment Scenario
+# Pharmacy Enrollment Cohort
 
-A scenario template for generating pharmacy benefit enrollment and eligibility transactions including member adds, changes, and terminations.
+A cohort template for generating pharmacy benefit enrollment and eligibility transactions including member adds, changes, and terminations.
 
 ## For Claude
 
-Use this skill when the user requests pharmacy enrollment or eligibility scenarios. This teaches you how to generate **realistic pharmacy benefit enrollment** with BIN/PCN/Group configurations and coverage activation.
+Use this skill when the user requests pharmacy enrollment or eligibility cohorts. This teaches you how to generate **realistic pharmacy benefit enrollment** with BIN/PCN/Group configurations and coverage activation.
 
 **When to apply this skill:**
 
 - User mentions rx enrollment or pharmacy enrollment
-- User requests pharmacy eligibility or member scenarios
+- User requests pharmacy eligibility or member cohorts
 - User specifies BIN, PCN, or cardholder ID
 - User asks for pharmacy card or coverage activation
 - User needs PBM enrollment examples
@@ -29,7 +29,7 @@ Use this skill when the user requests pharmacy enrollment or eligibility scenari
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: RxMemberSim
 - **Tags**: pharmacy, enrollment, eligibility, PBM, member
@@ -37,7 +37,7 @@ Use this skill when the user requests pharmacy enrollment or eligibility scenari
 
 ## Purpose
 
-This scenario generates realistic pharmacy benefit enrollment transactions. It models member adds, changes, and terminations with proper BIN/PCN/Group configuration and coverage dates.
+This cohort generates realistic pharmacy benefit enrollment transactions. It models member adds, changes, and terminations with proper BIN/PCN/Group configuration and coverage dates.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "BIN PCN", "cardholder ID"
 - "pharmacy card", "rx coverage"
 
-**Enrollment Scenarios**:
+**Enrollment Cohorts**:
 
 - "Generate a pharmacy member enrollment"
 - "Create a pharmacy eligibility record"

@@ -16,7 +16,7 @@ Generate a patient
 Generate a 45-year-old female with hypertension
 ```
 
-**With clinical scenario:**
+**With clinical cohort:**
 ```
 Generate a diabetic patient with A1C of 8.5
 Generate a heart failure patient admitted for acute exacerbation
@@ -36,17 +36,17 @@ See [hello-healthsim examples](../../hello-healthsim/examples/patientsim-example
 |------------|-------------|-----------------|
 | **Demographics** | Patients with realistic names, addresses, MRNs | [SKILL.md](SKILL.md#patient) |
 | **Encounters** | Inpatient, outpatient, ED, observation visits | [adt-workflow.md](adt-workflow.md) |
-| **Chronic Disease** | Diabetes, heart failure, CKD with progression | Multiple scenario skills |
+| **Chronic Disease** | Diabetes, heart failure, CKD with progression | Multiple cohort skills |
 | **Oncology** | Breast, lung, colorectal cancer journeys | [oncology/](oncology/) |
 | **Maternal Health** | Prenatal through postpartum | [maternal-health.md](maternal-health.md) |
 | **Behavioral Health** | Depression, anxiety, bipolar, SUD | [behavioral-health.md](behavioral-health.md) |
 | **Pediatrics** | Asthma, ear infections | [pediatrics/](pediatrics/) |
-| **Acute Care** | Sepsis, ICU scenarios | [sepsis-acute-care.md](sepsis-acute-care.md) |
+| **Acute Care** | Sepsis, ICU cohorts | [sepsis-acute-care.md](sepsis-acute-care.md) |
 | **Labs & Vitals** | LOINC-coded results with reference ranges | [orders-results.md](orders-results.md) |
 
-## Clinical Scenarios
+## Clinical Cohorts
 
-| Scenario | Key Elements | Skill |
+| Cohort | Key Elements | Skill |
 |----------|--------------|-------|
 | Diabetes Management | Type 1/2, A1C, glucose, insulin, complications | [diabetes-management.md](diabetes-management.md) |
 | Heart Failure | HFrEF/HFpEF, NYHA class, BNP, GDMT | [heart-failure.md](heart-failure.md) |
@@ -98,7 +98,7 @@ See [data-integration.md](data-integration.md) for full integration details.
 
 For complete generation parameters, examples, and validation rules, see:
 
-- **[SKILL.md](SKILL.md)** - Full skill reference with all scenarios
+- **[SKILL.md](SKILL.md)** - Full skill reference with all cohorts
 - **[../../SKILL.md](../../SKILL.md)** - Master skill file (cross-product routing)
 
 ## Related Documentation

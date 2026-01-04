@@ -3,21 +3,21 @@ name: rx-accumulator
 description: "Pharmacy benefit accumulators including deductibles, OOP maximums, and Medicare Part D phases. Triggers: pharmacy accumulator, deductible, OOP maximum, Part D, coverage gap, donut hole, catastrophic phase, TrOOP"
 ---
 
-# Pharmacy Accumulator Tracking Scenario
+# Pharmacy Accumulator Tracking Cohort
 
-A scenario template for generating pharmacy benefit accumulators including deductibles, OOP maximums, and Medicare Part D phases.
+A cohort template for generating pharmacy benefit accumulators including deductibles, OOP maximums, and Medicare Part D phases.
 
 ## For Claude
 
-Use this skill when the user requests pharmacy accumulator or Part D phase scenarios. This teaches you how to generate **realistic pharmacy cost-sharing** with TrOOP tracking, coverage gap, and catastrophic phase modeling.
+Use this skill when the user requests pharmacy accumulator or Part D phase cohorts. This teaches you how to generate **realistic pharmacy cost-sharing** with TrOOP tracking, coverage gap, and catastrophic phase modeling.
 
 **When to apply this skill:**
 
 - User mentions rx accumulator or pharmacy deductible
-- User requests Part D phase or donut hole scenarios
+- User requests Part D phase or donut hole cohorts
 - User specifies TrOOP or true out of pocket
 - User asks for pharmacy cost sharing examples
-- User needs catastrophic coverage scenarios
+- User needs catastrophic coverage cohorts
 
 **Key capabilities this skill provides:**
 
@@ -25,11 +25,11 @@ Use this skill when the user requests pharmacy accumulator or Part D phase scena
 - How to model Medicare Part D benefit phases
 - How to track TrOOP and coverage gap entry
 - How to handle specialty tier maximums
-- How to generate DAW and brand penalty scenarios
+- How to generate DAW and brand penalty cohorts
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: RxMemberSim
 - **Tags**: pharmacy, accumulator, Part-D, TrOOP, cost-sharing
@@ -37,7 +37,7 @@ Use this skill when the user requests pharmacy accumulator or Part D phase scena
 
 ## Purpose
 
-This scenario generates realistic pharmacy accumulator tracking. It models commercial pharmacy deductibles, Medicare Part D phases, and specialty tier maximums with proper cost-sharing calculations.
+This cohort generates realistic pharmacy accumulator tracking. It models commercial pharmacy deductibles, Medicare Part D phases, and specialty tier maximums with proper cost-sharing calculations.
 
 ## When to Use This Skill
 
@@ -50,10 +50,10 @@ Apply this skill when the user's request involves:
 - "Part D phase", "donut hole"
 - "coverage gap", "catastrophic"
 
-**Accumulator Scenarios**:
+**Accumulator Cohorts**:
 
 - "Generate a pharmacy accumulator state"
-- "Create a Part D coverage gap scenario"
+- "Create a Part D coverage gap cohort"
 - "Generate a member in catastrophic phase"
 
 ## Trigger Phrases

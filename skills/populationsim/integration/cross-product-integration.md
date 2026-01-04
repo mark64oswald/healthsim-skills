@@ -158,12 +158,12 @@ Person (base)
 
 ---
 
-## Scenario Workflows
+## Cohort Workflows
 
 ### Workflow 1: Generate Diabetic Population for Claims Analysis
 
 ```yaml
-scenario: diabetic_claims_population
+cohort: diabetic_claims_population
 steps:
   1_population_profile:
     skill: geographic-intelligence
@@ -211,7 +211,7 @@ steps:
 ### Workflow 2: Trial Feasibility with SDOH Diversity
 
 ```yaml
-scenario: trial_feasibility_sdoh
+cohort: trial_feasibility_sdoh
 steps:
   1_catchment_analysis:
     skill: trial-site-analysis
@@ -255,7 +255,7 @@ steps:
 ### Workflow 3: High-SDOH Patient Panel with Complete Records
 
 ```yaml
-scenario: high_sdoh_complete_records
+cohort: high_sdoh_complete_records
 steps:
   1_vulnerability_cohort:
     skill: cohort-definition

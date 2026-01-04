@@ -3,21 +3,21 @@ name: formulary-management
 description: "Formulary structures including tier configurations, step therapy, quantity limits, and coverage policies. Triggers: formulary, drug tier, step therapy, prior authorization required, quantity limit, non-formulary, preferred drug, coverage policy"
 ---
 
-# Formulary Management Scenario
+# Formulary Management Cohort
 
-A scenario template for generating formulary structures including tier configurations, step therapy, and coverage policies.
+A cohort template for generating formulary structures including tier configurations, step therapy, and coverage policies.
 
 ## For Claude
 
-Use this skill when the user requests formulary or drug coverage scenarios. This teaches you how to generate **realistic formulary configurations** with tier structures, utilization management, and alternatives.
+Use this skill when the user requests formulary or drug coverage cohorts. This teaches you how to generate **realistic formulary configurations** with tier structures, utilization management, and alternatives.
 
 **When to apply this skill:**
 
 - User mentions formulary or drug coverage
-- User requests tier structure or preferred drug scenarios
+- User requests tier structure or preferred drug cohorts
 - User specifies step therapy or prior authorization
 - User asks for quantity limit examples
-- User needs formulary exception scenarios
+- User needs formulary exception cohorts
 
 **Key capabilities this skill provides:**
 
@@ -29,7 +29,7 @@ Use this skill when the user requests formulary or drug coverage scenarios. This
 
 ## Metadata
 
-- **Type**: scenario-template
+- **Type**: cohort-template
 - **Version**: 1.0
 - **Author**: RxMemberSim
 - **Tags**: pharmacy, formulary, coverage, step-therapy, PBM
@@ -37,7 +37,7 @@ Use this skill when the user requests formulary or drug coverage scenarios. This
 
 ## Purpose
 
-This scenario generates realistic formulary management configurations. It models complete formulary structures with tiering, utilization management, and coverage policies for various plan types.
+This cohort generates realistic formulary management configurations. It models complete formulary structures with tiering, utilization management, and coverage policies for various plan types.
 
 ## When to Use This Skill
 
@@ -50,7 +50,7 @@ Apply this skill when the user's request involves:
 - "step therapy", "prior authorization"
 - "quantity limit", "formulary exception"
 
-**Formulary Scenarios**:
+**Formulary Cohorts**:
 
 - "Generate a 4-tier formulary structure"
 - "Create step therapy requirements"
@@ -651,7 +651,7 @@ Apply this skill when the user's request involves:
 - [../patientsim/diabetes-management.md](../patientsim/diabetes-management.md) - Diabetes drug tiers and alternatives
 - [../patientsim/heart-failure.md](../patientsim/heart-failure.md) - Cardiac medication tiers
 
-> **Integration Pattern:** Use formulary-management to determine which medications are covered and at what cost. This informs PatientSim medication selection when generating realistic patient scenarios.
+> **Integration Pattern:** Use formulary-management to determine which medications are covered and at what cost. This informs PatientSim medication selection when generating realistic patient cohorts.
 
 ### References
 - [../../references/code-systems.md](../../references/code-systems.md) - GPI, NDC codes

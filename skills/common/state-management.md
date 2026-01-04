@@ -1,35 +1,35 @@
 ---
 name: state-management
-description: "Save, load, and manage workspace scenarios to preserve synthetic data across sessions. Auto-persist for token-efficient batch operations. Query saved data with SQL. Tag, clone, merge, and export scenarios. Triggers: save, load, scenario, persist, resume, continue, list scenarios, delete scenario, export scenario, query scenario, get summary, tag scenario, clone scenario, merge scenarios"
+description: "Save, load, and manage workspace cohorts to preserve synthetic data across sessions. Auto-persist for token-efficient batch operations. Query saved data with SQL. Tag, clone, merge, and export cohorts. Triggers: save, load, cohort, persist, resume, continue, list cohorts, delete cohort, export cohort, query cohort, get summary, tag cohort, clone cohort, merge cohorts"
 ---
 
 # State Management
 
-_Save, load, and manage workspace scenarios to preserve your synthetic healthcare data across sessions._
+_Save, load, and manage workspace cohorts to preserve your synthetic healthcare data across sessions._
 
 ## For Claude
 
-Use this skill when the user wants to persist their work or resume from a previous session. Scenarios are named snapshots containing all generated entities (patients, encounters, claims, etc.).
+Use this skill when the user wants to persist their work or resume from a previous session. Cohorts are named snapshots containing all generated entities (patients, encounters, claims, etc.).
 
 **Two Approaches**:
 
-1. **Full Data** - Load everything into conversation. Best for small scenarios (<50 entities) where the user needs to see or reference all data immediately.
+1. **Full Data** - Load everything into conversation. Best for small cohorts (<50 entities) where the user needs to see or reference all data immediately.
 
 2. **Auto-Persist** - Save data, return only a summary. Best for large batches (50+ entities) to avoid context overflow. Query for specific data as needed.
 
 Apply this knowledge when:
 - User asks to save work ("save this", "let's save my progress")
-- User wants to resume ("load my scenario", "continue from yesterday")
-- User wants to see saved scenarios ("what scenarios do I have?")
+- User wants to resume ("load my cohort", "continue from yesterday")
+- User wants to see saved cohorts ("what cohorts do I have?")
 - User generates large batches (auto-persist to avoid context overflow)
-- User wants specific data from a saved scenario (query rather than load all)
+- User wants specific data from a saved cohort (query rather than load all)
 
 ## Purpose
 
-State Management captures your workspace as a named scenario that can be restored later:
+State Management captures your workspace as a named cohort that can be restored later:
 
 - **Session continuity** - Save at end of session, resume tomorrow
-- **Scenario libraries** - Build reusable cohorts for demos and testing
+- **Cohort libraries** - Build reusable cohorts for demos and testing
 - **Context efficiency** - Generate thousands of entities without overflow
 - **Targeted queries** - Find exactly what you need without loading everything
 
@@ -41,9 +41,9 @@ State Management captures your workspace as a named scenario that can be restore
 - "Persist these entities"
 
 **Loading**:
-- "Load my scenario"
+- "Load my cohort"
 - "Open the diabetes cohort"
-- "What's in my scenario?"
+- "What's in my cohort?"
 - "Get a summary of..."
 
 **Querying**:
@@ -52,16 +52,16 @@ State Management captures your workspace as a named scenario that can be restore
 - "Find encounters with diagnosis..."
 
 **Managing**:
-- "List my scenarios"
-- "Delete the test scenario"
+- "List my cohorts"
+- "Delete the test cohort"
 - "Tag this with 'validated'"
 - "Clone my cohort"
-- "Merge these two scenarios"
+- "Merge these two cohorts"
 - "Export to CSV"
 
 ## Conversation Examples
 
-### Example 1: Save a Small Scenario
+### Example 1: Save a Small Cohort
 
 ```
 User: Save these 10 patients as "demo-cohort"
@@ -75,7 +75,7 @@ Claude: Saved "demo-cohort":
 Load anytime with "load demo-cohort".
 ```
 
-### Example 2: Load with Full Data (Small Scenario)
+### Example 2: Load with Full Data (Small Cohort)
 
 ```
 User: Load my demo cohort
@@ -137,7 +137,7 @@ Showing 5 of 18. Say "show more" for next page.
 ### Example 5: Get Summary Without Loading All Data
 
 ```
-User: What's in my diabetes scenario?
+User: What's in my diabetes cohort?
 
 Claude: "diabetes-cohort-20241227" summary:
 
@@ -163,7 +163,7 @@ Need specific data? I can query for particular patients or conditions.
 ### Example 6: Resume Work on Large Cohort
 
 ```
-User: Continue working on my Medicare scenario from yesterday
+User: Continue working on my Medicare cohort from yesterday
 
 Claude: Loaded summary for "medicare-members-20241227":
 - 500 members
@@ -177,12 +177,12 @@ What would you like to do?
 - Export for analysis
 ```
 
-### Example 7: List Available Scenarios
+### Example 7: List Available Cohorts
 
 ```
-User: What scenarios do I have?
+User: What cohorts do I have?
 
-Claude: You have 5 saved scenarios:
+Claude: You have 5 saved cohorts:
 
 | Name | Entities | Last Updated | Tags |
 |------|----------|--------------|------|
@@ -195,7 +195,7 @@ Claude: You have 5 saved scenarios:
 Load any with "load [name]" or get summary with "summarize [name]".
 ```
 
-### Example 8: Delete a Scenario
+### Example 8: Delete a Cohort
 
 ```
 User: Delete test-patients
@@ -204,13 +204,13 @@ Claude: Delete "test-patients"? This contained 10 patients and cannot be undone.
 
 User: Yes
 
-Claude: Deleted "test-patients". You have 4 remaining scenarios.
+Claude: Deleted "test-patients". You have 4 remaining cohorts.
 ```
 
 ### Example 9: Tag Management
 
 ```
-User: Tag my diabetes scenario as "validated" and "production"
+User: Tag my diabetes cohort as "validated" and "production"
 
 Claude: Tagged "diabetes-cohort-20241227":
 - validated ✓
@@ -220,17 +220,17 @@ Now has 4 tags: [training, validated, production, diabetes]
 ```
 
 ```
-User: What scenarios are tagged "validated"?
+User: What cohorts are tagged "validated"?
 
-Claude: 2 scenarios tagged "validated":
+Claude: 2 cohorts tagged "validated":
 - diabetes-cohort-20241227 (1,785 entities)
 - heart-failure-validated (890 entities)
 ```
 
-### Example 10: Clone a Scenario
+### Example 10: Clone a Cohort
 
 ```
-User: Clone my diabetes scenario for testing variations
+User: Clone my diabetes cohort for testing variations
 
 Claude: Cloned "diabetes-cohort-20241227" → "diabetes-cohort-20241227-copy":
 - 150 patients copied
@@ -241,10 +241,10 @@ The clone is independent—changes won't affect the original.
 Would you like to rename it?
 ```
 
-### Example 11: Merge Scenarios
+### Example 11: Merge Cohorts
 
 ```
-User: Merge my diabetes and heart-failure scenarios into combined-training
+User: Merge my diabetes and heart-failure cohorts into combined-training
 
 Claude: Created "combined-training" from 2 sources:
 
@@ -257,7 +257,7 @@ Claude: Created "combined-training" from 2 sources:
 - Conflicts resolved: 0 (no duplicate IDs)
 - Tags inherited: training, validated
 
-Both source scenarios preserved unchanged.
+Both source cohorts preserved unchanged.
 ```
 
 ### Example 12: Export to CSV
@@ -290,11 +290,11 @@ patients = pd.read_csv('~/Downloads/diabetes-cohort-20241227/patients.csv')
 
 | Situation | Approach | Reason |
 |-----------|----------|--------|
-| User asks to "save" small scenario | Full save, confirm | User expects confirmation |
+| User asks to "save" small cohort | Full save, confirm | User expects confirmation |
 | User generates 50+ entities | Auto-persist, show summary | Avoid context overflow |
-| User asks "what's in my scenario" | Get summary first | Don't assume they want all data |
-| User asks to "load" and scenario is small | Load full data | User wants to see it |
-| User asks to "load" and scenario is large | Get summary, offer to query | Context efficiency |
+| User asks "what's in my cohort" | Get summary first | Don't assume they want all data |
+| User asks to "load" and cohort is small | Load full data | User wants to see it |
+| User asks to "load" and cohort is large | Get summary, offer to query | Context efficiency |
 | User asks specific question about saved data | Query for just that data | Targeted response |
 
 ### Proactive Auto-Persist
@@ -323,9 +323,9 @@ Query for specific subsets or generate encounters for these patients.
 ### Confirming Destructive Actions
 
 Always confirm before:
-- Deleting scenarios
-- Overwriting existing scenarios
-- Merging (which creates new scenario)
+- Deleting cohorts
+- Overwriting existing cohorts
+- Merging (which creates new cohort)
 
 ```
 User: Save this as diabetes-cohort
@@ -339,7 +339,7 @@ Overwrite it, or save as "diabetes-cohort-2"?
 ### save_cohort
 | Parameter | Description | Required |
 |-----------|-------------|----------|
-| name | Scenario identifier | Yes |
+| name | Cohort identifier | Yes |
 | entities | Dict of entity type → list | Yes |
 | description | Notes about contents | No |
 | tags | Organization keywords | No |
@@ -348,35 +348,35 @@ Overwrite it, or save as "diabetes-cohort-2"?
 ### get_summary
 | Parameter | Description | Required |
 |-----------|-------------|----------|
-| scenario_id_or_name | Scenario identifier | Yes |
+| cohort_id_or_name | Cohort identifier | Yes |
 | include_samples | Include sample entities | No (default: true) |
 | samples_per_type | Samples per entity type | No (default: 3) |
 
-### query_scenario
+### query_cohort
 | Parameter | Description | Required |
 |-----------|-------------|----------|
-| scenario_id_or_name | Scenario identifier | Yes |
+| cohort_id_or_name | Cohort identifier | Yes |
 | sql | SELECT query | Yes |
 | limit | Max results | No (default: 20) |
 
-### clone_scenario
+### clone_cohort
 | Parameter | Description | Required |
 |-----------|-------------|----------|
-| source_scenario_id | Source scenario | Yes |
+| source_cohort_id | Source cohort | Yes |
 | new_name | Name for clone | No (auto-generated) |
 | tags | Tags for clone | No (copies source) |
 
-### merge_scenarios
+### merge_cohorts
 | Parameter | Description | Required |
 |-----------|-------------|----------|
-| source_scenario_ids | List of sources (min 2) | Yes |
+| source_cohort_ids | List of sources (min 2) | Yes |
 | target_name | Name for merged | No (auto-generated) |
 | conflict_strategy | skip/overwrite/rename | No (default: skip) |
 
-### export_scenario
+### export_cohort
 | Parameter | Description | Required |
 |-----------|-------------|----------|
-| scenario_id | Scenario to export | Yes |
+| cohort_id | Cohort to export | Yes |
 | format | json/csv/parquet | Yes |
 | output_path | Destination | No (default: ~/Downloads) |
 
@@ -391,4 +391,4 @@ Overwrite it, or save as "diabetes-cohort-2"?
 
 - **Version**: 5.0
 - **Updated**: 2024-12-28
-- **Tags**: state-management, persistence, scenarios, query, export
+- **Tags**: state-management, persistence, cohorts, query, export

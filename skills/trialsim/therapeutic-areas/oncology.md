@@ -14,7 +14,7 @@ Generate realistic oncology clinical trial data with RECIST 1.1 tumor response a
 
 ## For Claude
 
-This is a **therapeutic area skill** for generating oncology trial data. Apply this when users request cancer clinical trials. Combine with phase scenario skills for complete trial generation.
+This is a **therapeutic area skill** for generating oncology trial data. Apply this when users request cancer clinical trials. Combine with phase cohort skills for complete trial generation.
 
 **Always apply this skill when you see:**
 - References to oncology, cancer, or tumor trials
@@ -242,7 +242,7 @@ This is a **therapeutic area skill** for generating oncology trial data. Apply t
 
 **TrialSim:**
 - [Clinical Trials Domain](../clinical-trials-domain.md) - Core trial concepts
-- [Phase 3 Pivotal](../phase3-pivotal.md) - Pivotal trial scenarios
+- [Phase 3 Pivotal](../phase3-pivotal.md) - Pivotal trial cohorts
 - [CGT](cgt.md) - CAR-T and gene therapy oncology
 
 **Shared Domain Knowledge:**
