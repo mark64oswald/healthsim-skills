@@ -28,6 +28,14 @@ from trialsim.core.models import (
 
 __version__ = "1.0.0"
 
+# Expose journeys module for convenience
+from trialsim.journeys import (
+    create_trial_journey_engine,
+    TRIAL_JOURNEY_TEMPLATES,
+    get_trial_journey_template,
+    list_trial_journey_templates,
+)
+
 __all__ = [
     # Generators
     "TrialSubjectGenerator",
@@ -41,4 +49,9 @@ __all__ = [
     "Visit",
     "AdverseEvent",
     "Exposure",
+    # Journey exports
+    "create_trial_journey_engine",
+    "TRIAL_JOURNEY_TEMPLATES",
+    "get_trial_journey_template",
+    "list_trial_journey_templates",
 ]

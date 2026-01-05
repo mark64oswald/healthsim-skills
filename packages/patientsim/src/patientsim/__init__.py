@@ -35,6 +35,19 @@ __version__ = "2.1.0"
 # Expose dimensional transformer at package level
 from patientsim.dimensional import PatientDimensionalTransformer
 
+# Expose journeys module for convenience
+from patientsim.journeys import (
+    create_patient_journey_engine,
+    PATIENT_JOURNEY_TEMPLATES,
+    get_patient_journey_template,
+    list_patient_journey_templates,
+)
+
 __all__ = [
     "PatientDimensionalTransformer",
+    # Journey exports
+    "create_patient_journey_engine",
+    "PATIENT_JOURNEY_TEMPLATES",
+    "get_patient_journey_template",
+    "list_patient_journey_templates",
 ]
