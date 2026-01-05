@@ -118,7 +118,7 @@ When creating or updating a skill:
    ## Related Skills
    
    **Cross-Product (TrialSim):**
-   - [therapeutic-areas/oncology.md](../trialsim/therapeutic-areas/oncology.md) - Trial endpoints, RECIST
+   - [therapeutic-areas/oncology.md](../../skills/trialsim/therapeutic-areas/oncology.md) - Trial endpoints, RECIST
    
    > **Integration Pattern:** Use this PatientSim skill for clinical care journeys. 
    > Use TrialSim skill for trial-specific endpoints and SDTM mapping.

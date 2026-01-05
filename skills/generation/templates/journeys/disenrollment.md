@@ -121,7 +121,7 @@ Qualifying events for COBRA:
 
 - **[New Member Onboarding](new-member-onboarding.md)** - Initial enrollment
 - **[Annual Enrollment](annual-enrollment.md)** - Plan changes
-- **[Member Termination](../../membersim/journeys/templates.py)** - MemberSim template
+- **[MemberSim Enrollment Skills](../../../membersim/enrollment-eligibility.md)** - MemberSim enrollment patterns
 
 ---
 
