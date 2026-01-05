@@ -433,4 +433,4 @@ function enrollSubject(eligiblePool, currentEnrollment, targets):
 
 - [Population to Patient](population-to-patient.md) - Clinical history
 - [Population to Member](population-to-member.md) - Insurance status
-- [Full Ecosystem](full-ecosystem-scenario.md) - Complete integration
+- [Full Ecosystem](full-ecosystem-cohort.md) - Complete integration

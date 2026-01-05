@@ -325,4 +325,4 @@ For a patient with SVI = 0.78 (Q4):
 
 - [Population to Member](population-to-member.md) - Add claims data
 - [Population to Trial](population-to-trial.md) - Trial enrollment
-- [Full Ecosystem](full-ecosystem-scenario.md) - Complete integration
+- [Full Ecosystem](full-ecosystem-cohort.md) - Complete integration

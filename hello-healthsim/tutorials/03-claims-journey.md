@@ -173,5 +173,5 @@ In [Tutorial 4: Population Cohort](04-population-cohort.md), you'll learn to use
 
 ---
 
-**← Previous:** [Tutorial 2: Clinical Scenario](02-clinical-scenario.md)  
+**← Previous:** [Tutorial 2: Clinical Scenario](02-clinical-cohort.md)  
 **→ Next:** [Tutorial 4: Population Cohort](04-population-cohort.md)

@@ -1,130 +1,67 @@
 # Common Skills
 
-Cross-product skills that apply to all HealthSim products. These skills handle infrastructure concerns like state management, database operations, and identity correlation.
+Cross-product infrastructure skills that apply to all HealthSim products.
 
-## Quick Reference
+## Skills Overview
 
-| Skill | Use When | Key Features |
-|-------|----------|--------------|
-| [State Management](state-management.md) | Saving/loading cohorts | DuckDB persistence, cohort naming, tags |
-| [DuckDB Skill](duckdb-skill.md) | Database queries and operations | SQL queries, schema management |
-| [Identity Correlation](identity-correlation.md) | Linking entities across products | SSN correlation, Person↔Patient/Member/Subject |
+| Skill | Purpose | Triggers |
+|-------|---------|----------|
+| [State Management](state-management.md) | Save, load, and query cohorts | save, load, persist, resume |
+| [Identity Correlation](identity-correlation.md) | Link entities across products | find member, link patient, correlate |
+| [DuckDB Skill](duckdb-skill.md) | Direct database operations | query, SQL, schema |
 
 ## State Management
 
-The state management skill handles cohort persistence across all HealthSim products:
+Enables persistence of generated data across sessions:
 
+- **Save cohorts** - Snapshot your workspace as a named cohort
+- **Load cohorts** - Restore previous work
+- **Auto-persist** - Token-efficient batch generation
+- **Query data** - SQL access to saved entities
+
+**Example:**
 ```
-Save this cohort as "diabetes-cohort-jan-2025"
-Load cohort "test-population"
-List all cohorts
-Get summary for the current cohort
-```
-
-Key concepts:
-- **Cohorts** are named snapshots of generated data
-- **Auto-persist** automatically saves entities as they're generated
-- **Tags** enable organization and filtering
-
-See [state-management.md](state-management.md) for full details.
-
-## DuckDB Operations
-
-The DuckDB skill provides direct database access:
-
-```
-Query the patients table for diabetics
-Show me the schema for the encounters table
-Count members by plan type
+Save these patients as "cardiac-rehab-cohort"
 ```
 
-Key concepts:
-- **main schema** - Generated entities (patients, members, claims, etc.)
-- **network schema** - Real NPPES provider data (8.9M+ providers)
-- **population schema** - Real CDC/Census data (416K+ rows)
-
-See [duckdb-skill.md](duckdb-skill.md) for full details.
+See [state-management.md](state-management.md) for details.
 
 ## Identity Correlation
 
-The identity correlation skill links entities across products:
+Links entities across products using SSN as the universal correlator:
 
 ```
-Link this patient to their member record
-Find all claims for patient MRN00012345
-Show trial subjects with their EMR records
+Person (SSN: 123-45-6789)
+├── Patient (MRN: P001) - PatientSim
+├── Member (MBI: M001) - MemberSim  
+├── RxMember (ID: RX001) - RxMemberSim
+└── Subject (ID: S001) - TrialSim
 ```
 
-Key concepts:
-- **SSN** is the universal correlator across Person entities
-- **Person** is the root entity (PatientSim)
-- **Patient/Member/RxMember/Subject** are domain-specific views
-
-See [identity-correlation.md](identity-correlation.md) for full details.
-
-## Cross-Product Identity Model
-
+**Example:**
 ```
-                    ┌─────────────┐
-                    │   Person    │
-                    │   (SSN)     │
-                    └──────┬──────┘
-                           │
-       ┌───────────────────┼───────────────────┐
-       │                   │                   │
-┌──────▼──────┐    ┌───────▼──────┐    ┌──────▼──────┐
-│   Patient   │    │    Member    │    │   Subject   │
-│ (PatientSim)│    │ (MemberSim)  │    │ (TrialSim)  │
-│    MRN      │    │  Member ID   │    │   USUBJID   │
-└─────────────┘    └──────────────┘    └─────────────┘
-       │                   │
-       │           ┌───────▼──────┐
-       │           │  RxMember    │
-       │           │(RxMemberSim) │
-       │           │  Cardholder  │
-       │           └──────────────┘
-       │
-┌──────▼──────┐
-│  Provider   │
-│ (NetworkSim)│
-│    NPI      │
-└─────────────┘
+Find the member record for patient MRN P001
 ```
 
-## Usage Examples
+See [identity-correlation.md](identity-correlation.md) for details.
 
-### Saving Generated Data
+## DuckDB Skill
 
-```
-Generate 50 diabetic patients with claims
-Save as cohort "diabetes-claims-demo" with tags "demo", "diabetes"
-```
+Direct database access for advanced queries:
 
-### Cross-Product Queries
+- Schema exploration
+- Custom SQL queries
+- Reference data access
+- Aggregations and analysis
 
+**Example:**
 ```sql
--- Find all encounters and claims for a patient
-SELECT p.mrn, e.encounter_date, c.claim_id
-FROM patients p
-JOIN encounters e ON p.id = e.patient_id
-JOIN claims c ON e.encounter_id = c.encounter_id
-WHERE p.mrn = 'MRN00012345';
+SELECT * FROM cohorts WHERE name LIKE '%diabetic%'
 ```
 
-### Loading Reference Data
-
-```
-Look up cardiologists in San Diego County
-Find facilities with oncology services
-Get SVI data for ZIP 92101
-```
+See [duckdb-skill.md](duckdb-skill.md) for details.
 
 ## Related Documentation
 
-- [Data Architecture Guide](../../docs/data-architecture.md)
-- [HealthSim Architecture Guide](../../docs/HEALTHSIM-ARCHITECTURE-GUIDE.md)
-- [MCP Server Configuration](../../packages/mcp-server/README.md)
-
----
-
-*Common skills are foundational infrastructure used by all HealthSim products.*
+- [Data Architecture](../../docs/data-architecture.md) - Database schema details
+- [Cross-Product Integration](../../docs/HEALTHSIM-ARCHITECTURE-GUIDE.md#3-product-relationships) - How products work together

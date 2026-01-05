@@ -611,19 +611,19 @@ Add new section:
 ### Profile Building
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
-| [profile-builder](skills/generation/builders/profile-builder.md) | Build population profiles | "Generate N members...", "Create a cohort..." |
-| [quick-generate](skills/generation/builders/quick-generate.md) | Single entity fast path | "Give me a patient...", "Quick, generate..." |
+| [profile-builder](../../../skills/generation/builders/profile-builder.md) | Build population profiles | "Generate N members...", "Create a cohort..." |
+| [quick-generate](../../../skills/generation/builders/quick-generate.md) | Single entity fast path | "Give me a patient...", "Quick, generate..." |
 
 ### Journey Building
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
-| [journey-builder](skills/generation/builders/journey-builder.md) | Define event sequences | "Add a journey...", "With monthly visits..." |
+| [journey-builder](../../../skills/generation/builders/journey-builder.md) | Define event sequences | "Add a journey...", "With monthly visits..." |
 
 ### Execution
 | Skill | Purpose | When to Use |
 |-------|---------|-------------|
-| [profile-executor](skills/generation/executors/profile-executor.md) | Execute specifications | After profile approval |
-| [journey-executor](skills/generation/executors/journey-executor.md) | Execute journeys | After journey approval |
+| [profile-executor](../../../skills/generation/executors/profile-executor.md) | Execute specifications | After profile approval |
+| [journey-executor](../../../skills/generation/executors/journey-executor.md) | Execute journeys | After journey approval |
 ```
 
 **File:** `skills/generation/SKILL.md`

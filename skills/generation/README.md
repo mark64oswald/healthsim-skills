@@ -168,7 +168,7 @@ For detailed design rationale and specifications, see:
 - [Generative Framework Concepts](../../docs/initiatives/generative-framework/CONCEPTS.md)
 - [Design Decisions](../../docs/initiatives/generative-framework/DECISIONS.md)
 - [Profile Builder Specification](../../docs/initiatives/generative-framework/PROFILE-BUILDER-SPEC.md)
-- [Implementation Plan](../../docs/initiatives/generative-framework/GENERATIVE-FRAMEWORK-IMPLEMENTATION-PLAN.md)
+- [Master Plan](../../docs/initiatives/generative-framework/GENERATIVE-FRAMEWORK-MASTER-PLAN.md)
 
 ---
 

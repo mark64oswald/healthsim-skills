@@ -113,8 +113,8 @@ touch skills/patientsim/maternal-health.md
 
 ## Related Skills
 
-- [SKILL.md](SKILL.md) - PatientSim overview
-- [../../references/code-systems.md](../../references/code-systems.md) - OB-related codes
+- [SKILL.md](../skills/patientsim/SKILL.md) - PatientSim overview
+- [code-systems.md](../references/code-systems.md) - OB-related codes
 ```
 
 ### Step 4: Update the SKILL.md
@@ -127,7 +127,7 @@ Add your scenario to the product's SKILL.md:
 | Scenario | Trigger Phrases | File |
 |----------|-----------------|------|
 | ... existing ... |
-| **Maternal Health** | pregnancy, prenatal, OB visit | [maternal-health.md](maternal-health.md) |
+| **Maternal Health** | pregnancy, prenatal, OB visit | [maternal-health.md](../skills/patientsim/maternal-health.md) |
 ```
 
 ### Step 5: Update the Main SKILL.md
@@ -196,7 +196,7 @@ Map ICD-10 codes to SNOMED CT where possible.
 
 ## Related Formats
 
-- [fhir-r4.md](fhir-r4.md) - Alternative modern format
+- [fhir-r4.md](../formats/fhir-r4.md) - Alternative modern format
 ```
 
 ### Step 3: Update Main SKILL.md

@@ -104,9 +104,9 @@ Practice generating patients with different characteristics:
 
 ## What's Next?
 
-In [Tutorial 2: Clinical Scenario](02-clinical-scenario.md), you'll learn to add conditions, medications, and lab values to make your patients clinically realistic.
+In [Tutorial 2: Clinical Scenario](02-clinical-cohort.md), you'll learn to add conditions, medications, and lab values to make your patients clinically realistic.
 
 ---
 
 **← Previous:** [Tutorials Home](README.md)  
-**→ Next:** [Tutorial 2: Clinical Scenario](02-clinical-scenario.md)
+**→ Next:** [Tutorial 2: Clinical Scenario](02-clinical-cohort.md)

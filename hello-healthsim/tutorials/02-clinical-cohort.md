@@ -1,4 +1,4 @@
-# Tutorial 2: Clinical Scenario
+# Tutorial 2: Clinical Cohort
 
 **Time:** 15 minutes  
 **Level:** Beginner  
@@ -131,7 +131,7 @@ On appropriate guideline-directed therapy."
 
 ## Try It Yourself
 
-Practice creating clinical scenarios:
+Practice creating clinical cohorts:
 
 1. "Generate a patient with COPD and add inhalers"
 2. "Create a heart failure patient with recent echo results"

@@ -7,7 +7,7 @@ Progressive tutorials for learning the HealthSim Generative Framework.
 | Level | Tutorial | Focus | Time |
 |-------|----------|-------|------|
 | 1 | [First Patient](01-first-patient.md) | Generate your first patient | 10 min |
-| 2 | [Clinical Scenario](02-clinical-scenario.md) | Add conditions, meds, labs | 15 min |
+| 2 | [Clinical Scenario](02-clinical-cohort.md) | Add conditions, meds, labs | 15 min |
 | 3 | [Claims Journey](03-claims-journey.md) | Generate claims from encounters | 20 min |
 | 4 | [Population Cohort](04-population-cohort.md) | Use Profile Builder for groups | 25 min |
 | 5 | [Full Integration](05-full-integration.md) | Complete cross-product journey | 30 min |

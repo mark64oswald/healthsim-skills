@@ -421,8 +421,8 @@ Or specify different regimen?"
 
 ## Related Templates
 
-- [TrialSim Protocol](../../trialsim/protocol-patterns.md) - Clinical trial context
-- [Oncology Examples](../../../hello-healthsim/examples/oncology-examples.md) - Specific cancer examples
+- [TrialSim Clinical Trials](../../../trialsim/SKILL.md) - Clinical trial context
+- [TrialSim Phase 3](../../../trialsim/phase3-pivotal.md) - Pivotal trial protocols
 - [Surgical Episode](surgical-episode.md) - Pre/post surgical care
 
 ---

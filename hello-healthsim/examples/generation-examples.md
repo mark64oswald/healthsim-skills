@@ -452,10 +452,10 @@ View Claims: `SELECT * FROM main.claims_837`"
 
 ## Next Steps
 
-- [Profile Builder Skill](../skills/generation/builders/profile-builder.md)
-- [Journey Builder Skill](../skills/generation/builders/journey-builder.md)
-- [Template Library](../skills/generation/templates/)
-- [Distribution Types](../skills/generation/distributions/distribution-types.md)
+- [Profile Builder Skill](../../skills/generation/builders/profile-builder.md)
+- [Journey Builder Skill](../../skills/generation/builders/journey-builder.md)
+- [Template Library](../../skills/generation/templates/)
+- [Distribution Types](../../skills/generation/distributions/distribution-types.md)
 
 ---
 

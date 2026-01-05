@@ -41,7 +41,7 @@ PopulationSim serves as the demographic and SDOH foundation for the entire Healt
 | [Population to Patient](population-to-patient.md) | Generate patients from population profile | PopulationSim → PatientSim |
 | [Population to Member](population-to-member.md) | Generate members with SDOH-driven plan selection | PopulationSim → MemberSim |
 | [Population to Trial](population-to-trial.md) | Trial feasibility and subject generation | PopulationSim → TrialSim |
-| [Full Ecosystem](full-ecosystem-scenario.md) | End-to-end multi-product generation | All products |
+| [Full Ecosystem](full-ecosystem-cohort.md) | End-to-end multi-product generation | All products |
 
 ---
 

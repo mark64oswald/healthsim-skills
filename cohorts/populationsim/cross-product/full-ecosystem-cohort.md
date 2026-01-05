@@ -1,16 +1,16 @@
-# Full Ecosystem Integration Scenario
+# Full Ecosystem Integration Cohort
 
 ## Overview
 
-This scenario demonstrates end-to-end integration across the entire HealthSim ecosystem, following a family through enrollment, clinical care, and clinical trial participation—all anchored by PopulationSim demographic and SDOH foundations.
+This cohort demonstrates end-to-end integration across the entire HealthSim ecosystem, following a family through enrollment, clinical care, and clinical trial participation—all anchored by PopulationSim demographic and SDOH foundations.
 
 ---
 
-## Scenario: The Garcia Family Journey
+## Cohort: The Garcia Family Journey
 
 ### Family Profile
 
-The Garcia family lives in a high-vulnerability census tract in Houston, Texas. This scenario traces their healthcare journey across all HealthSim products.
+The Garcia family lives in a high-vulnerability census tract in Houston, Texas. This cohort traces their healthcare journey across all HealthSim products.
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
@@ -616,7 +616,7 @@ TrialSim
 
 ---
 
-## Related Scenarios
+## Related Cohorts
 
 - [Population to Patient](population-to-patient.md)
 - [Population to Member](population-to-member.md)
