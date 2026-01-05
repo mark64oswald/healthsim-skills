@@ -1,14 +1,14 @@
 """Formats module - CDISC/SDTM export capabilities.
 
 This module provides export functionality for clinical trial data
-to standard formats including CDISC SDTM.
+to industry-standard formats including CDISC SDTM.
 """
 
 from trialsim.formats.sdtm import (
     SDTMDomain,
     SDTMVariable,
-    ExportFormat,
     ExportConfig,
+    ExportFormat,
     ExportResult,
     SDTMExporter,
     export_to_sdtm,
@@ -18,8 +18,8 @@ from trialsim.formats.sdtm import (
 __all__ = [
     "SDTMDomain",
     "SDTMVariable",
-    "ExportFormat",
     "ExportConfig",
+    "ExportFormat",
     "ExportResult",
     "SDTMExporter",
     "export_to_sdtm",
