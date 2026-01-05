@@ -1,3 +1,51 @@
-"""SDTM export module - CDISC SDTM format generation."""
+"""SDTM export module - CDISC SDTM format generation.
 
-__all__ = []
+This module provides SDTM (Study Data Tabulation Model) export capabilities
+for TrialSim clinical trial data.
+
+Supported Domains:
+- DM: Demographics
+- AE: Adverse Events
+- EX: Exposure
+- SV: Subject Visits
+"""
+
+from trialsim.formats.sdtm.domains import (
+    SDTMDomain,
+    SDTMVariable,
+    DM_VARIABLES,
+    AE_VARIABLES,
+    EX_VARIABLES,
+    SV_VARIABLES,
+    DOMAIN_VARIABLES,
+    get_domain_variables,
+    get_required_variables,
+)
+from trialsim.formats.sdtm.exporter import (
+    ExportFormat,
+    ExportConfig,
+    ExportResult,
+    SDTMExporter,
+    export_to_sdtm,
+    create_sdtm_exporter,
+)
+
+__all__ = [
+    # Domains
+    "SDTMDomain",
+    "SDTMVariable",
+    "DM_VARIABLES",
+    "AE_VARIABLES",
+    "EX_VARIABLES",
+    "SV_VARIABLES",
+    "DOMAIN_VARIABLES",
+    "get_domain_variables",
+    "get_required_variables",
+    # Exporter
+    "ExportFormat",
+    "ExportConfig",
+    "ExportResult",
+    "SDTMExporter",
+    "export_to_sdtm",
+    "create_sdtm_exporter",
+]

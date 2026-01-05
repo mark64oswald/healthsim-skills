@@ -24,39 +24,40 @@ This plan addresses two tracks:
 ## Track 2: Generative Framework Gaps
 
 ### 2.1 MCP Tools for Profile Management ✅
-**Status**: Already Implemented (19 tests)
+**Status**: Already Implemented (19 tests passing)
 
 ### 2.2 Cross-Product Integration ✅
-**Status**: Complete
-**Commit**: d94e79d2
-
-Implemented CrossDomainSync framework (26 tests)
+**Commit**: d94e79d2 (26 tests)
 
 ### 2.3 Journey Validation Framework ✅
-**Status**: ✅ Complete
-**Commit**: c822ebe4
+**Commit**: 0e106ad8 (39 tests)
 
-Implemented comprehensive validation:
-- JourneySpecValidator (pre-execution)
-- TimelineValidator (post-execution)
-- CrossEventValidator (cross-event consistency)
-- JourneyValidator (combined)
-- 39 tests passing
+### 2.4 TrialSim SDTM Export ✅
+**Status**: ✅ Complete (23 tests)
 
-### 2.4 TrialSim SDTM Export
-**Status**: 🔄 Next
-**Effort**: Medium
-
-Implement CDISC SDTM format export:
-- [ ] DM (Demographics) domain
-- [ ] AE (Adverse Events) domain
-- [ ] EX (Exposure) domain
-- [ ] VS (Vital Signs) domain
-- [ ] SDTM validation
+Implemented CDISC SDTM export:
+- SDTMDomain, SDTMVariable definitions
+- DM, AE, EX, SV domain mappings
+- SDTMExporter with CSV/JSON/XPT output
+- USUBJID formatting, study day calculation
+- Code list mappings (sex, severity, causality, route)
 
 ### 2.5 PopulationSim Reference Data Integration
-**Status**: ⬜ Not Started
+**Status**: 🔄 In Progress
 **Effort**: Medium
+
+---
+
+## Execution Order
+
+| Phase | Items | Status |
+|-------|-------|--------|
+| **Phase A** | 1.1, 1.2, 1.3 | ✅ Complete |
+| **Phase B** | 2.1 (MCP) | ✅ Already Done |
+| **Phase C** | 2.2 (Cross-Product) | ✅ Complete |
+| **Phase D** | 2.3 (Validation) | ✅ Complete |
+| **Phase E** | 2.4 (SDTM) | ✅ Complete |
+| **Phase F** | 2.5 (PopulationSim) | 🔄 In Progress |
 
 ---
 
@@ -66,7 +67,8 @@ Implement CDISC SDTM format export:
 |------|-----------------|-------|---------|
 | 2026-01-05 | Track 1 complete | 1,350 | 89c31515 |
 | 2026-01-05 | 2.2 CrossDomainSync | 1,376 | d94e79d2 |
-| 2026-01-05 | 2.3 JourneyValidation | 1,415 | c822ebe4 |
+| 2026-01-05 | 2.3 JourneyValidation | 1,415 | 0e106ad8 |
+| 2026-01-05 | 2.4 SDTM Export | 1,438 | pending |
 
 ---
 
