@@ -168,7 +168,7 @@ def format_cohort_summary(
     return "\n".join(lines)
 
 
-def format_scenario_list(scenarios: dict[str, dict[str, Any]]) -> str:
+def format_skill_list(scenarios: dict[str, dict[str, Any]]) -> str:
     """
     Format available scenarios as a list.
 
@@ -179,10 +179,10 @@ def format_scenario_list(scenarios: dict[str, dict[str, Any]]) -> str:
         Markdown-formatted scenario list
     """
     if not scenarios:
-        return "No scenarios available."
+        return "No skills available."
 
     lines = [
-        "## Available Scenarios",
+        "## Available Skills",
         "",
     ]
 
@@ -199,7 +199,7 @@ def format_scenario_list(scenarios: dict[str, dict[str, Any]]) -> str:
     return "\n".join(lines)
 
 
-def format_scenario_details(
+def format_skill_details(
     name: str,
     metadata: dict[str, Any],
 ) -> str:
@@ -214,7 +214,7 @@ def format_scenario_details(
         Markdown-formatted scenario details
     """
     lines = [
-        f"## Scenario: {name}",
+        f"## Skill: {name}",
         "",
     ]
 

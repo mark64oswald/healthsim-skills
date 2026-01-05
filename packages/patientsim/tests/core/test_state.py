@@ -15,7 +15,6 @@ from patientsim.core.state import (
     Provenance,
     ProvenanceSummary,
     Scenario,
-    CohortMetadata,
     SourceType,
     Workspace,
     WorkspaceMetadata,
@@ -71,7 +70,7 @@ class TestProvenance:
 
 
 class TestWorkspaceMetadata:
-    """Tests for WorkspaceMetadata model (CohortMetadata alias)."""
+    """Tests for WorkspaceMetadata model."""
 
     def test_create_metadata_minimal(self):
         """Test creating metadata with just name."""
@@ -97,12 +96,12 @@ class TestWorkspaceMetadata:
         assert meta.tags == ["diabetes", "training"]
         assert meta.product == "patientsim"
 
-    def test_cohort_alias_works(self):
-        """Test CohortMetadata alias works."""
-        # CohortMetadata is an alias for WorkspaceMetadata
-        meta = CohortMetadata(name="alias-test")
-        assert meta.name == "alias-test"
-        assert meta.workspace_id is not None
+    def test_scenario_alias_works(self):
+        """Test ScenarioMetadata alias works (legacy compatibility)."""
+        # Scenario is an alias for Workspace (legacy)
+        meta = Workspace(metadata=WorkspaceMetadata(name="alias-test"))
+        assert meta.metadata.name == "alias-test"
+        assert meta.metadata.workspace_id is not None
 
 
 class TestEntityWithProvenance:
@@ -192,19 +191,19 @@ class TestWorkspace:
         assert loaded.metadata.description == "Testing save/load"
         assert loaded.get_entity_count("patients") == 1
 
-    def test_cohort_alias_save_and_load(self, temp_dir, sample_patient_entity):
-        """Test Scenario alias works for save/load."""
-        # Scenario is an alias for Workspace
-        cohort = Cohort(
-            metadata=CohortMetadata(name="alias-test"),
+    def test_scenario_alias_save_and_load(self, temp_dir, sample_patient_entity):
+        """Test Scenario alias works for save/load (legacy compatibility)."""
+        # Scenario is an alias for Workspace (legacy)
+        scenario = Scenario(
+            metadata=WorkspaceMetadata(name="alias-test"),
             entities={"patients": [sample_patient_entity]},
         )
 
-        file_path = cohort.save(directory=temp_dir)
+        file_path = scenario.save(directory=temp_dir)
         assert file_path.exists()
 
-        # Load using Cohort.load
-        loaded = Cohort.load(cohort.metadata.workspace_id, directory=temp_dir)
+        # Load using Scenario.load (legacy alias)
+        loaded = Scenario.load(scenario.metadata.workspace_id, directory=temp_dir)
         assert loaded.metadata.name == "alias-test"
 
     def test_find_by_name(self, temp_dir, sample_patient_entity):
@@ -422,12 +421,8 @@ class TestWorkspace:
 
 # Legacy compatibility tests
 class TestScenarioAlias:
-    """Test that Scenario alias works correctly."""
+    """Test that Scenario alias works correctly (legacy compatibility)."""
 
-    def test_cohort_is_workspace_alias(self):
+    def test_scenario_is_workspace_alias(self):
         """Test Scenario is an alias for Workspace."""
         assert Scenario is Workspace
-
-    def test_cohort_metadata_is_workspace_metadata_alias(self):
-        """Test CohortMetadata is an alias for WorkspaceMetadata."""
-        assert CohortMetadata is WorkspaceMetadata

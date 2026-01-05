@@ -81,13 +81,23 @@ class MemberFactory:
         )
 
     def _generate_birth_date(self, min_age: int = 0, max_age: int = 90) -> date:
-        """Generate a birth date within age constraints."""
+        """Generate a birth date within age constraints.
+        
+        Ensures birth date is never in the future.
+        """
         today = date.today()
         age = self._rng.randint(min_age, max_age)
         birth_year = today.year - age
         birth_month = self._rng.randint(1, 12)
         birth_day = self._rng.randint(1, 28)  # Safe for all months
-        return date(birth_year, birth_month, birth_day)
+        birth_date = date(birth_year, birth_month, birth_day)
+        
+        # Ensure birth date is not in the future
+        if birth_date > today:
+            # Move to previous year to ensure valid past date
+            birth_date = date(birth_year - 1, birth_month, birth_day)
+        
+        return birth_date
 
     def _generate_coverage_start(self) -> date:
         """Generate a coverage start date."""

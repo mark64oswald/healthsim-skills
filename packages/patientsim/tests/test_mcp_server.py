@@ -14,7 +14,7 @@ from patientsim.mcp.generation_server import (
     _generate_cohort_tool,
     _generate_patient_tool,
     _list_saved_cohorts_tool,
-    _list_cohorts_tool,
+    _list_skills_tool,
     _load_cohort_tool,
     _save_cohort_tool,
     _workspace_summary_tool,
@@ -37,8 +37,8 @@ class TestToolListing:
         tool_names = [tool.name for tool in tools]
         assert "generate_patient" in tool_names
         assert "generate_cohort" in tool_names
-        assert "list_cohorts" in tool_names
-        assert "describe_cohort" in tool_names
+        assert "list_skills" in tool_names
+        assert "describe_skill" in tool_names
 
     @pytest.mark.asyncio
     async def test_tools_have_descriptions(self) -> None:
@@ -117,20 +117,20 @@ class TestGenerateCohortTool:
         assert text_content.type == "text"
 
 
-class TestListScenariosTool:
-    """Tests for list_cohorts tool."""
+class TestListSkillsTool:
+    """Tests for list_skills tool (clinical scenario templates)."""
 
     @pytest.mark.asyncio
-    async def test_list_cohorts_basic(self) -> None:
-        """Test basic cohort listing."""
+    async def test_list_skills_basic(self) -> None:
+        """Test basic skills listing."""
         arguments = {}
 
-        result = await _list_cohorts_tool(arguments)
+        result = await _list_skills_tool(arguments)
 
         assert len(result) == 1
         text_content = result[0]
         assert text_content.type == "text"
-        # Should return information about available cohorts
+        # Should return information about available skills
         assert len(text_content.text) > 0
 
 
@@ -248,7 +248,7 @@ class TestStateManagementTools:
         """Test delete requires confirmation."""
         result = await _delete_cohort_tool(
             {
-                "scenario_id": "some-id",
+                "cohort_id": "some-id",
                 "confirm": False,
             }
         )
@@ -261,7 +261,7 @@ class TestStateManagementTools:
         """Test deleting non-existent scenario."""
         result = await _delete_cohort_tool(
             {
-                "scenario_id": "nonexistent-id",
+                "cohort_id": "nonexistent-id",
                 "confirm": True,
             }
         )

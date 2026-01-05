@@ -7,8 +7,8 @@ from patientsim.mcp.formatters import (
     format_cohort_summary,
     format_error,
     format_patient_summary,
-    format_scenario_details,
-    format_scenario_list,
+    format_skill_details,
+    format_skill_list,
     format_success,
 )
 from patientsim.mcp.session import PatientSession
@@ -142,11 +142,11 @@ class TestFormatScenarios:
 
     def test_format_empty_scenario_list(self):
         """Test formatting empty scenario list."""
-        result = format_scenario_list({})
+        result = format_skill_list({})
 
-        assert "No scenarios available" in result
+        assert "No skills available" in result
 
-    def test_format_scenario_list(self):
+    def test_format_skill_list(self):
         """Test formatting scenario list."""
         scenarios = {
             "icu_sepsis": {
@@ -159,14 +159,14 @@ class TestFormatScenarios:
             },
         }
 
-        result = format_scenario_list(scenarios)
+        result = format_skill_list(scenarios)
 
-        assert "Available Scenarios" in result
+        assert "Available Skills" in result
         assert "icu_sepsis" in result
         assert "ed_chest_pain" in result
         assert "ICU patient with sepsis" in result
 
-    def test_format_scenario_details(self):
+    def test_format_skill_details(self):
         """Test formatting scenario details."""
         metadata = {
             "description": "ICU patient with sepsis",
@@ -180,9 +180,9 @@ class TestFormatScenarios:
             "category": "critical_care",
         }
 
-        result = format_scenario_details("icu_sepsis", metadata)
+        result = format_skill_details("icu_sepsis", metadata)
 
-        assert "Scenario: icu_sepsis" in result
+        assert "Skill: icu_sepsis" in result
         assert "ICU patient with sepsis" in result
         assert "Parameters" in result
         assert "age_range" in result

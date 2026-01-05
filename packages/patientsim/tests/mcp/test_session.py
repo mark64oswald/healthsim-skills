@@ -379,7 +379,7 @@ class TestPatientSessionEntities:
         assert summary["lab_count"] == 3
 
 
-class TestSessionManagerScenarios:
+class TestSessionManagerCohorts:
     """Tests for scenario save/load in SessionManager."""
 
     @pytest.fixture
@@ -392,13 +392,13 @@ class TestSessionManagerScenarios:
         """Create a session manager with temp directory."""
         return SessionManager(workspace_dir=temp_scenarios_dir)
 
-    def test_save_scenario_empty_workspace(self, session_manager, temp_scenarios_dir):
+    def test_save_cohort_empty_workspace(self, session_manager, temp_scenarios_dir):
         """Test saving empty workspace raises error context."""
         # Empty workspace should still work but with 0 patients
-        scenario = session_manager.save_scenario(name="empty-test")
+        scenario = session_manager.save_cohort(name="empty-test")
         assert scenario.get_entity_count("patients") == 0
 
-    def test_save_and_load_scenario(self, session_manager, generator, temp_scenarios_dir):
+    def test_save_and_load_cohort(self, session_manager, generator, temp_scenarios_dir):
         """Test saving and loading a scenario."""
         # Add some patients
         for _ in range(3):
@@ -406,7 +406,7 @@ class TestSessionManagerScenarios:
             session_manager.add_patient(patient)
 
         # Save
-        scenario = session_manager.save_scenario(
+        scenario = session_manager.save_cohort(
             name="test-cohort",
             description="Testing save/load",
             tags=["test"],
@@ -420,20 +420,20 @@ class TestSessionManagerScenarios:
         assert session_manager.count() == 0
 
         # Load
-        loaded_scenario, summary = session_manager.load_scenario(name="test-cohort")
+        loaded_scenario, summary = session_manager.load_cohort(name="test-cohort")
 
         assert loaded_scenario.metadata.name == "test-cohort"
         assert summary["patients_loaded"] == 3
         assert session_manager.count() == 3
 
-    def test_load_scenario_replace_mode(self, session_manager, generator, temp_scenarios_dir):
+    def test_load_cohort_replace_mode(self, session_manager, generator, temp_scenarios_dir):
         """Test loading scenario replaces existing patients."""
         # Add initial patient
         patient1 = generator.generate_patient()
         session_manager.add_patient(patient1)
 
         # Save as scenario
-        session_manager.save_scenario(name="scenario-a")
+        session_manager.save_cohort(name="scenario-a")
 
         # Add another patient
         patient2 = generator.generate_patient()
@@ -441,17 +441,17 @@ class TestSessionManagerScenarios:
         assert session_manager.count() == 2
 
         # Load scenario in replace mode (default)
-        session_manager.load_scenario(name="scenario-a", mode="replace")
+        session_manager.load_cohort(name="scenario-a", mode="replace")
 
         # Should only have 1 patient from scenario
         assert session_manager.count() == 1
 
-    def test_load_scenario_merge_mode(self, session_manager, generator, temp_scenarios_dir):
+    def test_load_cohort_merge_mode(self, session_manager, generator, temp_scenarios_dir):
         """Test loading scenario in merge mode."""
         # Create and save scenario with 2 patients
         for _ in range(2):
             session_manager.add_patient(generator.generate_patient())
-        session_manager.save_scenario(name="scenario-merge")
+        session_manager.save_cohort(name="scenario-merge")
 
         # Clear and add different patient
         session_manager.clear()
@@ -459,21 +459,21 @@ class TestSessionManagerScenarios:
         assert session_manager.count() == 1
 
         # Load in merge mode
-        _, summary = session_manager.load_scenario(name="scenario-merge", mode="merge")
+        _, summary = session_manager.load_cohort(name="scenario-merge", mode="merge")
 
         # Should have 3 patients (1 existing + 2 from scenario)
         assert session_manager.count() == 3
         assert summary["patients_loaded"] == 2
 
-    def test_list_scenarios(self, session_manager, generator, temp_scenarios_dir):
+    def test_list_cohorts(self, session_manager, generator, temp_scenarios_dir):
         """Test listing saved scenarios."""
         # Create multiple scenarios
         for _i, name in enumerate(["alpha", "beta", "gamma"]):
             session_manager.clear()
             session_manager.add_patient(generator.generate_patient())
-            session_manager.save_scenario(name=name, tags=["test"])
+            session_manager.save_cohort(name=name, tags=["test"])
 
-        scenarios = session_manager.list_scenarios()
+        scenarios = session_manager.list_cohorts()
 
         assert len(scenarios) == 3
         names = [s["name"] for s in scenarios]
@@ -481,57 +481,57 @@ class TestSessionManagerScenarios:
         assert "beta" in names
         assert "gamma" in names
 
-    def test_list_scenarios_with_search(self, session_manager, generator, temp_scenarios_dir):
+    def test_list_cohorts_with_search(self, session_manager, generator, temp_scenarios_dir):
         """Test filtering scenarios by search string."""
         session_manager.add_patient(generator.generate_patient())
 
-        session_manager.save_scenario(name="diabetes-cohort")
-        session_manager.save_scenario(name="cardiac-testing")
+        session_manager.save_cohort(name="diabetes-cohort")
+        session_manager.save_cohort(name="cardiac-testing")
 
-        results = session_manager.list_scenarios(search="diabetes")
+        results = session_manager.list_cohorts(search="diabetes")
 
         assert len(results) == 1
         assert results[0]["name"] == "diabetes-cohort"
 
-    def test_list_scenarios_with_tags(self, session_manager, generator, temp_scenarios_dir):
+    def test_list_cohorts_with_tags(self, session_manager, generator, temp_scenarios_dir):
         """Test filtering scenarios by tags."""
         session_manager.add_patient(generator.generate_patient())
 
-        session_manager.save_scenario(name="s1", tags=["training", "diabetes"])
-        session_manager.save_scenario(name="s2", tags=["training"])
-        session_manager.save_scenario(name="s3", tags=["production"])
+        session_manager.save_cohort(name="s1", tags=["training", "diabetes"])
+        session_manager.save_cohort(name="s2", tags=["training"])
+        session_manager.save_cohort(name="s3", tags=["production"])
 
-        results = session_manager.list_scenarios(tags=["training"])
+        results = session_manager.list_cohorts(tags=["training"])
         assert len(results) == 2
 
-        results = session_manager.list_scenarios(tags=["training", "diabetes"])
+        results = session_manager.list_cohorts(tags=["training", "diabetes"])
         assert len(results) == 1
         assert results[0]["name"] == "s1"
 
-    def test_delete_scenario(self, session_manager, generator, temp_scenarios_dir):
+    def test_delete_cohort(self, session_manager, generator, temp_scenarios_dir):
         """Test deleting a scenario."""
         session_manager.add_patient(generator.generate_patient())
-        scenario = session_manager.save_scenario(name="to-delete")
+        scenario = session_manager.save_cohort(name="to-delete")
 
         workspace_id = scenario.metadata.workspace_id
 
         # Verify it exists
-        scenarios = session_manager.list_scenarios()
+        scenarios = session_manager.list_cohorts()
         assert len(scenarios) == 1
 
         # Delete
-        result = session_manager.delete_scenario(workspace_id)
+        result = session_manager.delete_cohort(workspace_id)
 
         assert result is not None
         assert result["name"] == "to-delete"
 
         # Verify deleted
-        scenarios = session_manager.list_scenarios()
+        scenarios = session_manager.list_cohorts()
         assert len(scenarios) == 0
 
     def test_delete_nonexistent_scenario(self, session_manager, temp_scenarios_dir):
         """Test deleting non-existent scenario returns None."""
-        result = session_manager.delete_scenario("nonexistent-id")
+        result = session_manager.delete_cohort("nonexistent-id")
         assert result is None
 
     def test_scenario_preserves_provenance(self, session_manager, generator, temp_scenarios_dir):
@@ -542,11 +542,11 @@ class TestSessionManagerScenarios:
         prov = Provenance.generated(skill_used="diabetes-management")
 
         session_manager.add_patient(patient, provenance=prov)
-        session_manager.save_scenario(name="provenance-test")
+        session_manager.save_cohort(name="provenance-test")
 
         # Clear and reload
         session_manager.clear()
-        session_manager.load_scenario(name="provenance-test")
+        session_manager.load_cohort(name="provenance-test")
 
         # After load, provenance is updated to "loaded"
         loaded_session = session_manager.get_latest()
@@ -559,6 +559,6 @@ class TestSessionManagerScenarios:
 
         # Save only first 2
         patient_ids = [sessions[0].id, sessions[1].id]
-        scenario = session_manager.save_scenario(name="subset", patient_ids=patient_ids)
+        scenario = session_manager.save_cohort(name="subset", patient_ids=patient_ids)
 
         assert scenario.get_entity_count("patients") == 2
