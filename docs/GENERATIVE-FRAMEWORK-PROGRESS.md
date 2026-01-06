@@ -1,7 +1,7 @@
 # Generative Framework Implementation - Progress Tracker
 
 **Started**: 2026-01-06
-**Current Phase**: Phase 2 - Product Integration Layer
+**Current Phase**: Phase 3 - Skill Integration
 **Last Updated**: 2026-01-06
 
 ---
@@ -19,67 +19,72 @@
 
 ---
 
-## Phase 2: Product Integration Layer (IN PROGRESS)
+## Phase 2: Product Integration Layer ✅ COMPLETE
 
 ### 2.1 Create generation/ Module ✅ COMPLETE
-
-| Product | Module | profiles.py | executor.py | templates.py | generate.py |
-|---------|--------|-------------|-------------|--------------|-------------|
-| MemberSim | ✅ | ✅ | ✅ | ✅ | ✅ |
-| PatientSim | ✅ | ✅ | ✅ | ✅ | ✅ |
-| RxMemberSim | ✅ | ✅ | ✅ | ✅ | ✅ |
-| TrialSim | ✅ | ✅ | ✅ | ✅ | ✅ |
+All 4 products have generation/ modules with profiles.py, executor.py, templates.py, generate.py
 
 ### 2.2 Tests for Generation Modules ✅ COMPLETE
-
-| Product | Unit Tests | Integration Tests | Status |
-|---------|------------|-------------------|--------|
-| MemberSim | ✅ 28 passed | ✅ | Complete |
-| PatientSim | ✅ 24 passed | ✅ | Complete |
-| RxMemberSim | ✅ 21 passed | ✅ | Complete |
-| TrialSim | ✅ 61 passed | ✅ | Complete |
-
-**Total: 134 generation module tests**
+- MemberSim: 28 tests
+- PatientSim: 24 tests
+- RxMemberSim: 21 tests
+- TrialSim: 30 tests
+- **Total: 103 product generation tests**
 
 ### 2.3 ProfileJourneyOrchestrator ✅ COMPLETE
-
-| Task | Status |
-|------|--------|
-| Create orchestrator class | ✅ |
-| Wire profile → journey | ✅ |
-| Tests | ✅ 12 passed |
+- 12 tests passing
 
 ### 2.4 Core Unified Entry Point ✅ COMPLETE
-
-| Task | Status |
-|------|--------|
-| Create healthsim.generate() | ✅ |
-| Tests | ✅ 19 passed |
-| Docs | ⬜ |
+- healthsim.generate() implemented
+- 19 tests passing
 
 ### 2.5 README Updates ✅ COMPLETE
-
-| Product | README Updated |
-|---------|----------------|
-| Core | ✅ |
-| MemberSim | ✅ |
-| PatientSim | ✅ |
-| RxMemberSim | ✅ |
-| TrialSim | ✅ |
+All product READMEs updated with generation examples
 
 ### Phase 2 Documentation ✅ COMPLETE
+- docs/api/generation.md created
 
-| Task | Status |
-|------|--------|
-| docs/api/generation.md | ✅ |
-| Quick-start examples | ✅ |
-| Link validation | ⬜ |
+**Phase 2 Total Tests: 616** (482 core + 103 product + 12 orchestrator + 19 unified)
 
 ---
 
-## Current Task: Phase 3 - Pending
+## Phase 3: Skill Integration (IN PROGRESS)
 
-Phase 2 complete. Ready for Phase 3 planning.
+### 3.1 Define Skill Reference Pattern
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Define SkillReference schema | ⬜ | Pydantic model for referencing skills |
+| Add to EventDefinition | ⬜ | skill_ref field in journey events |
+| Create SkillResolver class | ⬜ | Load and query skills at runtime |
+
+### 3.2 Skill-Aware Event Resolution
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Create parameter resolver | ⬜ | Resolve skill refs to concrete values |
+| Handle context variables | ⬜ | ${entity.control_status} etc. |
+| Cache loaded skills | ⬜ | Performance optimization |
+
+### 3.3 Migrate Hardcoded Values
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Update diabetic-first-year | ⬜ | Replace hardcoded ICD-10, RxNorm |
+| Test migration | ⬜ | Verify same output |
+
+### 3.4 Documentation
+
+| Task | Status | Notes |
+|------|--------|-------|
+| docs/guides/skill-integration.md | ⬜ | |
+| Update skill examples | ⬜ | |
+
+---
+
+## Current Task: Phase 3.1 - SkillReference Schema
+
+Creating the schema and resolver for skill-aware journey parameters.
 
 ---
 
@@ -87,34 +92,19 @@ Phase 2 complete. Ready for Phase 3 planning.
 
 | Hash | Description |
 |------|-------------|
+| 2274f58 | Complete Phase 2.5: Add API documentation |
 | ebfa973 | Phase 2.5: Add generation examples to product READMEs |
-| 41e2bfb | Update progress: Phase 2.3-2.4 complete |
 | 0968481 | Complete Phase 2.4: Add unified healthsim.generate() entry point |
 | 12af54d | Complete Phase 2.3: Add ProfileJourneyOrchestrator |
 | 50a7db6 | Complete Phase 2.2: Add generation tests for all products |
 | 3dfab5c | Complete Phase 2.1: Add generation modules to all products |
-| 94587b6 | Add cross-product matrix and documentation requirements |
-| 42d38fc | Complete Phase 1.1: Foundation verification |
-| 7047a86 | Add Git LFS detection and implementation plan |
 
 ---
 
 ## Session Log
 
-### Session 1 (2026-01-06)
-- Created implementation plan
-- Added Git LFS detection utilities  
-- Completed Phase 1.1 (742+ tests passing)
-- Added cross-product matrix to plan
-
-### Session 2 (2026-01-06)
-- Completed Phase 2.1: All 4 products have generation/ modules
-- MemberSim tests: 28 passed
-- RxMemberSim tests: 21 passed (fixed adherence clamping)
-
-### Session 3 (2026-01-06)
-- Completed Phase 2.2: Tests for PatientSim (24) and TrialSim (61)
-- Completed Phase 2.3: ProfileJourneyOrchestrator (12 tests)
-- Completed Phase 2.4: healthsim.generate() unified entry point (19 tests)
-- Total generation tests: 165 (134 product + 12 orchestrator + 19 unified)
-- **Next**: Phase 2.5 - README Updates
+### Session 4 (2026-01-06)
+- Verified Phase 2 complete (616 generation-related tests)
+- Starting Phase 3: Skill Integration
+- Reviewed existing skills infrastructure (schema.py, loader.py)
+- Analyzed diabetes-management.md skill for integration patterns

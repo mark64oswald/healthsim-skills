@@ -131,6 +131,15 @@ from healthsim.generation.orchestrator import (
     OrchestratorResult,
     orchestrate,
 )
+from healthsim.generation.skill_reference import (
+    SkillReference,
+    ResolvedParameters,
+    SkillResolver,
+    ParameterResolver,
+    get_skill_resolver,
+    get_parameter_resolver,
+    resolve_skill_ref,
+)
 
 __all__ = [
     # Generators
@@ -247,4 +256,12 @@ __all__ = [
     "EntityWithTimeline",
     "OrchestratorResult",
     "orchestrate",
+    # Skill Reference
+    "SkillReference",
+    "ResolvedParameters",
+    "SkillResolver",
+    "ParameterResolver",
+    "get_skill_resolver",
+    "get_parameter_resolver",
+    "resolve_skill_ref",
 ]
