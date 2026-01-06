@@ -46,8 +46,20 @@ from .state import (
     WorkspaceMetadata,
 )
 
+from .unified_generate import (
+    generate,
+    quick_sample,
+    list_products,
+    list_templates,
+)
+
 __all__ = [
     "__version__",
+    # Unified Generation
+    "generate",
+    "quick_sample",
+    "list_products",
+    "list_templates",
     # Benefits
     "Accumulator",
     "AccumulatorLevel",
