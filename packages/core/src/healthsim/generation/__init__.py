@@ -140,6 +140,11 @@ from healthsim.generation.skill_reference import (
     get_parameter_resolver,
     resolve_skill_ref,
 )
+from healthsim.generation.skill_journeys import (
+    SKILL_AWARE_TEMPLATES,
+    list_skill_aware_templates,
+    get_skill_aware_template,
+)
 
 __all__ = [
     # Generators
@@ -264,4 +269,8 @@ __all__ = [
     "get_skill_resolver",
     "get_parameter_resolver",
     "resolve_skill_ref",
+    # Skill-Aware Journeys
+    "SKILL_AWARE_TEMPLATES",
+    "list_skill_aware_templates",
+    "get_skill_aware_template",
 ]
