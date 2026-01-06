@@ -113,18 +113,49 @@ All product READMEs updated with generation examples
 
 ---
 
-## Phase 4: PopulationSim/NetworkSim Integration (NEXT)
+## Phase 4: PopulationSim/NetworkSim Integration ✅ IN PROGRESS
 
-### 4.1 Reference Data Initialization
+### 4.1 NetworkSim Reference Resolver ✅ COMPLETE
 
 | Task | Status | Notes |
 |------|--------|-------|
-| Create `healthsim init` command | ⬜ | |
-| Verify CDC PLACES data loads | ⬜ | |
-| Add NetworkSim provider/facility ref data | ⬜ | |
-| Create data validation checks | ⬜ | |
+| Create NetworkSimResolver | ✅ | 718 lines in networksim_reference.py |
+| Provider lookup by geography | ✅ | find_providers() with state/city/zip filters |
+| Facility lookup by type | ✅ | find_facilities() with hospital/snf/etc types |
+| TAXONOMY_MAP (25 specialties) | ✅ | Maps specialty names to taxonomy codes |
+| Provider/Facility dataclasses | ✅ | Provider, Facility with display methods |
+| Convenience functions | ✅ | assign_provider_to_patient(), etc. |
+| Unit tests | ✅ | 36 tests passing |
 
-### 4.2 Reference Data in Profiles
+**Database**: Uses canonical `healthsim.duckdb` with `network.providers` and `network.facilities` schemas
+
+### 4.2 Reference Integration Tests ✅ COMPLETE
+
+| Task | Status | Notes |
+|------|--------|-------|
+| PopulationSim integration | ✅ | 4 tests - demographics, state aggregation |
+| NetworkSim integration | ✅ | 8 tests - providers, facilities, lookup |
+| Combined integration | ✅ | 3 tests - demographics → provider assignment |
+| Data quality tests | ✅ | 4 tests - coverage, format validation |
+| Total integration tests | ✅ | 19 tests passing |
+
+**Files Created**:
+- `networksim_reference.py` (718 lines)
+- `test_networksim_reference.py` (529 lines)
+- `test_reference_integration.py` (420 lines)
+- `test_networksim_integration.py` (343 lines)
+
+### 4.3 Database Schema Fixes ✅ COMPLETE
+
+| Task | Status | Notes |
+|------|--------|-------|
+| Fix reference_profiles.py | ✅ | Use `population.places_county` not `ref_places_county` |
+| Fix networksim_reference.py | ✅ | Use `network.providers` not `providers` |
+| Canonical DB path | ✅ | All code uses `healthsim.duckdb` |
+
+**Commits**: f39c3bb, 61f38b3
+
+### 4.4 Reference Data in Profiles
 
 | Task | Status | Notes |
 |------|--------|-------|
@@ -180,6 +211,9 @@ All product READMEs updated with generation examples
 
 | Hash | Description |
 |------|-------------|
+| c24d431 | Add products optional dependency and integration marker |
+| 61f38b3 | Phase 4: Update tests for canonical database schema |
+| f39c3bb | Phase 4: Fix database schema references to canonical healthsim.duckdb |
 | f6199c6 | Phase 3.5: Add automatic skill resolution via SkillRegistry |
 | 85b2564 | Phase 3.4: Add skill integration documentation |
 | 11b52c5 | Phase 3.3: Add skill-aware journey templates |
@@ -208,7 +242,9 @@ All product READMEs updated with generation examples
 | Phase 3.3 Skill Journeys | 12 |
 | Phase 3.5 Skill Registry | 30 |
 | Phase 3.5 Auto Resolution | 8 |
-| **Total Generation Tests** | **561** |
+| Phase 4.1 NetworkSim Reference | 36 |
+| Phase 4.2 Reference Integration | 19 |
+| **Total Tests** | **1,578** |
 
 ---
 
@@ -222,5 +258,10 @@ All product READMEs updated with generation examples
   - Phase 3.3: Skill-aware journey templates (12 tests)
   - Phase 3.4: Documentation (skill-integration.md)
   - Phase 3.5: Automatic skill resolution via SkillRegistry (38 tests)
-- Total generation tests now: 561
-- Ready for Phase 4: PopulationSim/NetworkSim Integration
+- Started Phase 4: PopulationSim/NetworkSim Integration
+  - Phase 4.1: NetworkSimResolver with 36 tests
+  - Phase 4.2: Reference integration tests (19 tests)
+  - Phase 4.3: Fixed database schema references
+  - Fixed pre-existing unified_generate.py failures (product packages)
+- Total tests now: 1,578
+- Continuing Phase 4.4: Reference Data in Profiles
