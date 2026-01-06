@@ -30,16 +30,14 @@
 | RxMemberSim | ✅ | ✅ | ✅ | ✅ | ✅ |
 | TrialSim | ✅ | ✅ | ✅ | ✅ | ✅ |
 
-**Verified**: All imports work (tested 2026-01-06)
+### 2.2 Tests for Generation Modules (IN PROGRESS)
 
-### 2.2 Tests for Generation Modules
-
-| Product | Unit Tests | Integration Tests |
-|---------|------------|-------------------|
-| MemberSim | ⬜ | ⬜ |
-| PatientSim | ⬜ | ⬜ |
-| RxMemberSim | ⬜ | ⬜ |
-| TrialSim | ⬜ | ⬜ |
+| Product | Unit Tests | Integration Tests | Status |
+|---------|------------|-------------------|--------|
+| MemberSim | ✅ 28 passed | ✅ | Complete |
+| PatientSim | ⬜ | ⬜ | Needs tests |
+| RxMemberSim | ✅ 21 passed | ✅ | Complete |
+| TrialSim | ⬜ | ⬜ | Needs tests |
 
 ### 2.3 ProfileJourneyOrchestrator
 
@@ -77,9 +75,7 @@
 
 ---
 
-## Current Task: Phase 2.2 - Tests for Generation Modules
-
-Create test files for each product's generation module.
+## Current Task: Phase 2.2 - Create tests for PatientSim and TrialSim
 
 ---
 
@@ -87,6 +83,7 @@ Create test files for each product's generation module.
 
 | Hash | Description |
 |------|-------------|
+| 3dfab5c | Complete Phase 2.1: Add generation modules to all products |
 | 94587b6 | Add cross-product matrix and documentation requirements |
 | 42d38fc | Complete Phase 1.1: Foundation verification |
 | 7047a86 | Add Git LFS detection and implementation plan |
@@ -102,7 +99,7 @@ Create test files for each product's generation module.
 - Added cross-product matrix to plan
 
 ### Session 2 (2026-01-06)
-- Verified all 4 products have complete generation/ modules
-- All imports work correctly
-- **Next**: Create tests for generation modules (Phase 2.2)
-
+- Completed Phase 2.1: All 4 products have generation/ modules
+- MemberSim tests: 28 passed
+- RxMemberSim tests: 21 passed (fixed adherence clamping)
+- **Next**: Create tests for PatientSim and TrialSim (Phase 2.2)

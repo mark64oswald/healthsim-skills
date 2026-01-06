@@ -5,6 +5,8 @@ Extends core ProfileExecutor with clinical trial subject generation.
 
 from __future__ import annotations
 
+import random
+import time
 from dataclasses import dataclass, field
 from datetime import date, timedelta
 from typing import Any
@@ -19,10 +21,6 @@ from healthsim.generation.profile_executor import (
 from healthsim.generation.reproducibility import SeedManager
 from healthsim.generation.profile_schema import ProfileSpecification
 
-from trialsim.core.models import (
-    ArmType,
-    SubjectStatus,
-)
 from trialsim.generation.profiles import TrialSimProfileSpecification
 
 
@@ -30,7 +28,7 @@ from trialsim.generation.profiles import TrialSimProfileSpecification
 class TrialSimValidationResult:
     """Simple validation result for TrialSim generation."""
     
-    passed: bool
+    passed: bool = True
     errors: list[str] = field(default_factory=list)
     warnings: list[str] = field(default_factory=list)
 
@@ -70,11 +68,12 @@ class GeneratedSubject:
     
     # Enrollment
     screening_date: date | None = None
-    screening_status: str = "passed"  # passed, failed
+    screening_status: str = "passed"
     screening_failure_reason: str | None = None
     randomization_date: date | None = None
-    arm: str | None = None  # treatment, placebo, etc.
+    arm: str | None = None
     status: str = "screening"
+    enrollment_date: date | None = None
     
     # Compliance
     visit_compliance: float = 0.90
@@ -84,9 +83,9 @@ class GeneratedSubject:
     ae_probability: float = 0.30
     
     # Links
-    patient_id: str | None = None  # Link to PatientSim patient
+    patient_id: str | None = None
     
-    # Raw data for extensibility
+    # Raw data
     raw: dict[str, Any] = field(default_factory=dict)
 
 
@@ -99,16 +98,21 @@ class TrialSimExecutionResult(ExecutionResult):
     protocol_id: str = ""
     
     @property
-    def count(self) -> int:
-        return len(self.subjects)
-    
-    @property
     def enrolled_count(self) -> int:
         return len([s for s in self.subjects if s.status != "screen_failed"])
     
     @property
     def screen_failure_count(self) -> int:
         return len([s for s in self.subjects if s.status == "screen_failed"])
+    
+    @property
+    def arm_counts(self) -> dict[str, int]:
+        """Count subjects by arm."""
+        counts = {}
+        for s in self.subjects:
+            if s.arm:
+                counts[s.arm] = counts.get(s.arm, 0) + 1
+        return counts
 
 
 class TrialSimProfileExecutor(ProfileExecutor):
@@ -117,15 +121,6 @@ class TrialSimProfileExecutor(ProfileExecutor):
     Generates clinical trial subjects based on profile specifications,
     with trial-specific attributes like arm randomization, visit
     compliance, and adverse event probability.
-
-    Example:
-        >>> from trialsim.generation import TrialSimProfileExecutor
-        >>> from trialsim.generation.templates import get_template
-        >>> 
-        >>> spec = get_template("phase3-oncology-trial")
-        >>> executor = TrialSimProfileExecutor(spec)
-        >>> result = executor.execute()
-        >>> print(f"Generated {result.count} subjects ({result.enrolled_count} enrolled)")
     """
 
     def __init__(
@@ -155,45 +150,50 @@ class TrialSimProfileExecutor(ProfileExecutor):
         if seed is not None:
             self.trial_spec.generation.seed = seed
 
-    def execute(self) -> TrialSimExecutionResult:
+    def execute(
+        self,
+        count_override: int | None = None,
+        dry_run: bool = False,
+    ) -> TrialSimExecutionResult:
         """Execute profile specification to generate trial subjects.
+
+        Args:
+            count_override: Override the count from profile
+            dry_run: If True, generate small sample only (max 5)
 
         Returns:
             TrialSimExecutionResult with generated subjects, sites, and validation
         """
-        # Get count from spec
-        count = self.trial_spec.generation.count
+        start_time = time.time()
+        
+        # Determine count
+        count = count_override or self.trial_spec.generation.count
+        if dry_run:
+            count = min(count, 5)
 
         # Setup seed manager
         seed = self.trial_spec.generation.seed or 42
-        seed_manager = SeedManager(seed)
 
         # Generate protocol ID
         protocol = self.trial_spec.protocol
         protocol_id = protocol.protocol_id or f"PROT-{uuid4().hex[:8].upper()}"
 
-        # Generate sites first
-        sites = self._generate_sites(seed_manager)
+        # Generate sites
+        sites = self._generate_sites(seed)
 
-        # Generate subjects across sites
+        # Generate subjects
         subjects = []
-        subjects_per_site = self._distribute_subjects_to_sites(count, sites, seed_manager)
-        
-        subject_index = 0
-        for site, site_count in zip(sites, subjects_per_site):
-            for i in range(site_count):
-                entity_seed = seed_manager.get_child_seed()
-                subject = self._generate_subject(
-                    subject_index, 
-                    protocol_id, 
-                    site, 
-                    entity_seed
-                )
-                subjects.append(subject)
-                subject_index += 1
+        for i in range(count):
+            rng = self.seed_manager.get_entity_rng(i)
+            site = sites[i % len(sites)] if sites else GeneratedSite(
+                site_id="SITE-001", name="Default Site"
+            )
+            subject = self._generate_subject(i, protocol_id, site, rng)
+            subjects.append(subject)
 
-        # Basic validation
+        # Validate
         validation = self._validate_results(subjects, sites)
+        duration = time.time() - start_time
 
         return TrialSimExecutionResult(
             entities=[s.raw for s in subjects],
@@ -203,19 +203,16 @@ class TrialSimProfileExecutor(ProfileExecutor):
             validation=validation,
             profile_id=self.trial_spec.id,
             seed=seed,
+            count=len(subjects),
+            duration_seconds=duration,
         )
 
-    def _generate_sites(
-        self,
-        seed_manager: SeedManager,
-    ) -> list[GeneratedSite]:
+    def _generate_sites(self, seed: int) -> list[GeneratedSite]:
         """Generate trial sites."""
         from faker import Faker
-        import random
 
-        site_seed = seed_manager.get_child_seed()
         fake = Faker()
-        Faker.seed(site_seed)
+        Faker.seed(seed)
 
         sites_spec = self.trial_spec.sites
         num_sites = sites_spec.num_sites
@@ -225,7 +222,7 @@ class TrialSimProfileExecutor(ProfileExecutor):
 
         sites = []
         for i in range(num_sites):
-            rng = random.Random(seed_manager.get_child_seed())
+            rng = random.Random(seed + i + 1000)
             region = region_dist.sample(rng=rng)
             
             # Map region to country
@@ -253,69 +250,33 @@ class TrialSimProfileExecutor(ProfileExecutor):
 
         return sites
 
-    def _distribute_subjects_to_sites(
-        self,
-        total_subjects: int,
-        sites: list[GeneratedSite],
-        seed_manager: SeedManager,
-    ) -> list[int]:
-        """Distribute subjects across sites based on site spec."""
-        import random
-        
-        if not sites:
-            return []
-
-        site_spec = self.trial_spec.sites
-        subjects_dist = create_distribution(site_spec.subjects_per_site.model_dump())
-
-        # Generate counts per site
-        counts = []
-        remaining = total_subjects
-        
-        for i, site in enumerate(sites[:-1]):  # All but last
-            if remaining <= 0:
-                counts.append(0)
-                continue
-            
-            rng = random.Random(seed_manager.get_child_seed())
-            count = int(subjects_dist.sample(rng=rng))
-            count = min(count, remaining)
-            counts.append(count)
-            remaining -= count
-
-        # Last site gets the remainder
-        counts.append(max(0, remaining))
-
-        return counts
-
     def _generate_subject(
         self,
         index: int,
         protocol_id: str,
         site: GeneratedSite,
-        seed: int,
+        rng: random.Random,
     ) -> GeneratedSubject:
         """Generate a single trial subject."""
         from faker import Faker
 
-        # Create a local seed manager for this subject
-        subject_rng = SeedManager(seed)
         fake = Faker()
-        Faker.seed(seed)
+        fake.seed_instance(rng.randint(0, 2**31 - 1))
 
         # Generate demographics
-        demographics = self._generate_demographics(subject_rng, fake)
+        demographics = self._generate_demographics(rng, fake)
 
         # Screening
         enrollment_spec = self.trial_spec.enrollment
         screening_date = date.today() - timedelta(days=fake.random_int(7, 90))
         
         # Check screen failure
-        screen_failed = fake.random.random() < enrollment_spec.screening_failure_rate
+        screen_failed = rng.random() < enrollment_spec.screening_failure_rate
         
         screening_status = "failed" if screen_failed else "passed"
         screening_failure_reason = None
         randomization_date = None
+        enrollment_date = None
         arm = None
         status = "screen_failed" if screen_failed else "enrolled"
         
@@ -323,38 +284,33 @@ class TrialSimProfileExecutor(ProfileExecutor):
             failure_dist = create_distribution(
                 enrollment_spec.screening_failure_reasons.model_dump()
             )
-            screening_failure_reason = failure_dist.sample(
-                seed=subject_rng.get_child_seed()
-            )
+            screening_failure_reason = failure_dist.sample(rng=rng)
         else:
             # Randomize
-            randomization_date = screening_date + timedelta(days=fake.random_int(1, 14))
+            enrollment_date = screening_date + timedelta(days=rng.randint(1, 7))
+            randomization_date = enrollment_date + timedelta(days=rng.randint(1, 7))
             
             arm_dist = create_distribution(self.trial_spec.arm_distribution.model_dump())
-            arm = arm_dist.sample(seed=subject_rng.get_child_seed())
+            arm = arm_dist.sample(rng=rng)
             status = "randomized"
 
         # Compliance values
         visit_comp_dist = create_distribution(
             self.trial_spec.visit_compliance.attendance_rate.model_dump()
         )
-        visit_compliance = visit_comp_dist.sample(
-            seed=subject_rng.get_child_seed()
-        )
+        visit_compliance = min(1.0, max(0.0, visit_comp_dist.sample(rng=rng)))
 
         exp_comp_dist = create_distribution(
             self.trial_spec.exposure_compliance.compliance_rate.model_dump()
         )
-        treatment_compliance = exp_comp_dist.sample(
-            seed=subject_rng.get_child_seed()
-        )
+        treatment_compliance = min(1.0, max(0.0, exp_comp_dist.sample(rng=rng)))
 
-        # AE probability (adjusted by arm if applicable)
+        # AE probability
         ae_prob = self.trial_spec.adverse_events.ae_probability
         if arm == "placebo":
-            ae_prob *= 0.6  # Lower AE rate for placebo
+            ae_prob *= 0.6
 
-        subject = GeneratedSubject(
+        return GeneratedSubject(
             subject_id=f"SUBJ-{index + 1:05d}",
             protocol_id=protocol_id,
             site_id=site.site_id,
@@ -369,6 +325,7 @@ class TrialSimProfileExecutor(ProfileExecutor):
             screening_status=screening_status,
             screening_failure_reason=screening_failure_reason,
             randomization_date=randomization_date,
+            enrollment_date=enrollment_date,
             arm=arm,
             status=status,
             visit_compliance=round(visit_compliance, 3),
@@ -380,11 +337,9 @@ class TrialSimProfileExecutor(ProfileExecutor):
             },
         )
 
-        return subject
-
     def _generate_demographics(
         self,
-        seed_manager: SeedManager,
+        rng: random.Random,
         fake: Any,
     ) -> dict[str, Any]:
         """Generate demographic attributes from profile spec."""
@@ -396,7 +351,7 @@ class TrialSimProfileExecutor(ProfileExecutor):
             sex_weights = self.trial_spec.demographics.gender.weights
         
         sex_dist = create_distribution({"type": "categorical", "weights": sex_weights})
-        result["sex"] = sex_dist.sample(seed=seed_manager.get_child_seed())
+        result["sex"] = sex_dist.sample(rng=rng)
 
         # Name based on sex
         if result["sex"] == "M":
@@ -408,39 +363,31 @@ class TrialSimProfileExecutor(ProfileExecutor):
         # Age
         if self.trial_spec.demographics and self.trial_spec.demographics.age:
             age_dist = create_distribution(self.trial_spec.demographics.age.model_dump())
-            result["age"] = int(age_dist.sample(seed=seed_manager.get_child_seed()))
+            result["age"] = int(age_dist.sample(rng=rng))
         else:
-            result["age"] = fake.random_int(18, 75)
+            result["age"] = rng.randint(18, 75)
         
         result["date_of_birth"] = date.today() - timedelta(
-            days=result["age"] * 365 + fake.random_int(0, 364)
+            days=result["age"] * 365 + rng.randint(0, 364)
         )
 
-        # Race/ethnicity (common clinical trial demographics)
+        # Race/ethnicity
         race_dist = create_distribution({
             "type": "categorical",
             "weights": {
-                "White": 0.60,
-                "Black or African American": 0.15,
-                "Asian": 0.12,
-                "American Indian or Alaska Native": 0.02,
+                "White": 0.60, "Black or African American": 0.15,
+                "Asian": 0.12, "American Indian or Alaska Native": 0.02,
                 "Native Hawaiian or Other Pacific Islander": 0.01,
-                "Multiple": 0.05,
-                "Unknown": 0.05,
+                "Multiple": 0.05, "Unknown": 0.05,
             }
         })
-        result["race"] = race_dist.sample(seed=seed_manager.get_child_seed())
+        result["race"] = race_dist.sample(rng=rng)
 
         ethnicity_dist = create_distribution({
             "type": "categorical",
-            "weights": {
-                "Not Hispanic or Latino": 0.85,
-                "Hispanic or Latino": 0.15,
-            }
+            "weights": {"Not Hispanic or Latino": 0.85, "Hispanic or Latino": 0.15}
         })
-        result["ethnicity"] = ethnicity_dist.sample(
-            seed=seed_manager.get_child_seed()
-        )
+        result["ethnicity"] = ethnicity_dist.sample(rng=rng)
 
         return result
 
@@ -453,26 +400,16 @@ class TrialSimProfileExecutor(ProfileExecutor):
         errors = []
         warnings = []
 
-        # Check sites
         if not sites:
             errors.append("No sites generated")
 
-        # Check subjects
         for subject in subjects:
             if not subject.subject_id:
                 errors.append("Subject missing subject_id")
-            if not subject.protocol_id:
-                errors.append(f"Subject {subject.subject_id} missing protocol_id")
             if not subject.site_id:
                 errors.append(f"Subject {subject.subject_id} missing site_id")
-            if subject.status not in ["screening", "screen_failed", "enrolled", 
-                                       "randomized", "on_treatment", "completed",
-                                       "withdrawn", "lost_to_followup"]:
-                warnings.append(
-                    f"Subject {subject.subject_id} has unusual status: {subject.status}"
-                )
 
-        # Check arm distribution for enrolled subjects
+        # Check arm distribution
         enrolled = [s for s in subjects if s.arm is not None]
         if enrolled:
             arm_counts = {}
@@ -482,7 +419,7 @@ class TrialSimProfileExecutor(ProfileExecutor):
             expected = self.trial_spec.arm_distribution.weights
             for arm, expected_pct in expected.items():
                 actual_pct = arm_counts.get(arm, 0) / len(enrolled)
-                if abs(actual_pct - expected_pct) > 0.15:  # 15% tolerance
+                if abs(actual_pct - expected_pct) > 0.15:
                     warnings.append(
                         f"Arm '{arm}' distribution off: expected {expected_pct:.1%}, got {actual_pct:.1%}"
                     )

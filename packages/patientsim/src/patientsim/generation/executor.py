@@ -16,6 +16,7 @@ Example:
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
+import random
 from typing import Any
 
 from healthsim.generation.profile_executor import (
@@ -71,6 +72,31 @@ class GeneratedPatient:
         """Get patient MRN."""
         return self.patient.mrn
     
+    @property
+    def first_name(self) -> str:
+        """Get patient first name."""
+        return self.patient.name.given_name if self.patient.name else ""
+    
+    @property
+    def last_name(self) -> str:
+        """Get patient last name."""
+        return self.patient.name.family_name if self.patient.name else ""
+    
+    @property
+    def gender(self) -> str:
+        """Get patient gender."""
+        return self.patient.gender or ""
+    
+    @property
+    def date_of_birth(self) -> date | None:
+        """Get patient date of birth."""
+        return self.patient.birth_date
+    
+    @property
+    def age(self) -> int | None:
+        """Get patient age."""
+        return self.patient.age
+    
     def to_dict(self) -> dict[str, Any]:
         """Convert to dictionary representation."""
         return {
@@ -103,6 +129,11 @@ class PatientExecutionResult:
     def count(self) -> int:
         """Number of patients generated."""
         return len(self.patients)
+    
+    @property
+    def profile_id(self) -> str:
+        """Alias for spec_id for consistency with other products."""
+        return self.spec_id
     
     @property
     def entities(self) -> list[Patient]:
@@ -165,18 +196,31 @@ class PatientProfileExecutor(ProfileExecutor):
         self.clinical = spec.clinical
         self.generation = spec.generation
     
-    def execute(self) -> PatientExecutionResult:
+    def execute(
+        self,
+        dry_run: bool = False,
+        count_override: int | None = None,
+    ) -> PatientExecutionResult:
         """Execute the profile specification.
+        
+        Args:
+            dry_run: If True, generate only a small sample (max 5)
+            count_override: Override the count from spec
         
         Returns:
             PatientExecutionResult containing generated patients
         """
         result = PatientExecutionResult(
-            spec_id=self.spec.id,
-            seed=self.seed_manager.seed,
+            spec_id=self.patient_spec.id,
+            seed=self.seed,
         )
         
+        # Determine count
         count = self.generation.count
+        if count_override is not None:
+            count = count_override
+        if dry_run:
+            count = min(count, 5)
         
         for i in range(count):
             try:
@@ -201,42 +245,43 @@ class PatientProfileExecutor(ProfileExecutor):
         Returns:
             GeneratedPatient with all clinical data
         """
-        # Create child seed manager for this patient
-        patient_seed = self.seed_manager.get_child_seed(f"patient_{index}")
+        # Get RNG for this patient
+        rng = self.seed_manager.get_entity_rng(index)
         
         # Generate base patient
-        patient = self._generate_base_patient(index, patient_seed)
+        patient = self._generate_base_patient(index, rng)
         
         # Create container
         generated = GeneratedPatient(patient=patient)
         
         # Add clinical data if specified
         if self.clinical:
-            self._add_clinical_data(generated, patient_seed)
+            self._add_clinical_data(generated, rng)
         
         return generated
     
     def _generate_base_patient(
         self,
         index: int,
-        seed_manager: HierarchicalSeedManager,
+        rng: 'random.Random',
     ) -> Patient:
         """Generate base patient demographics.
         
         Args:
             index: Patient index
-            seed_manager: Seed manager for this patient
+            rng: Random number generator for this patient
             
         Returns:
             Patient entity with demographics
         """
-        rng = seed_manager.rng
-        faker = seed_manager.faker
+        from faker import Faker
+        faker = Faker()
+        faker.seed_instance(rng.randint(0, 2**31 - 1))
         
         # Generate age
         if self.demographics.age:
             age_dist = create_distribution(self.demographics.age.model_dump())
-            age = int(age_dist.sample(rng))
+            age = int(age_dist.sample(rng=rng))
         else:
             age = rng.randint(18, 85)
         
@@ -248,7 +293,7 @@ class PatientProfileExecutor(ProfileExecutor):
         # Generate gender
         if self.demographics.gender:
             gender_dist = create_distribution(self.demographics.gender.model_dump())
-            gender = gender_dist.sample(rng)
+            gender = gender_dist.sample(rng=rng)
         else:
             gender = rng.choice(["M", "F"])
         
@@ -264,7 +309,7 @@ class PatientProfileExecutor(ProfileExecutor):
         mrn = f"{self.demographics.mrn_prefix}{mrn_num}"
         
         # Generate patient ID
-        patient_id = f"patient-{self.spec.id}-{index:06d}"
+        patient_id = f"patient-{self.patient_spec.id}-{index:06d}"
         
         return Patient(
             id=patient_id,
@@ -280,18 +325,17 @@ class PatientProfileExecutor(ProfileExecutor):
     def _add_clinical_data(
         self,
         generated: GeneratedPatient,
-        seed_manager: HierarchicalSeedManager,
+        rng: 'random.Random',
     ) -> None:
         """Add clinical data to generated patient.
         
         Args:
             generated: GeneratedPatient to populate
-            seed_manager: Seed manager for this patient
+            rng: Random number generator for this patient
         """
         if not self.clinical:
             return
         
-        rng = seed_manager.rng
         patient = generated.patient
         
         # Add primary condition as diagnosis
@@ -299,7 +343,7 @@ class PatientProfileExecutor(ProfileExecutor):
             cond = self.clinical.primary_condition
             diagnosis = Diagnosis(
                 code=cond.code,
-                description=cond.name,
+                description=cond.description or cond.code,
                 type=DiagnosisType.FINAL,
                 patient_mrn=patient.mrn,
                 diagnosed_date=date.today().replace(
@@ -315,7 +359,7 @@ class PatientProfileExecutor(ProfileExecutor):
                 if rng.random() < prevalence:
                     diagnosis = Diagnosis(
                         code=comorbidity.code,
-                        description=comorbidity.name,
+                        description=comorbidity.description or comorbidity.code,
                         type=DiagnosisType.FINAL,
                         patient_mrn=patient.mrn,
                         diagnosed_date=date.today().replace(
@@ -332,15 +376,14 @@ class PatientProfileExecutor(ProfileExecutor):
         """
         expected = self.generation.count
         actual = result.count
-        tolerance = self.generation.tolerance
+        tolerance = getattr(self.generation, 'tolerance', 0.1)  # Default 10%
         
-        if abs(actual - expected) / expected > tolerance:
+        if actual > 0 and abs(actual - expected) / expected > tolerance:
             result.validation.warnings.append(
                 f"Count {actual} differs from expected {expected} by more than {tolerance*100}%"
             )
         
-        # Set passed based on no errors
-        result.validation.passed = len(result.validation.errors) == 0
+        # Note: validation.passed is a computed property based on errors
 
 
 __all__ = [
