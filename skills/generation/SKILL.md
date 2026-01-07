@@ -139,4 +139,4 @@ Pre-built profiles and journeys for common use cases:
 
 ---
 
-*Implementation Status: Foundation phase. See [CURRENT-WORK.md](../../CURRENT-WORK.md) for details.*
+*Implementation Status: Foundation phase. See [GENERATIVE-FRAMEWORK-PROGRESS.md](../../docs/GENERATIVE-FRAMEWORK-PROGRESS.md) for details.*

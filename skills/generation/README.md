@@ -172,4 +172,4 @@ For detailed design rationale and specifications, see:
 
 ---
 
-*The Generative Framework is under active development. See [CURRENT-WORK.md](../../CURRENT-WORK.md) for status.*
+*The Generative Framework is under active development. See [GENERATIVE-FRAMEWORK-PROGRESS.md](../../docs/GENERATIVE-FRAMEWORK-PROGRESS.md) for status.*

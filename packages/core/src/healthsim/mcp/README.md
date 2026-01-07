@@ -132,6 +132,6 @@ pytest packages/core/tests/mcp/
 
 ## See Also
 
-- [Profile Schema](../../docs/api/profile-schema.md) - Profile specification format
-- [Journey Engine](../../docs/api/journey-engine.md) - Journey specification format
-- [Generative Framework Guide](../../docs/guides/generative-framework.md) - Overview
+- [Profile Schema](../../../../../docs/api/profile-schema.md) - Profile specification format
+- [Journey Engine](../../../../../docs/api/journey-engine.md) - Journey specification format
+- [Generative Framework Guide](../../../../../docs/guides/generative-framework.md) - Overview

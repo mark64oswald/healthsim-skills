@@ -152,7 +152,7 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
             UNIQUE(cohort_id, entity_type, entity_id)
         );
         INSERT INTO cohort_entities (id, cohort_id, entity_type, entity_id, entity_data, created_at)
-        SELECT id, cohort_id, entity_type, entity_id, entity_data, created_at 
+        SELECT id, scenario_id, entity_type, entity_id, entity_data, created_at 
         FROM scenario_entities WHERE NOT EXISTS (SELECT 1 FROM cohort_entities LIMIT 1);
         
         -- Create cohort_tags table (copy of scenario_tags)
@@ -163,7 +163,7 @@ MIGRATIONS: List[Tuple[str, str, str]] = [
             UNIQUE(cohort_id, tag)
         );
         INSERT INTO cohort_tags (id, cohort_id, tag)
-        SELECT id, cohort_id, tag FROM scenario_tags WHERE NOT EXISTS (SELECT 1 FROM cohort_tags LIMIT 1);
+        SELECT id, scenario_id, tag FROM scenario_tags WHERE NOT EXISTS (SELECT 1 FROM cohort_tags LIMIT 1);
         
         -- Add cohort_id column to all canonical tables (alongside cohort_id for backward compat)
         ALTER TABLE patients ADD COLUMN IF NOT EXISTS cohort_id VARCHAR;
